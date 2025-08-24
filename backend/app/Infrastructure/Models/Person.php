@@ -12,9 +12,5 @@ class Person extends Model
     // Columns that can be mass-assigned
     protected $fillable = ['name', 'email', 'phone'];
 
-    public function vehicles()
-{
-    return $this->hasMany(Vehicle::class);
-}
-
+public $timestamps = false;
 }
