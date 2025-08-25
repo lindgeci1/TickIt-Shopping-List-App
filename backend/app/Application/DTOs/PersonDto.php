@@ -3,6 +3,7 @@
 namespace App\Application\DTOs;
 
 use App\Domain\Entities\Person;
+
 /**
  * @OA\Schema(
  *     schema="PersonDto",
@@ -11,7 +12,7 @@ use App\Domain\Entities\Person;
  *     @OA\Property(property="id", type="integer", nullable=true),
  *     @OA\Property(property="name", type="string"),
  *     @OA\Property(property="email", type="string"),
- *     @OA\Property(property="phone", type="string")
+ *     @OA\Property(property="phone", type="integer", nullable=true)
  * )
  */
 class PersonDto
@@ -19,9 +20,8 @@ class PersonDto
     public ?int $id;
     public string $name;
     public string $email;
-    public ?string $phone = null;
+    public ?int $phone = null; // changed from string to int
 
-    // Make the constructor optional
     public function __construct(?Person $person = null)
     {
         if ($person) {
