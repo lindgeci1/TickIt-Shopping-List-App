@@ -8,9 +8,9 @@ class Person
     public ?int $id; 
     public string $name;
     public string $email;
-    public ?string $phone = null;
+    public ?int $phone = null;
 
-    public function __construct(?int $id, string $name, string $email, ?string $phone = null)
+    public function __construct(?int $id, string $name, string $email, ?int $phone = null)
     {
         $this->id    = $id;
         $this->name  = $name;

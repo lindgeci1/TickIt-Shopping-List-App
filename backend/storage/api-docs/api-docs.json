@@ -88,7 +88,8 @@
                         "type": "string"
                     },
                     "phone": {
-                        "type": "string"
+                        "type": "integer",
+                        "nullable": true
                     }
                 },
                 "type": "object"

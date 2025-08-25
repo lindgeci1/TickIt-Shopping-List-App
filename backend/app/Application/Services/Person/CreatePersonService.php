@@ -29,7 +29,14 @@ class CreatePersonService
         if (!filter_var($dto->email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Invalid email format.");
         }
+        if ($this->personRepository->existsByEmail($dto->email)) {
+            throw new InvalidArgumentException("Email already exists.");
+        }
 
+        // Validate phone number if provided
+        if ($dto->phone !== null && !is_int($dto->phone)) {
+            throw new InvalidArgumentException("Phone must be an integer.");
+        }
         // ── Map DTO to Entity ───────────────────────────
         $person = new Person(
             $dto->id ?? null,

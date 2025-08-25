@@ -34,6 +34,9 @@ class EloquentPersonRepository implements PersonRepositoryInterface
             $model->save();
         }
 
-
+    public function existsByEmail(string $email): bool
+    {
+        return PersonModel::where('email', $email)->exists();
+    }
 
 }
