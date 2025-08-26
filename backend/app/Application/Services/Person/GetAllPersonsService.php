@@ -20,7 +20,7 @@ class GetAllPersonsService
     {
         $all = $this->personRepository->findAll(); // returns array of Person entities
 
-        // Map each entity to a DTO
+        // Map each entity to a DTO (ensure PersonDto now uses PersonID)
         return array_map(fn(Person $p) => new PersonDto($p), $all);
     }
 }

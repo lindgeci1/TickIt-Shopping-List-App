@@ -15,16 +15,16 @@
         }
     ],
     "paths": {
-        "/api/persons": {
+        "/api/person/all": {
             "get": {
                 "tags": [
                     "Person"
                 ],
-                "summary": "Get all persons",
-                "operationId": "62ab28e46c0fa7660905a00068d1d1c2",
+                "summary": "Get all people",
+                "operationId": "f0162007c0b7870b52c5a1f779d5efdb",
                 "responses": {
                     "200": {
-                        "description": "List of persons",
+                        "description": "List of people",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -37,13 +37,49 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/person/{PersonID}": {
+            "get": {
+                "tags": [
+                    "Person"
+                ],
+                "summary": "Get a person by PersonID",
+                "operationId": "2eeaa5223a5d5fcf5ffcaf915c0091c0",
+                "parameters": [
+                    {
+                        "name": "PersonID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Person found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PersonDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Person not found"
+                    }
+                }
+            }
+        },
+        "/api/person/create": {
             "post": {
                 "tags": [
                     "Person"
                 ],
                 "summary": "Create a new person",
-                "operationId": "825c5fb29f3ad0d4f60f2d74eef734f2",
+                "operationId": "366b2183c6839f05905742f730f6cfc1",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -68,48 +104,16 @@
                 }
             }
         },
-        "/api/persons/{id}": {
-            "get": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Get a person by ID",
-                "operationId": "7cbb5dc4c1faabde95b9e465d8791b03",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Person found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PersonDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Person not found"
-                    }
-                }
-            },
+        "/api/person/update/{PersonID}": {
             "put": {
                 "tags": [
                     "Person"
                 ],
                 "summary": "Update a person",
-                "operationId": "007cd01f900e13773b393bd25fbb4f8c",
+                "operationId": "419abd90bd81ba577388b385be94b3f0",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "PersonID",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -145,16 +149,18 @@
                         "description": "Person not found"
                     }
                 }
-            },
+            }
+        },
+        "/api/person/delete/{PersonID}": {
             "delete": {
                 "tags": [
                     "Person"
                 ],
                 "summary": "Delete a person",
-                "operationId": "70f4112246bd1581b8cf8e3cc0655c36",
+                "operationId": "4ad78cebf6b564fd8431851403114cec",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "PersonID",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -181,7 +187,7 @@
                     "email"
                 ],
                 "properties": {
-                    "id": {
+                    "PersonID": {
                         "type": "integer",
                         "nullable": true
                     },

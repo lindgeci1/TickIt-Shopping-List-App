@@ -14,14 +14,14 @@ class DeletePersonService
         $this->personRepository = $personRepository;
     }
 
-    public function delete(int $id): string
+    public function delete(int $PersonID): string
     {
-        $existing = $this->personRepository->findById($id);
+        $existing = $this->personRepository->findById($PersonID);
         if (!$existing) {
             throw new InvalidArgumentException("Person not found.");
         }
 
-        $deleted = $this->personRepository->delete($id);
+        $deleted = $this->personRepository->delete($PersonID);
 
         if ($deleted) {
             return "Person deleted successfully.";
