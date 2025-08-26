@@ -39,7 +39,7 @@ class CreatePersonService
         }
         // ── Map DTO to Entity ───────────────────────────
         $person = new Person(
-            $dto->id ?? null,
+            $dto->PersonID  ?? null,
             $dto->name,
             $dto->email,
             $dto->phone ?? null

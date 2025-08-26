@@ -9,7 +9,7 @@ use App\Domain\Entities\Person;
  *     schema="PersonDto",
  *     type="object",
  *     required={"name","email"},
- *     @OA\Property(property="id", type="integer", nullable=true),
+ *     @OA\Property(property="PersonID", type="integer", nullable=true),
  *     @OA\Property(property="name", type="string"),
  *     @OA\Property(property="email", type="string"),
  *     @OA\Property(property="phone", type="integer", nullable=true)
@@ -17,18 +17,18 @@ use App\Domain\Entities\Person;
  */
 class PersonDto
 {
-    public ?int $id;
+    public ?int $PersonID = null;
     public string $name;
     public string $email;
-    public ?int $phone = null; // changed from string to int
+    public ?int $phone = null;
 
     public function __construct(?Person $person = null)
     {
         if ($person) {
-            $this->id    = $person->id;
-            $this->name  = $person->name;
-            $this->email = $person->email;
-            $this->phone = $person->phone;
+            $this->PersonID = $person->PersonID;
+            $this->name     = $person->name;
+            $this->email    = $person->email;
+            $this->phone    = $person->phone;
         }
     }
 }

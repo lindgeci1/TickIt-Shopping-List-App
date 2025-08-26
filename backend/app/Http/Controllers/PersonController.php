@@ -41,12 +41,12 @@ class PersonController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/persons",
-     *     summary="Get all persons",
+     *     path="/api/person/all",
+     *     summary="Get all people",
      *     tags={"Person"},
      *     @OA\Response(
      *         response=200,
-     *         description="List of persons",
+     *         description="List of people",
      *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/PersonDto"))
      *     )
      * )
@@ -56,9 +56,31 @@ class PersonController extends Controller
         return response()->json($this->getAllPersonsService->getAll());
     }
 
+
+        /**
+     * @OA\Get(
+     *     path="/api/person/{PersonID}",
+     *     summary="Get a person by PersonID",
+     *     tags={"Person"},
+     *     @OA\Parameter(name="PersonID", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Person found", @OA\JsonContent(ref="#/components/schemas/PersonDto")),
+     *     @OA\Response(response=404, description="Person not found")
+     * )
+     */
+    public function show(int $PersonID)
+    {
+        try {
+            $person = $this->getPersonService->getById($PersonID);
+            return response()->json($person);
+        } catch (InvalidArgumentException $ex) {
+            return response()->json(['message' => $ex->getMessage()], 404);
+        }
+    }
+
+
     /**
      * @OA\Post(
-     *     path="/api/persons",
+     *     path="/api/person/create",
      *     summary="Create a new person",
      *     tags={"Person"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/PersonDto")),
@@ -81,32 +103,14 @@ class PersonController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/persons/{id}",
-     *     summary="Get a person by ID",
-     *     tags={"Person"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Person found", @OA\JsonContent(ref="#/components/schemas/PersonDto")),
-     *     @OA\Response(response=404, description="Person not found")
-     * )
-     */
-    public function show(int $id)
-    {
-        try {
-            $person = $this->getPersonService->getById($id);
-            return response()->json($person);
-        } catch (InvalidArgumentException $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
+
 
     /**
      * @OA\Put(
-     *     path="/api/persons/{id}",
+     *     path="/api/person/update/{PersonID}",
      *     summary="Update a person",
      *     tags={"Person"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="PersonID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/PersonDto")),
      *     @OA\Response(response=200, description="Updated person", @OA\JsonContent(ref="#/components/schemas/PersonDto")),
      *     @OA\Response(response=400, description="Validation error"),
@@ -117,14 +121,14 @@ class PersonController extends Controller
     {
         try {
             $personDto = new PersonDto(null);
-            $personDto->id    = $id;
-            $personDto->name  = $request->input('name');
-            $personDto->email = $request->input('email');
-            $personDto->phone = $request->input('phone');
+            $personDto->PersonID = $id;        // ✅ ndryshuar nga id → PersonID
+            $personDto->name     = $request->input('name');
+            $personDto->email    = $request->input('email');
+            $personDto->phone    = $request->input('phone');
 
             $updatedPerson = $this->updatePersonService->update($personDto);
 
-            return response()->json($updatedPerson);
+            return response()->json($updatedPerson, 200);
         } catch (InvalidArgumentException $ex) {
             return response()->json(['message' => $ex->getMessage()], 400);
         }
@@ -132,18 +136,18 @@ class PersonController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/persons/{id}",
+     *     path="/api/person/delete/{PersonID}",
      *     summary="Delete a person",
      *     tags={"Person"},
-     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="PersonID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\Response(response=204, description="Person deleted"),
      *     @OA\Response(response=404, description="Person not found")
      * )
      */
-        public function destroy(int $id)
+        public function destroy(int $PersonID)
         {
             try {
-                $message = $this->deletePersonService->delete($id);
+                $message = $this->deletePersonService->delete($PersonID);
                 return response()->json(['message' => $message], 200);
             } catch (\Exception $ex) {
                 return response()->json(['message' => $ex->getMessage()], 400);

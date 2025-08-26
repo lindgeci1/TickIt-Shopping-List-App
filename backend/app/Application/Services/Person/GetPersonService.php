@@ -15,9 +15,9 @@ class GetPersonService
         $this->personRepository = $personRepository;
     }
 
-    public function getById(int $id): PersonDto
+    public function getById(int $PersonID): PersonDto
     {
-        $person = $this->personRepository->findById($id);
+        $person = $this->personRepository->findById($PersonID);
 
         if (!$person) {
             throw new InvalidArgumentException("Person not found.");

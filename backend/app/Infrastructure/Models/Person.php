@@ -3,14 +3,21 @@
 namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Infrastructure\Models\Vehicle;
 
 class Person extends Model
 {
-    // Specify the table name (optional, defaults to plural: "people")
     protected $table = 'people';
 
-    // Columns that can be mass-assigned
-    protected $fillable = ['name', 'email', 'phone'];
+    // Set custom primary key
+    protected $primaryKey = 'PersonID';
 
-public $timestamps = false;
+    protected $fillable = ['name', 'email', 'phone'];
+    public $timestamps = false;
+
+    // One Person has many Vehicles
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'PersonID', 'PersonID');
+    }
 }

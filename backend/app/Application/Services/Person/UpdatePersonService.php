@@ -18,11 +18,11 @@ class UpdatePersonService
 
     public function update(PersonDto $dto): PersonDto
     {
-        if (!$dto->id) {
-            throw new InvalidArgumentException("ID is required for update.");
+        if (!$dto->PersonID) {
+            throw new InvalidArgumentException("PersonID is required for update.");
         }
 
-        $existing = $this->personRepository->findById($dto->id);
+        $existing = $this->personRepository->findById($dto->PersonID);
         if (!$existing) {
             throw new InvalidArgumentException("Person not found.");
         }
@@ -45,7 +45,7 @@ class UpdatePersonService
         }
 
         $person = new Person(
-            $dto->id,
+            $dto->PersonID,
             $dto->name,
             $dto->email,
             $dto->phone ?? null

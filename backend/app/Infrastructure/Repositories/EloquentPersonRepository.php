@@ -12,20 +12,20 @@ class EloquentPersonRepository implements PersonRepositoryInterface
         $models = PersonModel::all();
 
         return $models->map(fn($m) => new Person(
-            $m->id,
+            $m->PersonID,
             $m->name,
             $m->email,
             $m->phone
         ))->all();
     }
 
-    public function findById(int $id): ?Person
+    public function findById(int $PersonID): ?Person
     {
-        $model = PersonModel::find($id);
+        $model = PersonModel::find($PersonID);
         if (!$model) return null;
 
         return new Person(
-            $model->id,
+            $model->PersonID,
             $model->name,
             $model->email,
             $model->phone
@@ -41,7 +41,7 @@ class EloquentPersonRepository implements PersonRepositoryInterface
         $model->save();
 
         return new Person(
-            $model->id,
+            $model->PersonID,
             $model->name,
             $model->email,
             $model->phone
@@ -50,7 +50,7 @@ class EloquentPersonRepository implements PersonRepositoryInterface
 
     public function update(Person $person): bool
     {
-        $model = PersonModel::find($person->id);
+        $model = PersonModel::find($person->PersonID);
         if (!$model) return false;
 
         $model->name  = $person->name;
@@ -59,9 +59,9 @@ class EloquentPersonRepository implements PersonRepositoryInterface
         return $model->save();
     }
 
-    public function delete(int $id): bool
+    public function delete(int $PersonID): bool
     {
-        $model = PersonModel::find($id);
+        $model = PersonModel::find($PersonID);
         if (!$model) return false;
 
         return $model->delete();
