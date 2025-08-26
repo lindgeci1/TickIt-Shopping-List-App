@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Http\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Infrastructure\Repositories\PersonRepositoryInterface;
