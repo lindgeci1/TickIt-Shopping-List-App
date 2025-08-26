@@ -6,18 +6,18 @@ class Vehicle
 {
     public ?int $VehicleID;
     public string $make;
-    public string $model;
+    public string $modelName;
     public int $year;
     public float $pricePerDay;
     public int $PersonID;
 
     public ?Person $Person = null;
 
-    public function __construct(int $VehicleID, string $make, string $model, int $year, float $pricePerDay, int $PersonID)
+    public function __construct(?int $VehicleID, string $make, string $modelName, int $year, float $pricePerDay, int $PersonID)
     {
         $this->VehicleID = $VehicleID;
         $this->make = $make;
-        $this->model = $model;
+        $this->modelName = $modelName;
         $this->year = $year;
         $this->pricePerDay = $pricePerDay;
         $this->PersonID = $PersonID;

@@ -5,7 +5,8 @@ namespace App\Http\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Infrastructure\Repositories\PersonRepositoryInterface;
 use App\Infrastructure\Repositories\EloquentPersonRepository;
-
+use App\Infrastructure\Repositories\VehicleRepositoryInterface;
+use App\Infrastructure\Repositories\EloquentVehicleRepository;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -15,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Bind repository interface to concrete implementation
         $this->app->bind(PersonRepositoryInterface::class, EloquentPersonRepository::class);
+        $this->app->bind(VehicleRepositoryInterface::class, EloquentVehicleRepository::class);
     }
 
     /**

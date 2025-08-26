@@ -177,6 +177,169 @@
                     }
                 }
             }
+        },
+        "/api/vehicle/all": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Get all vehicles",
+                "operationId": "412ca4ae42e01c9c69d58413816f55f6",
+                "responses": {
+                    "200": {
+                        "description": "List of vehicles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/VehicleDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/vehicle/{VehicleID}": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Get a vehicle by VehicleID",
+                "operationId": "35219cedd6bc286b70ab1cfd5fdfb8d0",
+                "parameters": [
+                    {
+                        "name": "VehicleID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vehicle found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VehicleDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Vehicle not found"
+                    }
+                }
+            }
+        },
+        "/api/vehicle/create": {
+            "post": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Create a new vehicle",
+                "operationId": "35f12476693cc84e8195bd829a78df18",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created vehicle",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VehicleDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/vehicle/update/{VehicleID}": {
+            "put": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Update a vehicle",
+                "operationId": "12085d261e2538403ea990bbd8316699",
+                "parameters": [
+                    {
+                        "name": "VehicleID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated vehicle",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VehicleDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Vehicle not found"
+                    }
+                }
+            }
+        },
+        "/api/vehicle/delete/{VehicleID}": {
+            "delete": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Delete a vehicle",
+                "operationId": "5e5294484ce4028a1be9cfa74af6c1e0",
+                "parameters": [
+                    {
+                        "name": "VehicleID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Vehicle deleted"
+                    },
+                    "404": {
+                        "description": "Vehicle not found"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -203,6 +366,38 @@
                     }
                 },
                 "type": "object"
+            },
+            "VehicleDto": {
+                "required": [
+                    "make",
+                    "modelName",
+                    "year",
+                    "pricePerDay",
+                    "PersonID"
+                ],
+                "properties": {
+                    "VehicleID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "make": {
+                        "type": "string"
+                    },
+                    "modelName": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "pricePerDay": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "PersonID": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -210,6 +405,10 @@
         {
             "name": "Person",
             "description": "API Endpoints for Persons"
+        },
+        {
+            "name": "Vehicle",
+            "description": "API Endpoints for Vehicles"
         }
     ]
 }
