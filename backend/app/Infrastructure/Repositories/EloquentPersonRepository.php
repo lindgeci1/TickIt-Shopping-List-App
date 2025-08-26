@@ -2,41 +2,73 @@
 
 namespace App\Infrastructure\Repositories;
 
-use Illuminate\Support\Facades\Log;
 use App\Domain\Entities\Person;
 use App\Infrastructure\Models\Person as PersonModel;
 
 class EloquentPersonRepository implements PersonRepositoryInterface
 {
-// Return all Person models directly
     public function findAll(): array
     {
-        // Fetch all Person models from the database
         $models = PersonModel::all();
 
-        // Map each model to a domain Person entity with attributes
         return $models->map(fn($m) => new Person(
             $m->id,
             $m->name,
             $m->email,
             $m->phone
-            // Add other attributes here if your Person entity has them
         ))->all();
     }
 
-    // Save a new Person model without specifying attributes
-        public function create(Person $person): void
-        {
-            $model = new PersonModel();
-            $model->name  = $person->name;
-            $model->email = $person->email;
-            $model->phone = $person->phone; // optional
-            $model->save();
-        }
+    public function findById(int $id): ?Person
+    {
+        $model = PersonModel::find($id);
+        if (!$model) return null;
+
+        return new Person(
+            $model->id,
+            $model->name,
+            $model->email,
+            $model->phone
+        );
+    }
+
+    public function create(Person $person): Person
+    {
+        $model = new PersonModel();
+        $model->name  = $person->name;
+        $model->email = $person->email;
+        $model->phone = $person->phone;
+        $model->save();
+
+        return new Person(
+            $model->id,
+            $model->name,
+            $model->email,
+            $model->phone
+        );
+    }
+
+    public function update(Person $person): bool
+    {
+        $model = PersonModel::find($person->id);
+        if (!$model) return false;
+
+        $model->name  = $person->name;
+        $model->email = $person->email;
+        $model->phone = $person->phone;
+        return $model->save();
+    }
+
+    public function delete(int $id): bool
+    {
+        $model = PersonModel::find($id);
+        if (!$model) return false;
+
+        return $model->delete();
+    }
 
     public function existsByEmail(string $email): bool
     {
         return PersonModel::where('email', $email)->exists();
     }
-
 }

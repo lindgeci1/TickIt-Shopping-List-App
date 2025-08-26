@@ -54,8 +54,8 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\RouteServiceProvider::class, // <--- this one is crucial
+        App\Http\Providers\AppServiceProvider::class,
+        App\Http\Providers\RouteServiceProvider::class, // <--- this one is crucial
     ],
 
 ];
