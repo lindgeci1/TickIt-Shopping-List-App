@@ -9,7 +9,7 @@ class Vehicle extends Model
 {
     protected $table = 'vehicles';
     protected $primaryKey = 'VehicleID';
-    protected $fillable = ['make', 'model', 'year', 'pricePerDay', 'PersonID'];
+    protected $fillable = ['make', 'modelName', 'year', 'pricePerDay', 'PersonID'];
     public $timestamps = false;
 
     public function person()
