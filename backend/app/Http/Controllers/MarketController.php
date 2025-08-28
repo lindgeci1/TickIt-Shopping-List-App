@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Services\Market\GetAllMarketsService;
-use App\Application\Services\Market\CreateMarketService;
-use App\Application\Services\Market\GetMarketService;
-use App\Application\Services\Market\UpdateMarketService;
-use App\Application\Services\Market\DeleteMarketService;
+use App\Application\Interfaces\Market\GetAllMarketsServiceInterface;
+use App\Application\Interfaces\Market\CreateMarketServiceInterface;
+use App\Application\Interfaces\Market\GetMarketServiceInterface;
+use App\Application\Interfaces\Market\UpdateMarketServiceInterface;
+use App\Application\Interfaces\Market\DeleteMarketServiceInterface;
 use App\Application\DTOs\MarketDto;
 use InvalidArgumentException;
 
@@ -19,18 +19,18 @@ use InvalidArgumentException;
  */
 class MarketController extends Controller
 {
-    private GetAllMarketsService $getAllMarketsService;
-    private CreateMarketService $createMarketService;
-    private GetMarketService $getMarketService;
-    private UpdateMarketService $updateMarketService;
-    private DeleteMarketService $deleteMarketService;
+    private GetAllMarketsServiceInterface $getAllMarketsService;
+    private CreateMarketServiceInterface $createMarketService;
+    private GetMarketServiceInterface $getMarketService;
+    private UpdateMarketServiceInterface $updateMarketService;
+    private DeleteMarketServiceInterface $deleteMarketService;
 
     public function __construct(
-        GetAllMarketsService $getAllMarketsService,
-        CreateMarketService $createMarketService,
-        GetMarketService $getMarketService,
-        UpdateMarketService $updateMarketService,
-        DeleteMarketService $deleteMarketService
+        GetAllMarketsServiceInterface $getAllMarketsService,
+        CreateMarketServiceInterface $createMarketService,
+        GetMarketServiceInterface $getMarketService,
+        UpdateMarketServiceInterface $updateMarketService,
+        DeleteMarketServiceInterface $deleteMarketService
     ) {
         $this->getAllMarketsService = $getAllMarketsService;
         $this->createMarketService = $createMarketService;
@@ -61,7 +61,12 @@ class MarketController extends Controller
      *     path="/api/market/{MarketID}",
      *     summary="Get a market by MarketID",
      *     tags={"Market"},
-     *     @OA\Parameter(name="MarketID", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(
+     *         name="MarketID",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
      *     @OA\Response(response=200, description="Market found", @OA\JsonContent(ref="#/components/schemas/MarketDto")),
      *     @OA\Response(response=404, description="Market not found")
      * )
@@ -82,7 +87,8 @@ class MarketController extends Controller
      *     summary="Create a new market",
      *     tags={"Market"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/MarketDto")),
-     *     @OA\Response(response=201, description="Created market", @OA\JsonContent(ref="#/components/schemas/MarketDto"))
+     *     @OA\Response(response=201, description="Created market", @OA\JsonContent(ref="#/components/schemas/MarketDto")),
+     *     @OA\Response(response=400, description="Validation error")
      * )
      */
     public function store(Request $request)
@@ -134,8 +140,9 @@ class MarketController extends Controller
      *     summary="Delete a market",
      *     tags={"Market"},
      *     @OA\Parameter(name="MarketID", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=204, description="Market deleted"),
-     *     @OA\Response(response=404, description="Market not found")
+     *     @OA\Response(response=200, description="Market deleted", @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))),
+     *     @OA\Response(response=404, description="Market not found"),
+     *     @OA\Response(response=400, description="Deletion failed")
      * )
      */
     public function destroy(int $MarketID)

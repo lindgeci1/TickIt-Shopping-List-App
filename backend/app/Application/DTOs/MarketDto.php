@@ -12,11 +12,6 @@ use App\Domain\Entities\Market;
  *     @OA\Property(property="MarketID", type="integer", nullable=true),
  *     @OA\Property(property="Name", type="string"),
  *     @OA\Property(property="Location", type="string", nullable=true),
- *     @OA\Property(
- *         property="Products",
- *         type="array",
- *         @OA\Items(type="string")
- *     )
  * )
  */
 class MarketDto

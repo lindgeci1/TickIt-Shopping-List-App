@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Application\Services\Market;
+namespace App\Application\UseCases\Market;
 
-use App\Infrastructure\Repositories\MarketRepositoryInterface;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use InvalidArgumentException;
+use App\Application\Interfaces\Market\DeleteMarketServiceInterface;
 
-class DeleteMarketService
+class DeleteMarketUseCase implements DeleteMarketServiceInterface
 {
     private MarketRepositoryInterface $marketRepository;
 

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Services\Product\GetAllProductsService;
-use App\Application\Services\Product\CreateProductService;
-use App\Application\Services\Product\GetProductService;
-use App\Application\Services\Product\UpdateProductService;
-use App\Application\Services\Product\DeleteProductService;
-
+use App\Application\Interfaces\Product\GetAllProductsServiceInterface;
+use App\Application\Interfaces\Product\CreateProductServiceInterface;
+use App\Application\Interfaces\Product\GetProductServiceInterface;
+use App\Application\Interfaces\Product\UpdateProductServiceInterface;
+use App\Application\Interfaces\Product\DeleteProductServiceInterface;
 use App\Application\DTOs\ProductDto;
 use InvalidArgumentException;
 
@@ -20,25 +19,25 @@ use InvalidArgumentException;
  */
 class ProductController extends Controller
 {
-    private GetAllProductsService $getAllProductsService;
-    private CreateProductService $createProductService;
-    private GetProductService $getProductService;
-    private UpdateProductService $updateProductService;
-    private DeleteProductService $deleteProductService;
+    private GetAllProductsServiceInterface $getAllProductsService;
+    private CreateProductServiceInterface $createProductService;
+    private GetProductServiceInterface $getProductService;
+    private UpdateProductServiceInterface $updateProductService;
+    private DeleteProductServiceInterface $deleteProductService;
 
-        public function __construct(
-            GetAllProductsService $getAllProductsService,
-            CreateProductService $createProductService,
-            GetProductService $getProductService,
-            UpdateProductService $updateProductService,
-            DeleteProductService $deleteProductService,
-        ) {
-            $this->getAllProductsService = $getAllProductsService;
-            $this->createProductService = $createProductService;
-            $this->getProductService = $getProductService;
-            $this->updateProductService = $updateProductService;
-            $this->deleteProductService = $deleteProductService;
-        }
+    public function __construct(
+        GetAllProductsServiceInterface $getAllProductsService,
+        CreateProductServiceInterface $createProductService,
+        GetProductServiceInterface $getProductService,
+        UpdateProductServiceInterface $updateProductService,
+        DeleteProductServiceInterface $deleteProductService
+    ) {
+        $this->getAllProductsService = $getAllProductsService;
+        $this->createProductService = $createProductService;
+        $this->getProductService = $getProductService;
+        $this->updateProductService = $updateProductService;
+        $this->deleteProductService = $deleteProductService;
+    }
 
     /**
      * @OA\Get(
@@ -83,7 +82,8 @@ class ProductController extends Controller
      *     summary="Create a new product",
      *     tags={"Product"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/ProductDto")),
-     *     @OA\Response(response=201, description="Created product", @OA\JsonContent(ref="#/components/schemas/ProductDto"))
+     *     @OA\Response(response=201, description="Created product", @OA\JsonContent(ref="#/components/schemas/ProductDto")),
+     *     @OA\Response(response=400, description="Validation error")
      * )
      */
     public function store(Request $request)
@@ -141,8 +141,9 @@ class ProductController extends Controller
      *     summary="Delete a product",
      *     tags={"Product"},
      *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=204, description="Product deleted"),
-     *     @OA\Response(response=404, description="Product not found")
+     *     @OA\Response(response=200, description="Product deleted", @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))),
+     *     @OA\Response(response=404, description="Product not found"),
+     *     @OA\Response(response=400, description="Deletion failed")
      * )
      */
     public function destroy(int $ProductID)
@@ -154,6 +155,4 @@ class ProductController extends Controller
             return response()->json(['message' => $ex->getMessage()], 400);
         }
     }
-
-
 }

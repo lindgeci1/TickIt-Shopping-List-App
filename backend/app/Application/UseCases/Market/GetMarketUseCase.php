@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Application\Services\Market;
+namespace App\Application\UseCases\Market;
 
 use App\Application\DTOs\MarketDto;
-use App\Infrastructure\Repositories\MarketRepositoryInterface;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use InvalidArgumentException;
-
-class GetMarketService
+use App\Application\Interfaces\Market\GetMarketServiceInterface;
+class GetMarketUseCase implements GetMarketServiceInterface
 {
     private MarketRepositoryInterface $marketRepository;
 

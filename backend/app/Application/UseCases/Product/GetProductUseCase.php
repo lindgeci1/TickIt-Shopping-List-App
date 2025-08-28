@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Application\Services\Product;
+namespace App\Application\UseCases\Product;
 
+use App\Application\Interfaces\Product\GetProductServiceInterface;
 use App\Domain\Entities\Product;
-use App\Infrastructure\Repositories\ProductRepositoryInterface;
+use App\Domain\Interfaces\ProductRepositoryInterface;
 use App\Application\DTOs\ProductDto;
 use InvalidArgumentException;
 
-class GetProductService
+class GetProductUseCase implements GetProductServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
 

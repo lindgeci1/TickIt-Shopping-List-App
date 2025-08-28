@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Application\Services\ProductMarket;
+namespace App\Application\UseCases\ProductMarket;
 
-use App\Infrastructure\Repositories\ProductRepositoryInterface;
-use App\Infrastructure\Repositories\MarketRepositoryInterface;
+use App\Application\Interfaces\ProductMarket\AssignMarketsToProductServiceInterface;
+use App\Domain\Interfaces\ProductRepositoryInterface;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use InvalidArgumentException;
 
-class AssignMarketsToProductService
+class AssignMarketsToProductService implements AssignMarketsToProductServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
     private MarketRepositoryInterface $marketRepository;

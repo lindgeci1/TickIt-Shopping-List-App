@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Services\ProductMarket\AssignMarketsToProductService;
+use App\Application\Interfaces\ProductMarket\AssignMarketsToProductServiceInterface;
 use InvalidArgumentException;
 
 /**
@@ -14,11 +14,11 @@ use InvalidArgumentException;
  */
 class ProductMarketController extends Controller
 {
-    private AssignMarketsToProductService $assignMarketsService;
+    private AssignMarketsToProductServiceInterface $assignMarketsUseCase;
 
-    public function __construct(AssignMarketsToProductService $assignMarketsService)
+    public function __construct(AssignMarketsToProductServiceInterface $assignMarketsUseCase)
     {
-        $this->assignMarketsService = $assignMarketsService;
+        $this->assignMarketsUseCase = $assignMarketsUseCase;
     }
 
     /**
@@ -71,7 +71,7 @@ class ProductMarketController extends Controller
         }
 
         try {
-            $this->assignMarketsService->assign($ProductID, $marketIds);
+            $this->assignMarketsUseCase->assign($ProductID, $marketIds);
             return response()->json(['success' => true]);
         } catch (InvalidArgumentException $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);

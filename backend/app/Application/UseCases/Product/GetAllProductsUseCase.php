@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Application\Services\Product;
+namespace App\Application\UseCases\Product;
 
-use App\Infrastructure\Repositories\ProductRepositoryInterface;
+use App\Application\Interfaces\Product\GetAllProductsServiceInterface;
+use App\Domain\Interfaces\ProductRepositoryInterface;
 use App\Application\DTOs\ProductDto;
 use App\Domain\Entities\Product;
 
-class GetAllProductsService
+class GetAllProductsUseCase implements GetAllProductsServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
 

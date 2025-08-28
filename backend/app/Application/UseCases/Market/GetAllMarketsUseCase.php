@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Application\Services\Market;
+namespace App\Application\UseCases\Market;
 
 use App\Domain\Entities\Market;
-use App\Infrastructure\Repositories\MarketRepositoryInterface;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use App\Application\DTOs\MarketDto;
+use App\Application\Interfaces\Market\GetAllMarketsServiceInterface;
 
-class GetAllMarketsService
+class GetAllMarketsUseCase implements GetAllMarketsServiceInterface
 {
     private MarketRepositoryInterface $marketRepository;
 
@@ -15,12 +16,10 @@ class GetAllMarketsService
         $this->marketRepository = $marketRepository;
     }
 
-    // ── Get all Markets ──────────────────────────────
     public function getAll(): array
     {
-        $all = $this->marketRepository->findAll(); // returns array of Market entities
+        $all = $this->marketRepository->findAll();
 
-        // Map each entity to a DTO
         return array_map(fn(Market $m) => new MarketDto($m), $all);
     }
 }

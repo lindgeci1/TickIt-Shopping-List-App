@@ -15,11 +15,6 @@ use App\Domain\Entities\Product;
  *     @OA\Property(property="Price", type="number", format="float", nullable=true),
  *     @OA\Property(property="IsFavorite", type="boolean"),
  *     @OA\Property(property="Category", type="string"),
- *     @OA\Property(
- *         property="Markets",
- *         type="array",
- *         @OA\Items(type="integer")
- *     )
  * )
  */
 class ProductDto
@@ -30,7 +25,6 @@ class ProductDto
     public ?float $Price = null;
     public bool $IsFavorite = false;
     public string $Category;
-    public array $Markets = []; // array of Market IDs
 
     public function __construct(?Product $product = null)
     {
@@ -41,9 +35,6 @@ class ProductDto
             $this->Price = $product->Price;
             $this->IsFavorite = $product->IsFavorite;
             $this->Category = $product->Category;
-
-            // map related markets to their IDs
-            $this->Markets = array_map(fn($m) => $m->MarketID, $product->Markets ?? []);
         }
     }
 }

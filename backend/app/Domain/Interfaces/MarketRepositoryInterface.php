@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Domain\Interfaces;
 
 use App\Domain\Entities\Market;
 
