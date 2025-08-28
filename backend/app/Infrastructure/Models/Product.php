@@ -4,8 +4,7 @@ namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Infrastructure\Models\Market;
-use App\Infrastructure\Models\ShoppingListItem;
-use App\Infrastructure\Models\ProductMarket;
+use App\Infrastructure\Models\Shopping_List_Item;
 
 class Product extends Model
 {
@@ -28,6 +27,6 @@ class Product extends Model
     // A product can have many shopping list items
     public function shoppingListItems()
     {
-        return $this->hasMany(ShoppingListItem::class, 'product_id', 'product_id');
+        return $this->hasMany(Shopping_List_Item::class, 'product_id', 'product_id');
     }
 }

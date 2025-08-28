@@ -5,42 +5,56 @@ namespace App\Http\Providers;
 use Illuminate\Support\ServiceProvider;
 
 // Repository Interfaces
-use App\Domain\Interfaces\ProductRepositoryInterface;
-use App\Domain\Interfaces\MarketRepositoryInterface;
+use App\Domain\Interfaces\I_Product_Repository;
+use App\Domain\Interfaces\I_Market_Repository;
+use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
 
 // Repository Implementations
-use App\Infrastructure\Repositories\EloquentProductRepository;
-use App\Infrastructure\Repositories\EloquentMarketRepository;
+use App\Infrastructure\Repositories\Eloquent_Product_Repository;
+use App\Infrastructure\Repositories\Eloquent_Market_Repository;
+use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Repository;
 
 // Service Interfaces
-use App\Application\Interfaces\Product\GetAllProductsServiceInterface;
-use App\Application\Interfaces\Product\GetProductServiceInterface;
-use App\Application\Interfaces\Product\CreateProductServiceInterface;
-use App\Application\Interfaces\Product\UpdateProductServiceInterface;
-use App\Application\Interfaces\Product\DeleteProductServiceInterface;
+use App\Application\Interfaces\Product\I_GetAll_Products_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Product_Use_Case;
+use App\Application\Interfaces\Product\I_Create_Product_Use_Case;
+use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
+use App\Application\Interfaces\Product\I_Delete_Product_Use_Case;
 
-use App\Application\Interfaces\Market\GetAllMarketsServiceInterface;
-use App\Application\Interfaces\Market\GetMarketServiceInterface;
-use App\Application\Interfaces\Market\CreateMarketServiceInterface;
-use App\Application\Interfaces\Market\UpdateMarketServiceInterface;
-use App\Application\Interfaces\Market\DeleteMarketServiceInterface;
+use App\Application\Interfaces\Market\I_GetAll_Markets_Use_Case;
+use App\Application\Interfaces\Market\I_Get_Market_UseCase;
+use App\Application\Interfaces\Market\I_Create_Market_Use_Case;
+use App\Application\Interfaces\Market\I_Update_Market_Use_Case;
+use App\Application\Interfaces\Market\I_Delete_Market_Use_Case;
 
-use App\Application\Interfaces\ProductMarket\AssignMarketsToProductServiceInterface;
+use App\Application\Interfaces\ShoppingList\I_GetAll_Shopping_List_Items_Use_Case;
+use App\Application\Interfaces\ShoppingList\I_Get_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\ShoppingList\I_Create_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\ShoppingList\I_Update_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\ShoppingList\I_Delete_Shopping_List_Item_Use_Case;
+
+use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 
 // Service Implementations
-use App\Application\UseCases\Product\GetAllProductsUseCase;
-use App\Application\UseCases\Product\GetProductUseCase;
-use App\Application\UseCases\Product\CreateProductUseCase;
-use App\Application\UseCases\Product\UpdateProductUseCase;
-use App\Application\UseCases\Product\DeleteProductUseCase;
+use App\Application\UseCases\Product\GetAll_Products_Use_Case;
+use App\Application\UseCases\Product\Get_Product_Use_Case;
+use App\Application\UseCases\Product\Create_Product_Use_Case;
+use App\Application\UseCases\Product\Update_Product_Use_Case;
+use App\Application\UseCases\Product\Delete_Product_Use_Case;
 
-use App\Application\UseCases\Market\GetAllMarketsUseCase;
-use App\Application\UseCases\Market\GetMarketUseCase;
-use App\Application\UseCases\Market\CreateMarketUseCase;
-use App\Application\UseCases\Market\UpdateMarketUseCase;
-use App\Application\UseCases\Market\DeleteMarketUseCase;
+use App\Application\UseCases\Market\GetAll_Markets_Use_Case;
+use App\Application\UseCases\Market\Get_Market_Use_Case;
+use App\Application\UseCases\Market\Create_Market_Use_Case;
+use App\Application\UseCases\Market\Update_Market_Use_Case;
+use App\Application\UseCases\Market\Delete_Market_Use_Case;
 
-use App\Application\UseCases\ProductMarket\AssignMarketsToProductService;
+use App\Application\UseCases\ShoppingList\GetAll_Shopping_List_Items_Use_Case;
+use App\Application\UseCases\ShoppingList\Get_Shopping_List_Item_Use_Case;
+use App\Application\UseCases\ShoppingList\Create_Shopping_List_Item_Use_Case;
+use App\Application\UseCases\ShoppingList\Update_Shopping_List_Item_Use_Case;
+use App\Application\UseCases\ShoppingList\Delete_Shopping_List_Item_Use_Case;
+
+use App\Application\UseCases\ProductMarket\Assign_Markets_To_Product_Use_Case;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,25 +64,33 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Repository bindings
-        $this->app->bind(ProductRepositoryInterface::class, EloquentProductRepository::class);
-        $this->app->bind(MarketRepositoryInterface::class, EloquentMarketRepository::class);
+        $this->app->bind(I_Product_Repository::class, Eloquent_Product_Repository::class);
+        $this->app->bind(I_Market_Repository::class, Eloquent_Market_Repository::class);
+        $this->app->bind(I_Shopping_List_Item_Repository::class, Eloquent_Shopping_List_Item_Repository::class);
 
         // Product Services
-        $this->app->bind(GetAllProductsServiceInterface::class, GetAllProductsUseCase::class);
-        $this->app->bind(GetProductServiceInterface::class, GetProductUseCase::class);
-        $this->app->bind(CreateProductServiceInterface::class, CreateProductUseCase::class);
-        $this->app->bind(UpdateProductServiceInterface::class, UpdateProductUseCase::class);
-        $this->app->bind(DeleteProductServiceInterface::class, DeleteProductUseCase::class);
+        $this->app->bind(I_GetAll_Products_Use_Case::class, GetAll_Products_Use_Case::class);
+        $this->app->bind(I_Get_Product_Use_Case::class, Get_Product_Use_Case::class);
+        $this->app->bind(I_Create_Product_Use_Case::class, Create_Product_Use_Case::class);
+        $this->app->bind(I_Update_Product_Use_Case::class, Update_Product_Use_Case::class);
+        $this->app->bind(I_Delete_Product_Use_Case::class, Delete_Product_Use_Case::class);
 
         // Market Services
-        $this->app->bind(GetAllMarketsServiceInterface::class, GetAllMarketsUseCase::class);
-        $this->app->bind(GetMarketServiceInterface::class, GetMarketUseCase::class);
-        $this->app->bind(CreateMarketServiceInterface::class, CreateMarketUseCase::class);
-        $this->app->bind(UpdateMarketServiceInterface::class, UpdateMarketUseCase::class);
-        $this->app->bind(DeleteMarketServiceInterface::class, DeleteMarketUseCase::class);
+        $this->app->bind(I_GetAll_Markets_Use_Case::class, GetAll_Markets_Use_Case::class);
+        $this->app->bind(I_Get_Market_UseCase::class, Get_Market_Use_Case::class);
+        $this->app->bind(I_Create_Market_Use_Case::class, Create_Market_Use_Case::class);
+        $this->app->bind(I_Update_Market_Use_Case::class, Update_Market_Use_Case::class);
+        $this->app->bind(I_Delete_Market_Use_Case::class, Delete_Market_Use_Case::class);
 
+
+        // ShoppingListItem Services
+        $this->app->bind(I_GetAll_Shopping_List_Items_Use_Case::class, GetAll_Shopping_List_Items_Use_Case::class);
+        $this->app->bind(I_Get_Shopping_List_Item_Use_Case::class, Get_Shopping_List_Item_Use_Case::class);
+        $this->app->bind(I_Create_Shopping_List_Item_Use_Case::class, Create_Shopping_List_Item_Use_Case::class);
+        $this->app->bind(I_Update_Shopping_List_Item_Use_Case::class, Update_Shopping_List_Item_Use_Case::class);
+        $this->app->bind(I_Delete_Shopping_List_Item_Use_Case::class, Delete_Shopping_List_Item_Use_Case::class);
         // Product-Market Service
-        $this->app->bind(AssignMarketsToProductServiceInterface::class, AssignMarketsToProductService::class);
+        $this->app->bind(I_Assign_Markets_To_Product_Use_Case::class, Assign_Markets_To_Product_Use_Case::class);
     }
 
     /**
