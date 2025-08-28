@@ -9,17 +9,17 @@ use App\Infrastructure\Models\Market;
 class ProductMarket extends Model
 {
     protected $table = 'product_market';
-    protected $primaryKey = 'ProductMarketID';
-    protected $fillable = ['ProductID', 'MarketID'];
+    protected $primaryKey = 'product_market_id';
+    protected $fillable = ['product_id', 'market_id'];
     public $timestamps = false;
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'ProductID', 'ProductID');
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
 
     public function market()
     {
-        return $this->belongsTo(Market::class, 'MarketID', 'MarketID');
+        return $this->belongsTo(Market::class, 'market_id', 'market_id');
     }
 }

@@ -15,6 +15,169 @@
         }
     ],
     "paths": {
+        "/api/market/all": {
+            "get": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Get all markets",
+                "operationId": "738f7973af2bcfda13730ec9ff22428c",
+                "responses": {
+                    "200": {
+                        "description": "List of markets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MarketDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/market/{MarketID}": {
+            "get": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Get a market by MarketID",
+                "operationId": "c8ad29763a7f14f4e660b24fbfebe4f6",
+                "parameters": [
+                    {
+                        "name": "MarketID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Market found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarketDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Market not found"
+                    }
+                }
+            }
+        },
+        "/api/market/create": {
+            "post": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Create a new market",
+                "operationId": "33d87e0e04fe3982385803579c0fcb10",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MarketDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarketDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/market/update/{MarketID}": {
+            "put": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Update a market",
+                "operationId": "440e8463058a29960c786d501c3cac22",
+                "parameters": [
+                    {
+                        "name": "MarketID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MarketDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MarketDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Market not found"
+                    }
+                }
+            }
+        },
+        "/api/market/delete/{MarketID}": {
+            "delete": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Delete a market",
+                "operationId": "95ee763840d3044ef64ba15c594441df",
+                "parameters": [
+                    {
+                        "name": "MarketID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Market deleted"
+                    },
+                    "404": {
+                        "description": "Market not found"
+                    }
+                }
+            }
+        },
         "/api/person/all": {
             "get": {
                 "tags": [
@@ -174,6 +337,232 @@
                     },
                     "404": {
                         "description": "Person not found"
+                    }
+                }
+            }
+        },
+        "/api/product/all": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get all products",
+                "operationId": "5959b4aa4878ab86523b6edaacdbc78d",
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/{ProductID}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get a product by ProductID",
+                "operationId": "54aa3345de1eafad81c1f78f7cf31e31",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/api/product/create": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Create a new product",
+                "operationId": "8659170a833b245df327a973f7b894c6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/update/{ProductID}": {
+            "put": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Update a product",
+                "operationId": "ee2c6087494be8a00ee99043258bac5e",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/api/product/delete/{ProductID}": {
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Delete a product",
+                "operationId": "930654974d7b38b7bc797a0ba6d90d58",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/api/product/{ProductID}/attach-markets": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Attach a product to selected markets",
+                "operationId": "f156a9327aeb9a75cd9a7bf33b9d0327",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "description": "ID of the product to assign markets to",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "market_ids": {
+                                        "description": "Array of market IDs selected by the user",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product successfully assigned to markets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Product not found"
                     }
                 }
             }
@@ -344,6 +733,31 @@
     },
     "components": {
         "schemas": {
+            "MarketDto": {
+                "required": [
+                    "Name"
+                ],
+                "properties": {
+                    "MarketID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Location": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Products": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "PersonDto": {
                 "required": [
                     "name",
@@ -363,6 +777,43 @@
                     "phone": {
                         "type": "integer",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ProductDto": {
+                "required": [
+                    "Name",
+                    "Category"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Price": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "IsFavorite": {
+                        "type": "boolean"
+                    },
+                    "Category": {
+                        "type": "string"
+                    },
+                    "Markets": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "type": "object"
@@ -403,8 +854,16 @@
     },
     "tags": [
         {
+            "name": "Market",
+            "description": "API Endpoints for Markets"
+        },
+        {
             "name": "Person",
             "description": "API Endpoints for Persons"
+        },
+        {
+            "name": "Product",
+            "description": "API Endpoints for Products"
         },
         {
             "name": "Vehicle",
