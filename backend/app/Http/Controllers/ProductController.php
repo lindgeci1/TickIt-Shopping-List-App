@@ -8,7 +8,7 @@ use App\Application\Services\Product\CreateProductService;
 use App\Application\Services\Product\GetProductService;
 use App\Application\Services\Product\UpdateProductService;
 use App\Application\Services\Product\DeleteProductService;
-use App\Application\Services\AssignMarketsToProductService;
+
 use App\Application\DTOs\ProductDto;
 use InvalidArgumentException;
 
@@ -26,22 +26,18 @@ class ProductController extends Controller
     private UpdateProductService $updateProductService;
     private DeleteProductService $deleteProductService;
 
-        private AssignMarketsToProductService $assignMarketsService;
-
         public function __construct(
             GetAllProductsService $getAllProductsService,
             CreateProductService $createProductService,
             GetProductService $getProductService,
             UpdateProductService $updateProductService,
             DeleteProductService $deleteProductService,
-            AssignMarketsToProductService $assignMarketsService // add this
         ) {
             $this->getAllProductsService = $getAllProductsService;
             $this->createProductService = $createProductService;
             $this->getProductService = $getProductService;
             $this->updateProductService = $updateProductService;
             $this->deleteProductService = $deleteProductService;
-            $this->assignMarketsService = $assignMarketsService; // init
         }
 
     /**
@@ -159,54 +155,5 @@ class ProductController extends Controller
         }
     }
 
-/**
- * @OA\Post(
- *     path="/api/product/{ProductID}/attach-markets",
- *     summary="Attach a product to selected markets",
- *     tags={"Product"},
- *     @OA\Parameter(
- *         name="ProductID",
- *         in="path",
- *         required=true,
- *         description="ID of the product to assign markets to",
- *         @OA\Schema(type="integer")
- *     ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="market_ids",
- *                 type="array",
- *                 @OA\Items(type="integer"),
- *                 description="Array of market IDs selected by the user"
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Product successfully assigned to markets",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="success", type="boolean", example=true)
- *         )
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="Validation error"
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Product not found"
- *     )
- * )
- */
-public function attachMarkets(Request $request, int $ProductID)
-{
-    $marketIds = $request->input('market_ids', []); // array of IDs selected by the user
-    $this->assignMarketsService->assign($ProductID, $marketIds);
-
-    return response()->json(['success' => true]);
-}
 
 }
