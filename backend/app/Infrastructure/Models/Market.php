@@ -4,7 +4,6 @@ namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Infrastructure\Models\Product;
-use App\Infrastructure\Models\ProductMarket;
 
 class Market extends Model
 {

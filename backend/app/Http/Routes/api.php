@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-require __DIR__ . '/MarketRoutes.php';
-require __DIR__ . '/ProductRoutes.php';
-require __DIR__ . '/ProductMarketRoutes.php';
+require __DIR__ . '/Market_Routes.php';
+require __DIR__ . '/Product_Routes.php';
+require __DIR__ . '/Product_Market_Routes.php';
+require __DIR__ . '/Shopping_List_Item_Routes.php';

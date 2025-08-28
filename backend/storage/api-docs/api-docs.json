@@ -21,7 +21,7 @@
                     "Market"
                 ],
                 "summary": "Get all markets",
-                "operationId": "738f7973af2bcfda13730ec9ff22428c",
+                "operationId": "f6363e52ed8f898f47a422e820182e8f",
                 "responses": {
                     "200": {
                         "description": "List of markets",
@@ -30,7 +30,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/MarketDto"
+                                        "$ref": "#/components/schemas/Market_DTO"
                                     }
                                 }
                             }
@@ -45,7 +45,7 @@
                     "Market"
                 ],
                 "summary": "Get a market by MarketID",
-                "operationId": "c8ad29763a7f14f4e660b24fbfebe4f6",
+                "operationId": "dc95d19f556247200279fcc6f659efb3",
                 "parameters": [
                     {
                         "name": "MarketID",
@@ -62,7 +62,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/MarketDto"
+                                    "$ref": "#/components/schemas/Market_DTO"
                                 }
                             }
                         }
@@ -79,13 +79,13 @@
                     "Market"
                 ],
                 "summary": "Create a new market",
-                "operationId": "33d87e0e04fe3982385803579c0fcb10",
+                "operationId": "4fe55d68490ff210e50a4546edb91115",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MarketDto"
+                                "$ref": "#/components/schemas/Market_DTO"
                             }
                         }
                     }
@@ -96,7 +96,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/MarketDto"
+                                    "$ref": "#/components/schemas/Market_DTO"
                                 }
                             }
                         }
@@ -113,7 +113,7 @@
                     "Market"
                 ],
                 "summary": "Update a market",
-                "operationId": "440e8463058a29960c786d501c3cac22",
+                "operationId": "c795733693923eba18ff78b144978643",
                 "parameters": [
                     {
                         "name": "MarketID",
@@ -129,7 +129,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MarketDto"
+                                "$ref": "#/components/schemas/Market_DTO"
                             }
                         }
                     }
@@ -140,7 +140,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/MarketDto"
+                                    "$ref": "#/components/schemas/Market_DTO"
                                 }
                             }
                         }
@@ -160,7 +160,7 @@
                     "Market"
                 ],
                 "summary": "Delete a market",
-                "operationId": "95ee763840d3044ef64ba15c594441df",
+                "operationId": "c727d198fbd6b491f5a667ef6b957bd8",
                 "parameters": [
                     {
                         "name": "MarketID",
@@ -202,7 +202,7 @@
                     "Product"
                 ],
                 "summary": "Get all products",
-                "operationId": "5959b4aa4878ab86523b6edaacdbc78d",
+                "operationId": "955a92397de7648400c47b39fdb76334",
                 "responses": {
                     "200": {
                         "description": "List of products",
@@ -211,7 +211,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ProductDto"
+                                        "$ref": "#/components/schemas/Product_DTO"
                                     }
                                 }
                             }
@@ -226,7 +226,7 @@
                     "Product"
                 ],
                 "summary": "Get a product by ProductID",
-                "operationId": "54aa3345de1eafad81c1f78f7cf31e31",
+                "operationId": "3e50d492f7b59e830d6a06e2cb0de449",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -243,7 +243,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ProductDto"
+                                    "$ref": "#/components/schemas/Product_DTO"
                                 }
                             }
                         }
@@ -260,13 +260,13 @@
                     "Product"
                 ],
                 "summary": "Create a new product",
-                "operationId": "8659170a833b245df327a973f7b894c6",
+                "operationId": "fa18b92abe1bc7e2b5c6b50b717c960a",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProductDto"
+                                "$ref": "#/components/schemas/Product_DTO"
                             }
                         }
                     }
@@ -277,7 +277,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ProductDto"
+                                    "$ref": "#/components/schemas/Product_DTO"
                                 }
                             }
                         }
@@ -294,7 +294,7 @@
                     "Product"
                 ],
                 "summary": "Update a product",
-                "operationId": "ee2c6087494be8a00ee99043258bac5e",
+                "operationId": "83c983e4dbf50d21817349b633363f80",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -310,7 +310,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProductDto"
+                                "$ref": "#/components/schemas/Product_DTO"
                             }
                         }
                     }
@@ -321,7 +321,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ProductDto"
+                                    "$ref": "#/components/schemas/Product_DTO"
                                 }
                             }
                         }
@@ -341,7 +341,7 @@
                     "Product"
                 ],
                 "summary": "Delete a product",
-                "operationId": "930654974d7b38b7bc797a0ba6d90d58",
+                "operationId": "596bc4d5083abf4627a6f0fe57c0b66b",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -383,7 +383,7 @@
                     "ProductMarket"
                 ],
                 "summary": "Attach a product to selected markets dynamically",
-                "operationId": "87c2265a7303a9d2252c21247915fdb4",
+                "operationId": "b216ae1ed0c813efc200df4b74167892",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -439,11 +439,192 @@
                     }
                 }
             }
+        },
+        "/api/shopping-list/all": {
+            "get": {
+                "tags": [
+                    "ShoppingList"
+                ],
+                "summary": "Get all shopping list items",
+                "operationId": "8ec285e95e0c07243c5be0d6d2f6cb90",
+                "responses": {
+                    "200": {
+                        "description": "List of shopping list items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/shopping-list/{Shopping_List_ItemID}": {
+            "get": {
+                "tags": [
+                    "ShoppingList"
+                ],
+                "summary": "Get a shopping list item by ID",
+                "operationId": "0045a997f4058fbb4c93d61ba9583577",
+                "parameters": [
+                    {
+                        "name": "Shopping_List_ItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    }
+                }
+            }
+        },
+        "/api/shopping-list/create": {
+            "post": {
+                "tags": [
+                    "ShoppingList"
+                ],
+                "summary": "Create a new shopping list item",
+                "operationId": "b054fec362c76280be887580af9edd12",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/shopping-list/update/{Shopping_List_ItemID}": {
+            "put": {
+                "tags": [
+                    "ShoppingList"
+                ],
+                "summary": "Update a shopping list item",
+                "operationId": "911eab621788ee118ee64064b07c3d27",
+                "parameters": [
+                    {
+                        "name": "Shopping_List_ItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopping_List_Item_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    }
+                }
+            }
+        },
+        "/api/shopping-list/delete/{Shopping_List_ItemID}": {
+            "delete": {
+                "tags": [
+                    "ShoppingList"
+                ],
+                "summary": "Delete a shopping list item",
+                "operationId": "5fca7ef90854984512fd7ef2a6272db4",
+                "parameters": [
+                    {
+                        "name": "Shopping_List_ItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    },
+                    "400": {
+                        "description": "Deletion failed"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
-            "MarketDto": {
+            "Market_DTO": {
                 "required": [
                     "Name"
                 ],
@@ -462,7 +643,7 @@
                 },
                 "type": "object"
             },
-            "ProductDto": {
+            "Product_DTO": {
                 "required": [
                     "Name",
                     "Category"
@@ -492,6 +673,39 @@
                     }
                 },
                 "type": "object"
+            },
+            "Shopping_List_Item_DTO": {
+                "required": [
+                    "ProductID",
+                    "Status"
+                ],
+                "properties": {
+                    "Shopping_List_ItemID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "ProductID": {
+                        "type": "integer"
+                    },
+                    "Status": {
+                        "type": "string",
+                        "enum": [
+                            "ToBuy",
+                            "Bought"
+                        ]
+                    },
+                    "AddedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "BoughtAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -507,6 +721,10 @@
         {
             "name": "ProductMarket",
             "description": "API Endpoints for linking Products and Markets dynamically"
+        },
+        {
+            "name": "ShoppingList",
+            "description": "API Endpoints for Shopping List Items"
         }
     ]
 }

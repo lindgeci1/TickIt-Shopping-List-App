@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Application\Interfaces\ShoppingList;
+
+use App\Application\DTOs\Shopping_List_Item_DTO;
+
+interface I_Get_Shopping_List_Item_Use_Case
+{
+
+    public function getById(int $ShoppingListItemID): Shopping_List_Item_DTO;
+}
