@@ -16,9 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind repository interface to concrete implementation
-        // $this->app->bind(PersonRepositoryInterface::class, EloquentPersonRepository::class);
-        // $this->app->bind(VehicleRepositoryInterface::class, EloquentVehicleRepository::class);
+
         $this->app->bind(ProductRepositoryInterface::class, EloquentProductRepository::class);
         $this->app->bind(MarketRepositoryInterface::class, EloquentMarketRepository::class);
     }

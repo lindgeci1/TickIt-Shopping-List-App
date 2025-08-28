@@ -178,169 +178,6 @@
                 }
             }
         },
-        "/api/person/all": {
-            "get": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Get all people",
-                "operationId": "f0162007c0b7870b52c5a1f779d5efdb",
-                "responses": {
-                    "200": {
-                        "description": "List of people",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PersonDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/person/{PersonID}": {
-            "get": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Get a person by PersonID",
-                "operationId": "2eeaa5223a5d5fcf5ffcaf915c0091c0",
-                "parameters": [
-                    {
-                        "name": "PersonID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Person found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PersonDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Person not found"
-                    }
-                }
-            }
-        },
-        "/api/person/create": {
-            "post": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Create a new person",
-                "operationId": "366b2183c6839f05905742f730f6cfc1",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PersonDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created person",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PersonDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/person/update/{PersonID}": {
-            "put": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Update a person",
-                "operationId": "419abd90bd81ba577388b385be94b3f0",
-                "parameters": [
-                    {
-                        "name": "PersonID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PersonDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated person",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PersonDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error"
-                    },
-                    "404": {
-                        "description": "Person not found"
-                    }
-                }
-            }
-        },
-        "/api/person/delete/{PersonID}": {
-            "delete": {
-                "tags": [
-                    "Person"
-                ],
-                "summary": "Delete a person",
-                "operationId": "4ad78cebf6b564fd8431851403114cec",
-                "parameters": [
-                    {
-                        "name": "PersonID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Person deleted"
-                    },
-                    "404": {
-                        "description": "Person not found"
-                    }
-                }
-            }
-        },
         "/api/product/all": {
             "get": {
                 "tags": [
@@ -504,13 +341,13 @@
                 }
             }
         },
-        "/api/product/{ProductID}/attach-markets": {
+        "/api/product-market/assign/{ProductID}": {
             "post": {
                 "tags": [
-                    "Product"
+                    "ProductMarket"
                 ],
-                "summary": "Attach a product to selected markets",
-                "operationId": "f156a9327aeb9a75cd9a7bf33b9d0327",
+                "summary": "Attach a product to selected markets dynamically",
+                "operationId": "87c2265a7303a9d2252c21247915fdb4",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -566,169 +403,6 @@
                     }
                 }
             }
-        },
-        "/api/vehicle/all": {
-            "get": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Get all vehicles",
-                "operationId": "412ca4ae42e01c9c69d58413816f55f6",
-                "responses": {
-                    "200": {
-                        "description": "List of vehicles",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/VehicleDto"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/vehicle/{VehicleID}": {
-            "get": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Get a vehicle by VehicleID",
-                "operationId": "35219cedd6bc286b70ab1cfd5fdfb8d0",
-                "parameters": [
-                    {
-                        "name": "VehicleID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Vehicle found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VehicleDto"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Vehicle not found"
-                    }
-                }
-            }
-        },
-        "/api/vehicle/create": {
-            "post": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Create a new vehicle",
-                "operationId": "35f12476693cc84e8195bd829a78df18",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VehicleDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created vehicle",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VehicleDto"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/vehicle/update/{VehicleID}": {
-            "put": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Update a vehicle",
-                "operationId": "12085d261e2538403ea990bbd8316699",
-                "parameters": [
-                    {
-                        "name": "VehicleID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VehicleDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated vehicle",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VehicleDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error"
-                    },
-                    "404": {
-                        "description": "Vehicle not found"
-                    }
-                }
-            }
-        },
-        "/api/vehicle/delete/{VehicleID}": {
-            "delete": {
-                "tags": [
-                    "Vehicle"
-                ],
-                "summary": "Delete a vehicle",
-                "operationId": "5e5294484ce4028a1be9cfa74af6c1e0",
-                "parameters": [
-                    {
-                        "name": "VehicleID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Vehicle deleted"
-                    },
-                    "404": {
-                        "description": "Vehicle not found"
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -754,29 +428,6 @@
                         "items": {
                             "type": "string"
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "PersonDto": {
-                "required": [
-                    "name",
-                    "email"
-                ],
-                "properties": {
-                    "PersonID": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "phone": {
-                        "type": "integer",
-                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -817,38 +468,6 @@
                     }
                 },
                 "type": "object"
-            },
-            "VehicleDto": {
-                "required": [
-                    "make",
-                    "modelName",
-                    "year",
-                    "pricePerDay",
-                    "PersonID"
-                ],
-                "properties": {
-                    "VehicleID": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "make": {
-                        "type": "string"
-                    },
-                    "modelName": {
-                        "type": "string"
-                    },
-                    "year": {
-                        "type": "integer"
-                    },
-                    "pricePerDay": {
-                        "type": "number",
-                        "format": "float"
-                    },
-                    "PersonID": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
             }
         }
     },
@@ -858,16 +477,12 @@
             "description": "API Endpoints for Markets"
         },
         {
-            "name": "Person",
-            "description": "API Endpoints for Persons"
-        },
-        {
             "name": "Product",
             "description": "API Endpoints for Products"
         },
         {
-            "name": "Vehicle",
-            "description": "API Endpoints for Vehicles"
+            "name": "ProductMarket",
+            "description": "API Endpoints for linking Products and Markets dynamically"
         }
     ]
 }
