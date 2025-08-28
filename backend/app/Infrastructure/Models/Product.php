@@ -10,19 +10,24 @@ use App\Infrastructure\Models\ProductMarket;
 class Product extends Model
 {
     protected $table = 'products';
-    protected $primaryKey = 'ProductID';
-    protected $fillable = ['Name', 'Description', 'Price', 'IsFavorite', 'Category'];
+    protected $primaryKey = 'product_id'; // lowercase
+    protected $fillable = ['name', 'description', 'price', 'is_favorite', 'category']; // lowercase
     public $timestamps = false;
 
     // A product can belong to many markets
     public function markets()
     {
-        return $this->belongsToMany(Market::class, ProductMarket::class, 'ProductID', 'MarketID');
+        return $this->belongsToMany(
+            Market::class,
+            'product_market',   // pivot table
+            'product_id',       // foreign key on pivot table for product
+            'market_id'         // foreign key on pivot table for market
+        );
     }
 
     // A product can have many shopping list items
     public function shoppingListItems()
     {
-        return $this->hasMany(ShoppingListItem::class, 'ProductID', 'ProductID');
+        return $this->hasMany(ShoppingListItem::class, 'product_id', 'product_id');
     }
 }

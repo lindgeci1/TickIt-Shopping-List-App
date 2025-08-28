@@ -8,12 +8,12 @@ use App\Infrastructure\Models\Product;
 class ShoppingListItem extends Model
 {
     protected $table = 'shopping_list_items';
-    protected $primaryKey = 'ShoppingListItemID';
-    protected $fillable = ['ProductID', 'Status', 'AddedAt', 'BoughtAt'];
+    protected $primaryKey = 'shopping_list_item_id'; // lowercase
+    protected $fillable = ['product_id', 'status', 'added_at', 'bought_at']; // lowercase
     public $timestamps = false;
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'ProductID', 'ProductID');
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
 }
