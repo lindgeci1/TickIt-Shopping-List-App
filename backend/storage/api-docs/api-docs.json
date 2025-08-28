@@ -100,6 +100,9 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -169,11 +172,26 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Market deleted"
+                    "200": {
+                        "description": "Market deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Market not found"
+                    },
+                    "400": {
+                        "description": "Deletion failed"
                     }
                 }
             }
@@ -263,6 +281,9 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -332,11 +353,26 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Product deleted"
+                    "200": {
+                        "description": "Product deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Product not found"
+                    },
+                    "400": {
+                        "description": "Deletion failed"
                     }
                 }
             }
@@ -422,12 +458,6 @@
                     "Location": {
                         "type": "string",
                         "nullable": true
-                    },
-                    "Products": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
                     }
                 },
                 "type": "object"
@@ -459,12 +489,6 @@
                     },
                     "Category": {
                         "type": "string"
-                    },
-                    "Markets": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
                     }
                 },
                 "type": "object"

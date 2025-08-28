@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Application\Services\Market;
+namespace App\Application\UseCases\Market;
 
 use App\Domain\Entities\Market;
-use App\Infrastructure\Repositories\MarketRepositoryInterface;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use App\Application\DTOs\MarketDto;
 use InvalidArgumentException;
-
-class UpdateMarketService
+use App\Application\Interfaces\Market\UpdateMarketServiceInterface;
+class UpdateMarketUseCase implements UpdateMarketServiceInterface
 {
     private MarketRepositoryInterface $marketRepository;
 
@@ -35,11 +35,10 @@ class UpdateMarketService
             throw new InvalidArgumentException("Location is required.");
         }
 
-
         $market = new Market(
             $dto->MarketID,
             $dto->Name,
-            $dto->Location,
+            $dto->Location
         );
 
         $this->marketRepository->update($market);

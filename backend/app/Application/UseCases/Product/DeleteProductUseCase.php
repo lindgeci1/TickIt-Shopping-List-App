@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Application\Services\Product;
+namespace App\Application\UseCases\Product;
 
-use App\Infrastructure\Repositories\ProductRepositoryInterface;
+use App\Application\Interfaces\Product\DeleteProductServiceInterface;
+use App\Domain\Interfaces\ProductRepositoryInterface;
 use InvalidArgumentException;
 
-class DeleteProductService
+class DeleteProductUseCase implements DeleteProductServiceInterface
 {
     private ProductRepositoryInterface $productRepository;
 

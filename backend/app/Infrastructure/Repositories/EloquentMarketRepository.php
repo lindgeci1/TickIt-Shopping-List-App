@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Market;
+use App\Domain\Interfaces\MarketRepositoryInterface;
 use App\Infrastructure\Models\Market as MarketModel;
 
 class EloquentMarketRepository implements MarketRepositoryInterface

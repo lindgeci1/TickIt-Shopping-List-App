@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Product;
+use App\Domain\Interfaces\ProductRepositoryInterface;
 use App\Infrastructure\Models\Product as ProductModel;
 
 class EloquentProductRepository implements ProductRepositoryInterface
