@@ -5,16 +5,21 @@ namespace App\Application\UseCases\ShoppingList;
 use App\Application\DTOs\Shopping_List_Item_DTO;
 use App\Application\Interfaces\ShoppingList\I_Update_Shopping_List_Item_Use_Case;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
+use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Entities\Shopping_List_Item;
 use InvalidArgumentException;
 
 class Update_Shopping_List_Item_Use_Case implements I_Update_Shopping_List_Item_Use_Case
 {
     private I_Shopping_List_Item_Repository $shoppingListRepository;
+    private I_Product_Repository $productRepository;
 
-    public function __construct(I_Shopping_List_Item_Repository $shoppingListRepository)
-    {
+    public function __construct(
+        I_Shopping_List_Item_Repository $shoppingListRepository,
+        I_Product_Repository $productRepository
+    ) {
         $this->shoppingListRepository = $shoppingListRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function update(Shopping_List_Item_DTO $dto): Shopping_List_Item_DTO
@@ -26,6 +31,11 @@ class Update_Shopping_List_Item_Use_Case implements I_Update_Shopping_List_Item_
         $existing = $this->shoppingListRepository->findById($dto->Shopping_List_ItemID);
         if (!$existing) {
             throw new InvalidArgumentException("Shopping list item not found.");
+        }
+
+        // ProductID validation
+        if (!$this->productRepository->findById($dto->ProductID)) {
+            throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
         }
 
         if (!in_array($dto->Status, ['ToBuy', 'Bought'])) {
