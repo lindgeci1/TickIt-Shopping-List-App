@@ -5,6 +5,7 @@ namespace App\Application\UseCases\ProductMarket;
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Market_Repository;
+use App\Application\DTOs\Assign_Markets_To_Product_DTO;
 use InvalidArgumentException;
 
 class Assign_Markets_To_Product_Use_Case implements I_Assign_Markets_To_Product_Use_Case
@@ -20,21 +21,18 @@ class Assign_Markets_To_Product_Use_Case implements I_Assign_Markets_To_Product_
         $this->marketRepository = $marketRepository;
     }
 
-    public function assign(int $productId, array $marketIds): void
-    {
-        // Check if product exists
-        if (!$this->productRepository->findById($productId)) {
-            throw new InvalidArgumentException("Product with ID $productId does not exist.");
-        }
-
-        // Check if all markets exist
-        foreach ($marketIds as $marketId) {
-            if (!$this->marketRepository->findById($marketId)) {
-                throw new InvalidArgumentException("Market with ID $marketId does not exist.");
+        public function assign(Assign_Markets_To_Product_DTO $dto): void
+        {
+            if (!$this->productRepository->findById($dto->ProductID)) {
+                throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
             }
-        }
 
-        // Assign product to markets
-        $this->productRepository->attachToMarkets($productId, $marketIds);
-    }
+            foreach ($dto->MarketIDs as $marketId) {
+                if (!$this->marketRepository->findById($marketId)) {
+                    throw new InvalidArgumentException("Market with ID $marketId does not exist.");
+                }
+            }
+
+            $this->productRepository->attachToMarkets($dto->ProductID, $dto->MarketIDs);
+        }
 }

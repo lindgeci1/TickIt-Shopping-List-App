@@ -388,7 +388,6 @@
                     {
                         "name": "ProductID",
                         "in": "path",
-                        "description": "ID of the product to assign markets to",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -400,42 +399,24 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "market_ids": {
-                                        "description": "Array of market IDs selected by the user",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Product successfully assigned to markets",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
                                 }
                             }
                         }
                     },
                     "400": {
                         "description": "Validation error"
-                    },
-                    "404": {
-                        "description": "Product not found"
                     }
                 }
             }
@@ -624,6 +605,25 @@
     },
     "components": {
         "schemas": {
+            "Assign_Markets_To_Product_DTO": {
+                "required": [
+                    "ProductID",
+                    "MarketIDs"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "type": "integer"
+                    },
+                    "MarketIDs": {
+                        "description": "Array of market IDs to assign",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Market_DTO": {
                 "required": [
                     "Name"

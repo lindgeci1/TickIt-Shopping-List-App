@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 use InvalidArgumentException;
-
+use App\Application\DTOs\Assign_Markets_To_Product_DTO;
 /**
  * @OA\Tag(
  *     name="ProductMarket",
@@ -26,52 +26,24 @@ class Product_Market_Controller extends Controller
      *     path="/api/product-market/assign/{ProductID}",
      *     summary="Attach a product to selected markets dynamically",
      *     tags={"ProductMarket"},
-     *     @OA\Parameter(
-     *         name="ProductID",
-     *         in="path",
-     *         required=true,
-     *         description="ID of the product to assign markets to",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="market_ids",
-     *                 type="array",
-     *                 @OA\Items(type="integer"),
-     *                 description="Array of market IDs selected by the user"
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Product successfully assigned to markets",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="success", type="boolean", example=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Validation error"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Product not found"
-     *     )
+     *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
+     *     @OA\Response(response=201, description="Product successfully assigned to markets", @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
+     *     @OA\Response(response=400, description="Validation error")
      * )
      */
+
     public function assignMarkets(Request $request, int $ProductID)
     {
-        $marketIds = $request->input('market_ids', []); // dynamic array of selected IDs
+        $marketIds = $request->input('MarketIDs', $request->input('market_ids', []));
         if (empty($marketIds)) {
             return response()->json(['message' => 'No markets selected'], 400);
         }
 
+        $dto = new Assign_Markets_To_Product_DTO($ProductID, $marketIds);
+
         try {
-            $this->assignMarketsUseCase->assign($ProductID, $marketIds);
+            $this->assignMarketsUseCase->assign($dto);
             return response()->json(['success' => true]);
         } catch (InvalidArgumentException $ex) {
             return response()->json(['message' => $ex->getMessage()], 404);
