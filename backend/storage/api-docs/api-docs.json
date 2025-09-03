@@ -421,6 +421,43 @@
                 }
             }
         },
+        "/api/product-market/remove/{ProductID}": {
+            "delete": {
+                "tags": [
+                    "ProductMarket"
+                ],
+                "summary": "Detach a product from selected markets dynamically",
+                "operationId": "a4a18b5dec645ce54fb5c76026055eba",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product successfully removed from markets"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/api/shopping-list/all": {
             "get": {
                 "tags": [

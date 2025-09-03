@@ -34,6 +34,7 @@ use App\Application\Interfaces\ShoppingList\I_Update_Shopping_List_Item_Use_Case
 use App\Application\Interfaces\ShoppingList\I_Delete_Shopping_List_Item_Use_Case;
 
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
+use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
 
 // Service Implementations
 use App\Application\UseCases\Product\GetAll_Products_Use_Case;
@@ -55,6 +56,7 @@ use App\Application\UseCases\ShoppingList\Update_Shopping_List_Item_Use_Case;
 use App\Application\UseCases\ShoppingList\Delete_Shopping_List_Item_Use_Case;
 
 use App\Application\UseCases\ProductMarket\Assign_Markets_To_Product_Use_Case;
+use App\Application\UseCases\ProductMarket\Remove_Markets_From_Product_Use_Case;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -91,6 +93,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Delete_Shopping_List_Item_Use_Case::class, Delete_Shopping_List_Item_Use_Case::class);
         // Product-Market Service
         $this->app->bind(I_Assign_Markets_To_Product_Use_Case::class, Assign_Markets_To_Product_Use_Case::class);
+        $this->app->bind(I_Remove_Markets_From_Product_Use_Case::class, Remove_Markets_From_Product_Use_Case::class);
     }
 
     /**
