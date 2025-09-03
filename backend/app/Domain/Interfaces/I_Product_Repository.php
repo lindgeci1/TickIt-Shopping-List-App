@@ -13,4 +13,5 @@ interface I_Product_Repository
     public function delete(int $ProductID): bool;
     public function existsByName(string $name): bool;
     public function attachToMarkets(int $productID, array $marketIDs): void;
+    public function detachFromMarkets(int $productID, array $marketIDs): void;
 }

@@ -30,6 +30,14 @@ class Eloquent_Product_Repository implements I_Product_Repository
         $productModel->markets()->syncWithoutDetaching($marketIDs);
     }
 
+    public function detachFromMarkets(int $productID, array $marketIDs): void
+    {
+        $productModel = ProductModel::find($productID);
+        if (!$productModel) return;
+
+        // Remove only the given market IDs, keep the rest
+        $productModel->markets()->detach($marketIDs);
+    }
 
     public function findById(int $productID): ?Product
     {
