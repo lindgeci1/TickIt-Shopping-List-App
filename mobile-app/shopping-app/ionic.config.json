@@ -1,7 +1,0 @@
-{
-  "name": "shopping-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue-vite"
-}

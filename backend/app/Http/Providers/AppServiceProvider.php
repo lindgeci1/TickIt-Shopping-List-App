@@ -35,6 +35,7 @@ use App\Application\Interfaces\ShoppingList\I_Delete_Shopping_List_Item_Use_Case
 
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
+use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Case;
 
 // Service Implementations
 use App\Application\UseCases\Product\GetAll_Products_Use_Case;
@@ -57,6 +58,7 @@ use App\Application\UseCases\ShoppingList\Delete_Shopping_List_Item_Use_Case;
 
 use App\Application\UseCases\ProductMarket\Assign_Markets_To_Product_Use_Case;
 use App\Application\UseCases\ProductMarket\Remove_Markets_From_Product_Use_Case;
+use App\Application\UseCases\ProductMarket\Update_Markets_For_Product_Use_Case;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -69,22 +71,19 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Product_Repository::class, Eloquent_Product_Repository::class);
         $this->app->bind(I_Market_Repository::class, Eloquent_Market_Repository::class);
         $this->app->bind(I_Shopping_List_Item_Repository::class, Eloquent_Shopping_List_Item_Repository::class);
-
+        
         // Product Services
         $this->app->bind(I_GetAll_Products_Use_Case::class, GetAll_Products_Use_Case::class);
         $this->app->bind(I_Get_Product_Use_Case::class, Get_Product_Use_Case::class);
         $this->app->bind(I_Create_Product_Use_Case::class, Create_Product_Use_Case::class);
         $this->app->bind(I_Update_Product_Use_Case::class, Update_Product_Use_Case::class);
         $this->app->bind(I_Delete_Product_Use_Case::class, Delete_Product_Use_Case::class);
-
         // Market Services
         $this->app->bind(I_GetAll_Markets_Use_Case::class, GetAll_Markets_Use_Case::class);
         $this->app->bind(I_Get_Market_UseCase::class, Get_Market_Use_Case::class);
         $this->app->bind(I_Create_Market_Use_Case::class, Create_Market_Use_Case::class);
         $this->app->bind(I_Update_Market_Use_Case::class, Update_Market_Use_Case::class);
         $this->app->bind(I_Delete_Market_Use_Case::class, Delete_Market_Use_Case::class);
-
-
         // ShoppingListItem Services
         $this->app->bind(I_GetAll_Shopping_List_Items_Use_Case::class, GetAll_Shopping_List_Items_Use_Case::class);
         $this->app->bind(I_Get_Shopping_List_Item_Use_Case::class, Get_Shopping_List_Item_Use_Case::class);
@@ -94,6 +93,7 @@ class AppServiceProvider extends ServiceProvider
         // Product-Market Service
         $this->app->bind(I_Assign_Markets_To_Product_Use_Case::class, Assign_Markets_To_Product_Use_Case::class);
         $this->app->bind(I_Remove_Markets_From_Product_Use_Case::class, Remove_Markets_From_Product_Use_Case::class);
+        $this->app->bind(I_Update_Markets_For_Product_Use_Case::class, Update_Markets_For_Product_Use_Case::class);
     }
 
     /**

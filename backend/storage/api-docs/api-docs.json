@@ -458,6 +458,43 @@
                 }
             }
         },
+        "/api/product-market/update/{ProductID}": {
+            "put": {
+                "tags": [
+                    "ProductMarket"
+                ],
+                "summary": "Replace all markets for a product with a new selection",
+                "operationId": "ec12b49cb31fd47530b5ef6fb4e026a9",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product markets successfully updated"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/api/shopping-list/all": {
             "get": {
                 "tags": [
