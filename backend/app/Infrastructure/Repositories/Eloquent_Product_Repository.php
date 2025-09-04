@@ -39,6 +39,15 @@ class Eloquent_Product_Repository implements I_Product_Repository
         $productModel->markets()->detach($marketIDs);
     }
 
+    public function syncMarkets(int $productID, array $marketIDs): void
+    {
+        $productModel = ProductModel::find($productID);
+        if (!$productModel) return;
+
+        // Replace existing markets with the new list
+        $productModel->markets()->sync($marketIDs);
+    }
+
     public function findById(int $productID): ?Product
     {
         $m = ProductModel::with('markets')->find($productID);
