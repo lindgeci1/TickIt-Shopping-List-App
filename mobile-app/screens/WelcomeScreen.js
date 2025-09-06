@@ -1,32 +1,26 @@
-import { Image, Text, View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import Logo from '../assets/Welcome_Screen.png';
-import TickIcon from '../assets/tick_it.png'; // small icon next to title
+import { Image, Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import Logo from "../assets/Welcome_Screen.png";
+import TickIcon from "../assets/tick_it.png"; // small icon next to title
 
-export default function WelcomeScreen() {
+// 👇 navigation is passed automatically by React Navigation
+export default function WelcomeScreen({ navigation }) {
   const handleGetStarted = () => {
-    Alert.alert("Welcome!", "You pressed Get Started!");
+    navigation.navigate("Market"); // 👈 go to MarketScreen
   };
 
   return (
     <View style={styles.container}>
       {/* Big Logo */}
-      <Image 
-        source={Logo} 
-        style={styles.logo} 
-        resizeMode="contain"
-      />
+      <Image source={Logo} style={styles.logo} resizeMode="contain" />
 
       {/* Title with small tick icon */}
-        <View style={styles.titleContainer}>
+      <View style={styles.titleContainer}>
         <Text style={styles.title}>TickIt</Text>
         <Image source={TickIcon} style={styles.tickIcon} resizeMode="contain" />
-        </View>
+      </View>
 
       {/* Subtitle */}
-        <Text style={styles.subtitle}>
-        Manage all your ticks in one place
-        </Text>
-
+      <Text style={styles.subtitle}>Manage all your ticks in one place</Text>
 
       {/* Get Started Button */}
       <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
@@ -40,9 +34,9 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff', // white background
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#ffffff", // white background
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   logo: {
@@ -51,38 +45,38 @@ const styles = StyleSheet.create({
     marginBottom: 40, // space below logo
   },
   titleContainer: {
-    flexDirection: 'row', // icon next to text
-    alignItems: 'center',
+    flexDirection: "row", // icon next to text
+    alignItems: "center",
     marginBottom: 15, // space below title
   },
   title: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#000000', // TickIt in black
+    fontWeight: "bold",
+    color: "#000000", // TickIt in black
   },
-tickIcon: {
-  width: 40,
-  height: 40,
-  marginLeft: 10,            // space between text and icon
-  borderWidth: 2,            // border thickness
-  borderColor: '#6c63ff',    // same as Get Started button
-  borderRadius: 20,          // make it fully rounded
-  padding: 5,                // optional: space inside border
-},
+  tickIcon: {
+    width: 40,
+    height: 40,
+    marginLeft: 10, // space between text and icon
+    borderWidth: 2, // border thickness
+    borderColor: "#6c63ff", // same as Get Started button
+    borderRadius: 20, // make it fully rounded
+    padding: 5, // optional: space inside border
+  },
   subtitle: {
     fontSize: 18,
-    color: '#555',
+    color: "#555",
     marginBottom: 90, // space before button
   },
   button: {
-    backgroundColor: '#6c63ff', // theme color
+    backgroundColor: "#6c63ff", // theme color
     paddingVertical: 15,
     paddingHorizontal: 60,
     borderRadius: 30,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
