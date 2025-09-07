@@ -41,6 +41,8 @@ use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_C
 use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Case;
 
 use App\Application\Interfaces\Product_Photo\I_Add_Product_Photo_Use_Case;
+use App\Application\Interfaces\Product_Photo\I_Delete_Product_Photo_Use_Case;
+
 
 // Service Implementations
 use App\Application\UseCases\Product\GetAll_Products_Use_Case;
@@ -66,6 +68,7 @@ use App\Application\UseCases\ProductMarket\Remove_Markets_From_Product_Use_Case;
 use App\Application\UseCases\ProductMarket\Update_Markets_For_Product_Use_Case;
 
 use App\Application\UseCases\Product_Photo\Add_Product_Photo_Use_Case;
+use App\Application\UseCases\Product_Photo\Delete_Product_Photo_Use_Case;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -104,6 +107,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Update_Markets_For_Product_Use_Case::class, Update_Markets_For_Product_Use_Case::class);
         // Product-Photo Service
         $this->app->bind(I_Add_Product_Photo_Use_Case::class, Add_Product_Photo_Use_Case::class);
+        $this->app->bind(I_Delete_Product_Photo_Use_Case::class, Delete_Product_Photo_Use_Case::class);
     }
 
     /**

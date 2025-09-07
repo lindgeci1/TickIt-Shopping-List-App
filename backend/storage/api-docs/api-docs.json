@@ -529,6 +529,45 @@
                 }
             }
         },
+        "/api/product-photo/delete/{ProductID}": {
+            "delete": {
+                "tags": [
+                    "Product_Photo"
+                ],
+                "summary": "Delete a product photo by ProductID",
+                "operationId": "d361c44b4d3ed3419d0b0db4ddf90352",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Photo deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Deletion failed"
+                    }
+                }
+            }
+        },
         "/api/shopping-list/all": {
             "get": {
                 "tags": [

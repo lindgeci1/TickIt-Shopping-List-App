@@ -10,5 +10,5 @@ interface I_Photo_Repository
 
     public function getByProductId(int $productId): ?Product_Photo;
 
-
+    public function deleteByProductId(int $productId): bool;
 }
