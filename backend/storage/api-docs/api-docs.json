@@ -495,6 +495,40 @@
                 }
             }
         },
+        "/api/product-photo/add": {
+            "post": {
+                "tags": [
+                    "Product_Photo"
+                ],
+                "summary": "Add a new product photo",
+                "operationId": "c12d3343dd6fa6a44512d6a1cb59c5cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product_Photo_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Added product photo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product_Photo_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/api/shopping-list/all": {
             "get": {
                 "tags": [
@@ -748,6 +782,29 @@
                 },
                 "type": "object"
             },
+            "Product_Photo_DTO": {
+                "required": [
+                    "Url",
+                    "PublicID",
+                    "ProductID"
+                ],
+                "properties": {
+                    "Product_PhotoID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Url": {
+                        "type": "string"
+                    },
+                    "PublicID": {
+                        "type": "string"
+                    },
+                    "ProductID": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "Shopping_List_Item_DTO": {
                 "required": [
                     "ProductID",
@@ -795,6 +852,10 @@
         {
             "name": "ProductMarket",
             "description": "API Endpoints for linking Products and Markets dynamically"
+        },
+        {
+            "name": "Product_Photo",
+            "description": "API Endpoints for Product Photos"
         },
         {
             "name": "ShoppingList",

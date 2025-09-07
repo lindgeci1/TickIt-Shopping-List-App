@@ -12,6 +12,7 @@ class Product
     public string $Category;
     public array $Markets = [];
     public array $ShoppingListItems = [];
+    public array $Photos = [];
 
     public function __construct(?int $ProductID, string $Name, ?string $Description = null, ?float $Price = null, bool $IsFavorite = false, string $Category)
     {

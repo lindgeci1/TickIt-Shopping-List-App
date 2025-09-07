@@ -29,4 +29,9 @@ class Product extends Model
     {
         return $this->hasMany(Shopping_List_Item::class, 'product_id', 'product_id');
     }
+
+        public function photo()
+    {
+        return $this->hasOne(Product_Photo::class, 'product_id', 'product_id');
+    }
 }
