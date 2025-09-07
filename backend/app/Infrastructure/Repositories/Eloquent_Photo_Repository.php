@@ -59,5 +59,20 @@ class Eloquent_Photo_Repository implements I_Photo_Repository
         );
     }
 
+     public function deleteByProductId(int $productId): bool
+    {
+        $model = ProductPhotoModel::where('product_id', $productId)->first();
 
+        if (!$model) {
+            return false;
+        }
+
+        // Delete from Cloudinary
+        if ($model->public_id) {
+            $this->cloudinary->uploadApi()->destroy($model->public_id);
+        }
+
+        // Delete from DB
+        return $model->delete();
+    }
 }
