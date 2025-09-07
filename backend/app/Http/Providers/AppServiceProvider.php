@@ -8,11 +8,14 @@ use Illuminate\Support\ServiceProvider;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Market_Repository;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
+use App\Domain\Interfaces\I_Photo_Repository;
+
 
 // Repository Implementations
 use App\Infrastructure\Repositories\Eloquent_Product_Repository;
 use App\Infrastructure\Repositories\Eloquent_Market_Repository;
 use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Repository;
+use App\Infrastructure\Repositories\Eloquent_Photo_Repository;
 
 // Service Interfaces
 use App\Application\Interfaces\Product\I_GetAll_Products_Use_Case;
@@ -37,6 +40,8 @@ use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Cas
 use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
 use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Case;
 
+use App\Application\Interfaces\Product_Photo\I_Add_Product_Photo_Use_Case;
+
 // Service Implementations
 use App\Application\UseCases\Product\GetAll_Products_Use_Case;
 use App\Application\UseCases\Product\Get_Product_Use_Case;
@@ -60,6 +65,8 @@ use App\Application\UseCases\ProductMarket\Assign_Markets_To_Product_Use_Case;
 use App\Application\UseCases\ProductMarket\Remove_Markets_From_Product_Use_Case;
 use App\Application\UseCases\ProductMarket\Update_Markets_For_Product_Use_Case;
 
+use App\Application\UseCases\Product_Photo\Add_Product_Photo_Use_Case;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -71,7 +78,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Product_Repository::class, Eloquent_Product_Repository::class);
         $this->app->bind(I_Market_Repository::class, Eloquent_Market_Repository::class);
         $this->app->bind(I_Shopping_List_Item_Repository::class, Eloquent_Shopping_List_Item_Repository::class);
-        
+        $this->app->bind(I_Photo_Repository::class, Eloquent_Photo_Repository::class);
+
         // Product Services
         $this->app->bind(I_GetAll_Products_Use_Case::class, GetAll_Products_Use_Case::class);
         $this->app->bind(I_Get_Product_Use_Case::class, Get_Product_Use_Case::class);
@@ -94,6 +102,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Assign_Markets_To_Product_Use_Case::class, Assign_Markets_To_Product_Use_Case::class);
         $this->app->bind(I_Remove_Markets_From_Product_Use_Case::class, Remove_Markets_From_Product_Use_Case::class);
         $this->app->bind(I_Update_Markets_For_Product_Use_Case::class, Update_Markets_For_Product_Use_Case::class);
+        // Product-Photo Service
+        $this->app->bind(I_Add_Product_Photo_Use_Case::class, Add_Product_Photo_Use_Case::class);
     }
 
     /**
