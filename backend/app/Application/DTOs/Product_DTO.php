@@ -15,6 +15,11 @@ use App\Domain\Entities\Product;
  *     @OA\Property(property="Price", type="number", format="float", nullable=true),
  *     @OA\Property(property="IsFavorite", type="boolean"),
  *     @OA\Property(property="Category", type="string"),
+ *     @OA\Property(
+ *         property="Photos",
+ *         type="array",
+ *         @OA\Items(type="string")
+ *     )
  * )
  */
 class Product_DTO
@@ -25,6 +30,7 @@ class Product_DTO
     public ?float $Price = null;
     public bool $IsFavorite = false;
     public string $Category;
+    public array $Photos = [];
 
     public function __construct(?Product $product = null)
     {
@@ -35,6 +41,9 @@ class Product_DTO
             $this->Price = $product->Price;
             $this->IsFavorite = $product->IsFavorite;
             $this->Category = $product->Category;
+
+            // Include photos if available (1-to-1)
+            $this->Photos = $product->Photos ?? [];
         }
     }
 }
