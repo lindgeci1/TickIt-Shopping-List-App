@@ -13,8 +13,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Market" component={MarketScreen} />
-        <Stack.Screen name="Product" component={ProductScreen} />
+        <Stack.Screen name="Market" component={MarketScreen} options={{title: "Markets",headerBackVisible: false,}}/>
+        <Stack.Screen name="Product" component={ProductScreen} options={{title: "Products",headerBackVisible: false,}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
