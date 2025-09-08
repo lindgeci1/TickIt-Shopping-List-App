@@ -10,16 +10,24 @@ class Eloquent_Product_Repository implements I_Product_Repository
 {
     public function findAll(): array
     {
-        $models = ProductModel::all();
-        return $models->map(fn($m) => new Product(
-            $m->product_id,
-            $m->name,
-            $m->description,
-            $m->price,
-            $m->is_favorite,
-            $m->category,
-        ))->all();
-    }
+         $models = ProductModel::with('photo')->get();
+
+            return $models->map(function($m) {
+                $product = new Product(
+                    $m->product_id,
+                    $m->name,
+                    $m->description,
+                    $m->price,
+                    $m->is_favorite,
+                    $m->category
+                );
+
+                // Use lowercase 'url' as per DB column
+                $product->Photos = $m->photo ? [$m->photo->url] : [];
+
+                return $product;
+            })->all();
+        }
 
     public function attachToMarkets(int $productID, array $marketIDs): void
     {
@@ -49,19 +57,47 @@ class Eloquent_Product_Repository implements I_Product_Repository
     }
 
     public function findById(int $productID): ?Product
-    {
-        $m = ProductModel::with('markets')->find($productID);
-        if (!$m) return null;
+{
+    $m = ProductModel::with('photo', 'markets')->find($productID);
+    if (!$m) return null;
 
-        return new Product(
+    $product = new Product(
+        $m->product_id,
+        $m->name,
+        $m->description,
+        $m->price,
+        $m->is_favorite,
+        $m->category
+    );
+
+    $product->Photos = $m->photo ? [$m->photo->url] : [];
+
+    return $product;
+}
+
+public function searchByName(string $query): array
+{
+    $models = ProductModel::with('photo')
+        ->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($query) . '%'])
+        ->get();
+
+    return $models->map(function($m) {
+        $product = new Product(
             $m->product_id,
             $m->name,
             $m->description,
             $m->price,
             $m->is_favorite,
-            $m->category,
+            $m->category
         );
-    }
+
+        $product->Photos = $m->photo ? [$m->photo->url] : [];
+
+        return $product;
+    })->all();
+}
+
+
 
     public function create(Product $product): Product
     {

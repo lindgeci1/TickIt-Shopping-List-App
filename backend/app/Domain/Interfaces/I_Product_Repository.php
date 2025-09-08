@@ -15,4 +15,5 @@ interface I_Product_Repository
     public function attachToMarkets(int $productID, array $marketIDs): void;
     public function detachFromMarkets(int $productID, array $marketIDs): void;
     public function syncMarkets(int $productID, array $marketIDs): void;
+    public function searchByName(string $query): array;
 }

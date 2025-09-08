@@ -8,6 +8,7 @@ use App\Application\Interfaces\Product\I_Create_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Delete_Product_Use_Case;
+use App\Application\Interfaces\Product\I_Search_Product_Use_Case;
 use App\Application\DTOs\Product_DTO;
 use InvalidArgumentException;
 
@@ -24,19 +25,22 @@ class Product_Controller extends Controller
     private I_Get_Product_Use_Case $getProductService;
     private I_Update_Product_Use_Case $updateProductService;
     private I_Delete_Product_Use_Case $deleteProductService;
+    private I_Search_Product_Use_Case $searchProductService;
 
     public function __construct(
         I_GetAll_Products_Use_Case $getAllProductsService,
         I_Create_Product_Use_Case $createProductService,
         I_Get_Product_Use_Case $getProductService,
         I_Update_Product_Use_Case $updateProductService,
-        I_Delete_Product_Use_Case $deleteProductService
+        I_Delete_Product_Use_Case $deleteProductService,
+         I_Search_Product_Use_Case $searchProductService
     ) {
         $this->getAllProductsService = $getAllProductsService;
         $this->createProductService = $createProductService;
         $this->getProductService = $getProductService;
         $this->updateProductService = $updateProductService;
         $this->deleteProductService = $deleteProductService;
+         $this->searchProductService = $searchProductService;
     }
 
     /**
@@ -154,5 +158,35 @@ class Product_Controller extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 400);
         }
+    }
+
+     /**
+     * @OA\Get(
+     *     path="/api/product/search",
+     *     summary="Search products by name",
+     *     tags={"Product"},
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of matching products",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
+     *     )
+     * )
+     */
+    public function search(Request $request)
+    {
+        $name = $request->query('name', '');
+
+        if (empty(trim($name))) {
+            return response()->json([], 200);
+        }
+
+        $results = $this->searchProductService->searchByName($name);
+        return response()->json($results, 200);
     }
 }

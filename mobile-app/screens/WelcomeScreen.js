@@ -4,9 +4,9 @@ import TickIcon from "../assets/tick_it.png"; // small icon next to title
 
 // 👇 navigation is passed automatically by React Navigation
 export default function WelcomeScreen({ navigation }) {
-  const handleGetStarted = () => {
-    navigation.navigate("Market"); // 👈 go to MarketScreen
-  };
+const handleGetStarted = () => {
+  navigation.navigate("Product"); // 👈 go to ProductScreen instead of MarketScreen
+};
 
   return (
     <View style={styles.container}>
