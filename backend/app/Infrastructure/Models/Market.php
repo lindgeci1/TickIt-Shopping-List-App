@@ -22,4 +22,8 @@ class Market extends Model
             'product_id'        // foreign key on pivot table for product
         );
     }
+    public function photo()
+    {
+        return $this->hasOne(Market_Photo::class, 'market_id', 'market_id');
+    }
 }

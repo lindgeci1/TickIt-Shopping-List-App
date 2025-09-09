@@ -4,7 +4,7 @@ namespace App\Domain\Interfaces;
 
 use App\Domain\Entities\Product_Photo;
 
-interface I_Photo_Repository
+interface I_Product_Photo_Repository
 {
     public function add(Product_Photo $photo): Product_Photo;
 

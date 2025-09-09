@@ -3,17 +3,17 @@
 namespace App\Application\UseCases\Product_Photo;
 
 use App\Application\Interfaces\Product_Photo\I_Delete_Product_Photo_Use_Case;
-use App\Domain\Interfaces\I_Photo_Repository;
+use App\Domain\Interfaces\I_Product_Photo_Repository;
 use App\Domain\Interfaces\I_Product_Repository; // Make sure you have this
 use InvalidArgumentException;
 
 class Delete_Product_Photo_Use_Case implements I_Delete_Product_Photo_Use_Case
 {
-    private I_Photo_Repository $photoRepository;
+    private I_Product_Photo_Repository $photoRepository;
     private I_Product_Repository $productRepository;
 
     public function __construct(
-        I_Photo_Repository $photoRepository,
+        I_Product_Photo_Repository $photoRepository,
         I_Product_Repository $productRepository
     ) {
         $this->photoRepository   = $photoRepository;

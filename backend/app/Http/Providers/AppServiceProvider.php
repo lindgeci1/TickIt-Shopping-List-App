@@ -8,14 +8,17 @@ use Illuminate\Support\ServiceProvider;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Market_Repository;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
-use App\Domain\Interfaces\I_Photo_Repository;
+use App\Domain\Interfaces\I_Product_Photo_Repository;
+use App\Domain\Interfaces\I_Market_Photo_Repository;
+
 
 
 // Repository Implementations
 use App\Infrastructure\Repositories\Eloquent_Product_Repository;
 use App\Infrastructure\Repositories\Eloquent_Market_Repository;
 use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Repository;
-use App\Infrastructure\Repositories\Eloquent_Photo_Repository;
+use App\Infrastructure\Repositories\Eloquent_Product_Photo_Repository;
+use App\Infrastructure\Repositories\Eloquent_Market_Photo_Repository;
 
 // Service Interfaces
 use App\Application\Interfaces\Product\I_GetAll_Products_Use_Case;
@@ -43,6 +46,9 @@ use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Ca
 
 use App\Application\Interfaces\Product_Photo\I_Add_Product_Photo_Use_Case;
 use App\Application\Interfaces\Product_Photo\I_Delete_Product_Photo_Use_Case;
+
+use App\Application\Interfaces\Market_Photo\I_Add_Market_Photo_Use_Case;
+use App\Application\Interfaces\Market_Photo\I_Delete_Market_Photo_Use_Case;
 
 
 // Service Implementations
@@ -72,6 +78,9 @@ use App\Application\UseCases\ProductMarket\Update_Markets_For_Product_Use_Case;
 use App\Application\UseCases\Product_Photo\Add_Product_Photo_Use_Case;
 use App\Application\UseCases\Product_Photo\Delete_Product_Photo_Use_Case;
 
+use App\Application\UseCases\Market_Photo\Add_Market_Photo_Use_Case;
+use App\Application\UseCases\Market_Photo\Delete_Market_Photo_Use_Case;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -83,7 +92,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Product_Repository::class, Eloquent_Product_Repository::class);
         $this->app->bind(I_Market_Repository::class, Eloquent_Market_Repository::class);
         $this->app->bind(I_Shopping_List_Item_Repository::class, Eloquent_Shopping_List_Item_Repository::class);
-        $this->app->bind(I_Photo_Repository::class, Eloquent_Photo_Repository::class);
+        $this->app->bind(I_Product_Photo_Repository::class, Eloquent_Product_Photo_Repository::class);
+        $this->app->bind(I_Market_Photo_Repository::class, Eloquent_Market_Photo_Repository::class);
 
         // Product Services
         $this->app->bind(I_GetAll_Products_Use_Case::class, GetAll_Products_Use_Case::class);
@@ -111,6 +121,9 @@ class AppServiceProvider extends ServiceProvider
         // Product-Photo Service
         $this->app->bind(I_Add_Product_Photo_Use_Case::class, Add_Product_Photo_Use_Case::class);
         $this->app->bind(I_Delete_Product_Photo_Use_Case::class, Delete_Product_Photo_Use_Case::class);
+        // Market-Photo Service
+        $this->app->bind(I_Add_Market_Photo_Use_Case::class, Add_Market_Photo_Use_Case::class);
+        $this->app->bind(I_Delete_Market_Photo_Use_Case::class, Delete_Market_Photo_Use_Case::class);
     }
 
     /**

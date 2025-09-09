@@ -5,14 +5,14 @@ namespace App\Application\UseCases\Product_Photo;
 use App\Application\DTOs\Product_Photo_DTO;
 use App\Application\Interfaces\Product_Photo\I_Add_Product_Photo_Use_Case;
 use App\Domain\Entities\Product_Photo;
-use App\Domain\Interfaces\I_Photo_Repository;
+use App\Domain\Interfaces\I_Product_Photo_Repository;
 use InvalidArgumentException;
 
 class Add_Product_Photo_Use_Case implements I_Add_Product_Photo_Use_Case
 {
-    private I_Photo_Repository $photoRepository;
+    private I_Product_Photo_Repository $photoRepository;
 
-    public function __construct(I_Photo_Repository $photoRepository)
+    public function __construct(I_Product_Photo_Repository $photoRepository)
     {
         $this->photoRepository = $photoRepository;
     }
