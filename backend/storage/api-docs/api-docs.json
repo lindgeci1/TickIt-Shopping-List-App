@@ -899,6 +899,12 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "Products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Product_DTO"
+                        }
                     }
                 },
                 "type": "object"
