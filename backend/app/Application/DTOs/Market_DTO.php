@@ -16,6 +16,11 @@ use App\Domain\Entities\Market;
  *         property="Photos",
  *         type="array",
  *         @OA\Items(type="string")
+ *     ),
+ *      @OA\Property(
+ *         property="Products",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Product_DTO")
  *     )
  * )
  */
@@ -25,6 +30,7 @@ class Market_DTO
     public string $Name;
     public ?string $Location = null;
     public array $Photos = [];
+    public array $Products = []; // new field
 
     public function __construct(?Market $market = null)
     {
@@ -35,6 +41,7 @@ class Market_DTO
 
             // Map 1-to-1 photo relation
              $this->Photos = $market->Photos ?? [];
+             $this->Products = $market->Products ?? [];
         }
     }
 }
