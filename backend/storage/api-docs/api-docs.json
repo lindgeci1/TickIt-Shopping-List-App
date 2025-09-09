@@ -196,6 +196,79 @@
                 }
             }
         },
+        "/api/market-photo/add": {
+            "post": {
+                "tags": [
+                    "Market_Photo"
+                ],
+                "summary": "Add a new market photo",
+                "operationId": "94410b65f36fe1200118d615fce073f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Market_Photo_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Added market photo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Market_Photo_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/market-photo/delete/{MarketID}": {
+            "delete": {
+                "tags": [
+                    "Market_Photo"
+                ],
+                "summary": "Delete a market photo by MarketID",
+                "operationId": "320eecf14f8eec40d92658d7542d5ee7",
+                "parameters": [
+                    {
+                        "name": "MarketID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Photo deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Deletion failed"
+                    }
+                }
+            }
+        },
         "/api/product/all": {
             "get": {
                 "tags": [
@@ -820,6 +893,35 @@
                     "Location": {
                         "type": "string",
                         "nullable": true
+                    },
+                    "Photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Market_Photo_DTO": {
+                "required": [
+                    "Url",
+                    "PublicID",
+                    "MarketID"
+                ],
+                "properties": {
+                    "Market_PhotoID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Url": {
+                        "type": "string"
+                    },
+                    "PublicID": {
+                        "type": "string"
+                    },
+                    "MarketID": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -923,6 +1025,10 @@
         {
             "name": "Market",
             "description": "API Endpoints for Markets"
+        },
+        {
+            "name": "Market_Photo",
+            "description": "API Endpoints for Market Photos"
         },
         {
             "name": "Product",

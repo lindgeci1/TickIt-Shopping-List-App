@@ -3,11 +3,11 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Product_Photo;
-use App\Domain\Interfaces\I_Photo_Repository;
+use App\Domain\Interfaces\I_Product_Photo_Repository;
 use App\Infrastructure\Models\Product_Photo as ProductPhotoModel;
 use Cloudinary\Cloudinary;
 
-class Eloquent_Photo_Repository implements I_Photo_Repository
+class Eloquent_Product_Photo_Repository implements I_Product_Photo_Repository
 {
     private Cloudinary $cloudinary;
 

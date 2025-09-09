@@ -10,25 +10,34 @@ class Eloquent_Market_Repository implements I_Market_Repository
 {
     public function findAll(): array
     {
-        $models = MarketModel::all();
+        // Include 1-to-1 photo relationship
+        $models = MarketModel::with('photo')->get();
 
-        return $models->map(fn($m) => new Market(
+        return $models->map(fn($m) => $market = new Market(
             $m->market_id,  // lowercase DB field
             $m->name,       // lowercase DB field
             $m->location    // lowercase DB field
-        ))->all();
+        ))->map(function($market, $key) use ($models) {
+            // Add photo if exists
+            $market->Photos = $models[$key]->photo ? [$models[$key]->photo->url] : [];
+            return $market;
+        })->all();
     }
 
     public function findById(int $MarketID): ?Market
     {
-        $model = MarketModel::find($MarketID);
+        $model = MarketModel::with('photo')->find($MarketID);
         if (!$model) return null;
 
-        return new Market(
+        $market = new Market(
             $model->market_id, // lowercase DB field
             $model->name,      // lowercase DB field
             $model->location   // lowercase DB field
         );
+
+        $market->Photos = $model->photo ? [$model->photo->url] : [];
+
+        return $market;
     }
 
     public function create(Market $market): Market

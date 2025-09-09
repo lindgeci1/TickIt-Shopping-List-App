@@ -10,6 +10,8 @@ class Market
 
     public array $Products = [];
 
+    public array $Photos = [];
+
     public function __construct(?int $MarketID, string $Name, ?string $Location = null)
     {
         $this->MarketID = $MarketID;
