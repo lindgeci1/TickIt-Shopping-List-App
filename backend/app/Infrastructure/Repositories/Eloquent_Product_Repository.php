@@ -16,10 +16,9 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 $product = new Product(
                     $m->product_id,
                     $m->name,
-                    $m->description,
                     $m->price,
                     $m->is_favorite,
-                    $m->category
+                    $m->category,
                 );
 
                 // Use lowercase 'url' as per DB column
@@ -64,10 +63,9 @@ class Eloquent_Product_Repository implements I_Product_Repository
     $product = new Product(
         $m->product_id,
         $m->name,
-        $m->description,
         $m->price,
         $m->is_favorite,
-        $m->category
+        $m->category,
     );
 
     $product->Photos = $m->photo ? [$m->photo->url] : [];
@@ -85,7 +83,6 @@ public function searchByName(string $query): array
         $product = new Product(
             $m->product_id,
             $m->name,
-            $m->description,
             $m->price,
             $m->is_favorite,
             $m->category
@@ -103,7 +100,6 @@ public function searchByName(string $query): array
     {
         $m = new ProductModel();
         $m->name = $product->Name;
-        $m->description = $product->Description;
         $m->price = $product->Price;
         $m->is_favorite = $product->IsFavorite;
         $m->category = $product->Category;
@@ -112,7 +108,6 @@ public function searchByName(string $query): array
         return new Product(
             $m->product_id,
             $m->name,
-            $m->description,
             $m->price,
             $m->is_favorite,
             $m->category,
@@ -125,7 +120,6 @@ public function searchByName(string $query): array
         if (!$m) return false;
 
         $m->name = $product->Name;
-        $m->description = $product->Description;
         $m->price = $product->Price;
         $m->is_favorite = $product->IsFavorite;
         $m->category = $product->Category;

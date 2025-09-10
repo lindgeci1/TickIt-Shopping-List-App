@@ -39,7 +39,6 @@ class Update_Product_Use_Case implements I_Update_Product_Use_Case
         $product = new Product(
             $dto->ProductID,
             $dto->Name,
-            $dto->Description,
             $dto->Price,
             $dto->IsFavorite ?? false,
             $dto->Category

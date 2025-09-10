@@ -28,18 +28,13 @@ class Update_Shopping_List_Item_Use_Case implements I_Update_Shopping_List_Item_
             throw new InvalidArgumentException("Shopping list item not found.");
         }
 
-        // Validate status
-        if (!in_array($dto->Status, ['ToBuy', 'Bought'])) {
-            throw new InvalidArgumentException("Status must be 'ToBuy' or 'Bought'.");
-        }
-
         // Determine name: use DTO name if provided, else keep existing
         $name = $dto->Name ?? $existing->Name;
 
-// Check for duplicate name (exclude current item)
-if ($this->shoppingListRepository->existsByName($name, $dto->Shopping_List_ItemID)) {
-    throw new InvalidArgumentException("A shopping list item with name '$name' already exists.");
-}
+        // Check for duplicate name (exclude current item)
+        if ($this->shoppingListRepository->existsByName($name, $dto->Shopping_List_ItemID)) {
+            throw new InvalidArgumentException("A shopping list item with name '$name' already exists.");
+        }
 
 
 
@@ -47,7 +42,6 @@ if ($this->shoppingListRepository->existsByName($name, $dto->Shopping_List_ItemI
         $item = new Shopping_List_Item(
             $dto->Shopping_List_ItemID,
             $name,
-            $dto->Status,
             $dto->AddedAt,
             $dto->BoughtAt
         );
