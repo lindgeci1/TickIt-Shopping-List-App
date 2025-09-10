@@ -8,9 +8,9 @@ use App\Domain\Entities\Shopping_List_Item;
  * @OA\Schema(
  *     schema="Shopping_List_Item_DTO",
  *     type="object",
- *     required={"ProductID","Status"},
+ *     required={"Status","Name"},
  *     @OA\Property(property="Shopping_List_ItemID", type="integer", nullable=true),
- *     @OA\Property(property="ProductID", type="integer"),
+ *     @OA\Property(property="Name", type="string", description="Unique name for the shopping list"),
  *     @OA\Property(property="Status", type="string", enum={"ToBuy","Bought"}),
  *     @OA\Property(property="AddedAt", type="string", format="date-time", nullable=true),
  *     @OA\Property(property="BoughtAt", type="string", format="date-time", nullable=true)
@@ -19,7 +19,7 @@ use App\Domain\Entities\Shopping_List_Item;
 class Shopping_List_Item_DTO
 {
     public ?int $Shopping_List_ItemID = null;
-    public int $ProductID;
+    public string $Name; // Unique name for the list
     public string $Status; // 'ToBuy' or 'Bought'
     public ?string $AddedAt = null;
     public ?string $BoughtAt = null;
@@ -28,7 +28,7 @@ class Shopping_List_Item_DTO
     {
         if ($entity) {
             $this->Shopping_List_ItemID = $entity->Shopping_List_ItemID;
-            $this->ProductID = $entity->ProductID;
+            $this->Name = $entity->Name ?? '';
             $this->Status = $entity->Status;
             $this->AddedAt = $entity->AddedAt;
             $this->BoughtAt = $entity->BoughtAt;

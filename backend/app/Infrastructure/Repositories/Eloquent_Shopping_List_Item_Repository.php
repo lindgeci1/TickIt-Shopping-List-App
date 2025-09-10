@@ -11,23 +11,26 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
     public function findAll(): array
     {
         $models = Shopping_List_ItemModel::all();
-        return $models->map(fn($m) => new Shopping_List_Item(
-            $m->shopping_list_item_id,
-            $m->product_id,
-            $m->status,
-            $m->added_at,
-            $m->bought_at
-        ))->all();
+
+        return $models->map(function ($m) {
+            return new Shopping_List_Item(
+                $m->shopping_list_item_id,
+                $m->name,
+                $m->status,
+                $m->added_at,
+                $m->bought_at
+            );
+        })->all();
     }
 
     public function findById(int $id): ?Shopping_List_Item
     {
-        $m = Shopping_List_ItemModel::with('product')->find($id);
+        $m = Shopping_List_ItemModel::find($id);
         if (!$m) return null;
 
         return new Shopping_List_Item(
             $m->shopping_list_item_id,
-            $m->product_id,
+            $m->name,
             $m->status,
             $m->added_at,
             $m->bought_at
@@ -37,13 +40,13 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
     public function create(Shopping_List_Item $item): Shopping_List_Item
     {
         $m = new Shopping_List_ItemModel();
-        $m->product_id = $item->ProductID;
+        $m->name = $item->Name;
         $m->status = $item->Status;
         $m->added_at = $item->AddedAt;
         $m->bought_at = $item->BoughtAt;
         $m->save();
 
-        $item->ShoppingListItemID = $m->shopping_list_item_id;
+        $item->Shopping_List_ItemID = $m->shopping_list_item_id;
         return $item;
     }
 
@@ -52,7 +55,7 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
         $m = Shopping_List_ItemModel::find($item->Shopping_List_ItemID);
         if (!$m) return false;
 
-        $m->product_id = $item->ProductID;
+        $m->name = $item->Name;
         $m->status = $item->Status;
         $m->added_at = $item->AddedAt;
         $m->bought_at = $item->BoughtAt;
@@ -67,4 +70,15 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
 
         return $m->delete();
     }
+
+
+        public function existsByName(string $name, ?int $excludeId = null): bool
+        {
+            $query = Shopping_List_ItemModel::where('name', $name);
+            if ($excludeId !== null) {
+                $query->where('shopping_list_item_id', '<>', $excludeId);
+            }
+            return $query->exists();
+        }
+
 }
