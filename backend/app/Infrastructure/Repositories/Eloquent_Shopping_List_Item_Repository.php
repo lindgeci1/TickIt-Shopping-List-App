@@ -16,7 +16,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
             return new Shopping_List_Item(
                 $m->shopping_list_item_id,
                 $m->name,
-                $m->status,
                 $m->added_at,
                 $m->bought_at
             );
@@ -31,7 +30,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
         return new Shopping_List_Item(
             $m->shopping_list_item_id,
             $m->name,
-            $m->status,
             $m->added_at,
             $m->bought_at
         );
@@ -41,7 +39,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
     {
         $m = new Shopping_List_ItemModel();
         $m->name = $item->Name;
-        $m->status = $item->Status;
         $m->added_at = $item->AddedAt;
         $m->bought_at = $item->BoughtAt;
         $m->save();
@@ -56,7 +53,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
         if (!$m) return false;
 
         $m->name = $item->Name;
-        $m->status = $item->Status;
         $m->added_at = $item->AddedAt;
         $m->bought_at = $item->BoughtAt;
 

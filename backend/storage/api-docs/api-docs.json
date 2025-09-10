@@ -945,10 +945,6 @@
                     "Name": {
                         "type": "string"
                     },
-                    "Description": {
-                        "type": "string",
-                        "nullable": true
-                    },
                     "Price": {
                         "type": "number",
                         "format": "float",
@@ -965,6 +961,15 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "Status": {
+                        "description": "Status of the product in the shopping list (nullable)",
+                        "type": "string",
+                        "enum": [
+                            "ToBuy",
+                            "Bought"
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -994,7 +999,6 @@
             },
             "Shopping_List_Item_DTO": {
                 "required": [
-                    "Status",
                     "Name"
                 ],
                 "properties": {
@@ -1005,13 +1009,6 @@
                     "Name": {
                         "description": "Unique name for the shopping list",
                         "type": "string"
-                    },
-                    "Status": {
-                        "type": "string",
-                        "enum": [
-                            "ToBuy",
-                            "Bought"
-                        ]
                     },
                     "AddedAt": {
                         "type": "string",

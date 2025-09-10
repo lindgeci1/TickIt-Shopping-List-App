@@ -25,11 +25,6 @@ class Create_Shopping_List_Item_Use_Case implements I_Create_Shopping_List_Item_
             throw new InvalidArgumentException("Name is required.");
         }
 
-        // Validate status
-        if (empty(trim($dto->Status))) {
-            throw new InvalidArgumentException("Status is required.");
-        }
-
         // Check if name already exists
         if ($this->repository->existsByName($name)) {
             throw new InvalidArgumentException("A shopping list with name '{$name}' already exists.");
@@ -39,7 +34,6 @@ class Create_Shopping_List_Item_Use_Case implements I_Create_Shopping_List_Item_
         $item = new Shopping_List_Item(
             $dto->Shopping_List_ItemID ?? null,
             $name,
-            $dto->Status,
             $dto->AddedAt ?? null,
             $dto->BoughtAt ?? null
         );

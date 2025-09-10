@@ -10,7 +10,8 @@ class Product extends Model
 {
     protected $table = 'products';
     protected $primaryKey = 'product_id'; // lowercase
-    protected $fillable = ['name', 'description', 'price', 'is_favorite', 'category']; // lowercase
+    protected $fillable = ['name', 'price', 'is_favorite', 'category', 'status'];
+
     public $timestamps = false;
 
     // A product can belong to many markets

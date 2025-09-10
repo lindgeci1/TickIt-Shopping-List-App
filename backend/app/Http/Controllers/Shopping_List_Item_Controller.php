@@ -96,7 +96,6 @@ class Shopping_List_Item_Controller extends Controller
         try {
             $dto = new Shopping_List_Item_DTO(null);
             $dto->Name      = $request->input('Name');
-            $dto->Status    = $request->input('Status');
             $dto->AddedAt   = $request->input('AddedAt');
             $dto->BoughtAt  = $request->input('BoughtAt');
 
@@ -126,7 +125,6 @@ class Shopping_List_Item_Controller extends Controller
             $dto = new Shopping_List_Item_DTO(null);
             $dto->Shopping_List_ItemID = $Shopping_List_ItemID;
             $dto->Name      = $request->input('Name');
-            $dto->Status    = $request->input('Status');
             $dto->AddedAt   = $request->input('AddedAt');
             $dto->BoughtAt  = $request->input('BoughtAt');
 

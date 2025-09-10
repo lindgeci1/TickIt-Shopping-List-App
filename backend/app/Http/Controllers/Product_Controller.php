@@ -95,7 +95,6 @@ class Product_Controller extends Controller
         try {
             $dto = new Product_DTO();
             $dto->Name = $request->input('Name');
-            $dto->Description = $request->input('Description');
             $dto->Price = $request->input('Price');
             $dto->IsFavorite = $request->input('IsFavorite') ?? false;
             $dto->Category = $request->input('Category');
@@ -126,7 +125,6 @@ class Product_Controller extends Controller
             $dto = new Product_DTO();
             $dto->ProductID = $ProductID;
             $dto->Name = $request->input('Name');
-            $dto->Description = $request->input('Description');
             $dto->Price = $request->input('Price');
             $dto->IsFavorite = $request->input('IsFavorite') ?? false;
             $dto->Category = $request->input('Category');

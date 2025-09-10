@@ -11,7 +11,6 @@ use App\Domain\Entities\Product;
  *     required={"Name","Category"},
  *     @OA\Property(property="ProductID", type="integer", nullable=true),
  *     @OA\Property(property="Name", type="string"),
- *     @OA\Property(property="Description", type="string", nullable=true),
  *     @OA\Property(property="Price", type="number", format="float", nullable=true),
  *     @OA\Property(property="IsFavorite", type="boolean"),
  *     @OA\Property(property="Category", type="string"),
@@ -19,6 +18,13 @@ use App\Domain\Entities\Product;
  *         property="Photos",
  *         type="array",
  *         @OA\Items(type="string")
+ *     ),
+ *       @OA\Property(
+ *         property="Status",
+ *         type="string",
+ *         enum={"ToBuy","Bought"},
+ *         nullable=true,
+ *         description="Status of the product in the shopping list (nullable)"
  *     )
  * )
  */
@@ -26,7 +32,6 @@ class Product_DTO
 {
     public ?int $ProductID = null;
     public string $Name;
-    public ?string $Description = null;
     public ?float $Price = null;
     public bool $IsFavorite = false;
     public string $Category;
@@ -37,7 +42,6 @@ class Product_DTO
         if ($product) {
             $this->ProductID = $product->ProductID;
             $this->Name = $product->Name;
-            $this->Description = $product->Description;
             $this->Price = $product->Price;
             $this->IsFavorite = $product->IsFavorite;
             $this->Category = $product->Category;

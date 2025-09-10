@@ -9,7 +9,7 @@ class Shopping_List_Item extends Model
 {
     protected $table = 'shopping_list_items';
     protected $primaryKey = 'shopping_list_item_id';
-    protected $fillable = ['name', 'status', 'added_at', 'bought_at']; // added 'name'
+    protected $fillable = ['name', 'added_at', 'bought_at']; // added 'name'
     public $timestamps = false;
 
     // A shopping list can contain many products through the pivot table
