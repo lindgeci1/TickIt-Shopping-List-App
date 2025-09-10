@@ -24,10 +24,15 @@ class Product extends Model
         );
     }
 
-    // A product can have many shopping list items
+    // A product can belong to many shopping list items
     public function shoppingListItems()
     {
-        return $this->hasMany(Shopping_List_Item::class, 'product_id', 'product_id');
+        return $this->belongsToMany(
+            Shopping_List_Item::class,
+            'shopping_list_item_product',   // pivot table
+            'product_id',                   // foreign key on pivot table for product
+            'shopping_list_item_id'         // foreign key on pivot table for shopping_list_item
+        );
     }
 
         public function photo()

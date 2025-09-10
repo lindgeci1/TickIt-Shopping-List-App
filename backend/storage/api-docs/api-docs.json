@@ -994,16 +994,17 @@
             },
             "Shopping_List_Item_DTO": {
                 "required": [
-                    "ProductID",
-                    "Status"
+                    "Status",
+                    "Name"
                 ],
                 "properties": {
                     "Shopping_List_ItemID": {
                         "type": "integer",
                         "nullable": true
                     },
-                    "ProductID": {
-                        "type": "integer"
+                    "Name": {
+                        "description": "Unique name for the shopping list",
+                        "type": "string"
                     },
                     "Status": {
                         "type": "string",
