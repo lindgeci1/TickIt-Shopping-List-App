@@ -13,7 +13,7 @@ use InvalidArgumentException;
 
 /**
  * @OA\Tag(
- *     name="ShoppingList",
+ *     name="Shopping_List",
  *     description="API Endpoints for Shopping List Items"
  * )
  */
@@ -43,7 +43,7 @@ class Shopping_List_Item_Controller extends Controller
      * @OA\Get(
      *     path="/api/shopping-list/all",
      *     summary="Get all shopping list items",
-     *     tags={"ShoppingList"},
+     *     tags={"Shopping_List"},
      *     @OA\Response(
      *         response=200,
      *         description="List of shopping list items",
@@ -60,7 +60,7 @@ class Shopping_List_Item_Controller extends Controller
      * @OA\Get(
      *     path="/api/shopping-list/{Shopping_List_ItemID}",
      *     summary="Get a shopping list item by ID",
-     *     tags={"ShoppingList"},
+     *     tags={"Shopping_List"},
      *     @OA\Parameter(
      *         name="Shopping_List_ItemID",
      *         in="path",
@@ -85,7 +85,7 @@ class Shopping_List_Item_Controller extends Controller
      * @OA\Post(
      *     path="/api/shopping-list/create",
      *     summary="Create a new shopping list item",
-     *     tags={"ShoppingList"},
+     *     tags={"Shopping_List"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Shopping_List_Item_DTO")),
      *     @OA\Response(response=201, description="Created item", @OA\JsonContent(ref="#/components/schemas/Shopping_List_Item_DTO")),
      *     @OA\Response(response=400, description="Validation error")
@@ -111,7 +111,7 @@ class Shopping_List_Item_Controller extends Controller
      * @OA\Put(
      *     path="/api/shopping-list/update/{Shopping_List_ItemID}",
      *     summary="Update a shopping list item",
-     *     tags={"ShoppingList"},
+     *     tags={"Shopping_List"},
      *     @OA\Parameter(name="Shopping_List_ItemID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Shopping_List_Item_DTO")),
      *     @OA\Response(response=200, description="Updated item", @OA\JsonContent(ref="#/components/schemas/Shopping_List_Item_DTO")),
@@ -140,7 +140,7 @@ class Shopping_List_Item_Controller extends Controller
      * @OA\Delete(
      *     path="/api/shopping-list/delete/{Shopping_List_ItemID}",
      *     summary="Delete a shopping list item",
-     *     tags={"ShoppingList"},
+     *     tags={"Shopping_List"},
      *     @OA\Parameter(name="Shopping_List_ItemID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\Response(response=200, description="Item deleted", @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))),
      *     @OA\Response(response=404, description="Item not found"),

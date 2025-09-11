@@ -16,4 +16,7 @@ interface I_Product_Repository
     public function detachFromMarkets(int $productID, array $marketIDs): void;
     public function syncMarkets(int $productID, array $marketIDs): void;
     public function searchByName(string $query): array;
+    public function attachToShoppingListItems(int $productID, array $shoppingListItemIDs): void;
+    public function detachFromShoppingListItems(int $productID, array $shoppingListItemIDs): void;
+    public function syncShoppingListItems(int $productID, array $shoppingListItemIDs): void;
 }
