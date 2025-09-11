@@ -50,6 +50,10 @@ use App\Application\Interfaces\Product_Photo\I_Delete_Product_Photo_Use_Case;
 use App\Application\Interfaces\Market_Photo\I_Add_Market_Photo_Use_Case;
 use App\Application\Interfaces\Market_Photo\I_Delete_Market_Photo_Use_Case;
 
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_ShoppingListItem_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_ShoppingListItems_From_Product_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_ShoppingListItems_For_Product_Use_Case;
+
 
 // Service Implementations
 use App\Application\UseCases\Product\GetAll_Products_Use_Case;
@@ -80,6 +84,10 @@ use App\Application\UseCases\Product_Photo\Delete_Product_Photo_Use_Case;
 
 use App\Application\UseCases\Market_Photo\Add_Market_Photo_Use_Case;
 use App\Application\UseCases\Market_Photo\Delete_Market_Photo_Use_Case;
+
+use App\Application\UseCases\Shopping_List_Item_Product\Assign_Products_To_ShoppingListItem_Use_Case;
+use App\Application\UseCases\Shopping_List_Item_Product\Remove_ShoppingListItems_From_Product_Use_Case;
+use App\Application\UseCases\Shopping_List_Item_Product\Update_ShoppingListItems_For_Product_Use_Case;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -124,6 +132,10 @@ class AppServiceProvider extends ServiceProvider
         // Market-Photo Service
         $this->app->bind(I_Add_Market_Photo_Use_Case::class, Add_Market_Photo_Use_Case::class);
         $this->app->bind(I_Delete_Market_Photo_Use_Case::class, Delete_Market_Photo_Use_Case::class);
+        // ShoppingListItem-Product Service
+        $this->app->bind(I_Assign_Products_To_ShoppingListItem_Use_Case::class, Assign_Products_To_ShoppingListItem_Use_Case::class);
+        $this->app->bind(I_Remove_ShoppingListItems_From_Product_Use_Case::class, Remove_ShoppingListItems_From_Product_Use_Case::class);
+        $this->app->bind(I_Update_ShoppingListItems_For_Product_Use_Case::class, Update_ShoppingListItems_For_Product_Use_Case::class);
     }
 
     /**

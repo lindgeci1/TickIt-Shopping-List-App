@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use App\Application\DTOs\Assign_Markets_To_Product_DTO;
 /**
  * @OA\Tag(
- *     name="ProductMarket",
+ *     name="Product_Market",
  *     description="API Endpoints for linking Products and Markets dynamically"
  * )
  */
@@ -35,7 +35,7 @@ class Product_Market_Controller extends Controller
      * @OA\Post(
      *     path="/api/product-market/assign/{ProductID}",
      *     summary="Attach a product to selected markets dynamically",
-     *     tags={"ProductMarket"},
+     *     tags={"Product_Market"},
      *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
      *     @OA\Response(response=201, description="Product successfully assigned to markets", @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
@@ -64,7 +64,7 @@ class Product_Market_Controller extends Controller
      * @OA\Delete(
      *     path="/api/product-market/remove/{ProductID}",
      *     summary="Detach a product from selected markets dynamically",
-     *     tags={"ProductMarket"},
+     *     tags={"Product_Market"},
      *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
      *     @OA\Response(response=200, description="Product successfully removed from markets"),
@@ -92,7 +92,7 @@ class Product_Market_Controller extends Controller
      * @OA\Put(
      *     path="/api/product-market/update/{ProductID}",
      *     summary="Replace all markets for a product with a new selection",
-     *     tags={"ProductMarket"},
+     *     tags={"Product_Market"},
      *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
      *     @OA\Response(response=200, description="Product markets successfully updated"),
