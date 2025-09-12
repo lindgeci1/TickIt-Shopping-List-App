@@ -39,5 +39,10 @@ class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_
 
         // Attach all products to all shopping list items
         $this->productRepository->attachMultipleProductsToShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
+
+         // ✅ Update product status to 'ToBuy'
+    foreach ($dto->ProductIDs as $productID) {
+        $this->productRepository->updateStatus($productID, 'ToBuy');
+    }
     }
 }

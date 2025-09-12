@@ -4,10 +4,10 @@ import {
 } from "react-native";
 import Footer from "../components/Footer";
 import ShoppingListModal from "../Product/ShoppingListModal";
-import ProductCard from "../ShoppingList/ProductCard";
+import ProductCard from "../Product/ProductCard";
 import { fetchProducts } from "../Product/fetchProducts";
 import { fetchShoppingLists } from "../Product/fetchShoppingLists";
-import { addToShoppingList } from "../Product/addToShoppingList";
+import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { filterProducts } from "../Product/filterProducts";
 import { VITE_BASE_API_URL } from "@env";
 
@@ -145,7 +145,7 @@ return (
 
         console.log("Adding products to list:", { productIds, shoppingListIds });
         
-        await addToShoppingList(productIds, shoppingListIds);
+        await addProductsToShoppingList(productIds, shoppingListIds);
 
         fetchShoppingLists(setShoppingLists);
         setSelectedProducts([]);

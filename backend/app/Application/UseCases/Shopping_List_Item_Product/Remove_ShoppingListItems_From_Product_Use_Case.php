@@ -39,5 +39,11 @@ class Remove_ShoppingListItems_From_Product_Use_Case implements I_Remove_Shoppin
 
         // Detach all products from all shopping list items
         $this->productRepository->detachMultipleProductsFromShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
+
+foreach ($dto->ProductIDs as $productID) {
+    $this->productRepository->updateStatus($productID, null);
+}
+
+
     }
 }
