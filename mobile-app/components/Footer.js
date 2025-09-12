@@ -63,6 +63,36 @@ export default function Footer({ navigation, currentRoute }) {
           Markets
         </Text>
       </TouchableOpacity>
+
+      {/* Shopping List Icon */}
+      <TouchableOpacity
+        style={styles.iconContainer}
+        onPress={() => navigation.navigate("ShoppingList")}
+      >
+        <View
+          style={[
+            styles.iconPlaceholder,
+            currentRoute === "ShoppingList" && styles.activeIcon,
+          ]}
+        >
+          <Text
+            style={[
+              styles.iconText,
+              currentRoute === "ShoppingList" && styles.activeIconText,
+            ]}
+          >
+            S
+          </Text>
+        </View>
+        <Text
+          style={[
+            styles.label,
+            currentRoute === "ShoppingList" && styles.activeLabel,
+          ]}
+        >
+          Lists
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -86,7 +116,7 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 18,
-    backgroundColor: "#6c63ff", // same base color for both
+    backgroundColor: "#6c63ff",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -100,7 +130,6 @@ const styles = StyleSheet.create({
     color: "#6c63ff",
     marginTop: 4,
   },
-  // Active state → darker version of #6c63ff
   activeIcon: {
     backgroundColor: "#574bff",
   },

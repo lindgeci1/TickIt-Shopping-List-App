@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Shopping_List_Item;
+use App\Domain\Entities\Product;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
 use App\Infrastructure\Models\Shopping_List_Item as Shopping_List_ItemModel;
 
@@ -10,29 +11,66 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
 {
     public function findAll(): array
     {
-        $models = Shopping_List_ItemModel::all();
+        $models = Shopping_List_ItemModel::with(['products'])->get();
 
         return $models->map(function ($m) {
-            return new Shopping_List_Item(
+            $item = new Shopping_List_Item(
                 $m->shopping_list_item_id,
                 $m->name,
                 $m->added_at,
                 $m->bought_at
             );
+
+$item->Products = $m->products
+    ? $m->products->map(function ($p) {
+        $product = new Product(
+            $p->product_id,
+            $p->name,
+            $p->price,
+            $p->is_favorite ?? false,
+            $p->category
+        );
+        // Single photo relationship
+        $product->Photos = $p->photo ? [$p->photo->url] : [];
+        return $product;
+    })->all()
+    : [];
+
+
+            return $item;
         })->all();
     }
 
     public function findById(int $id): ?Shopping_List_Item
     {
-        $m = Shopping_List_ItemModel::find($id);
+        $m = Shopping_List_ItemModel::with(['products'])->find($id);
         if (!$m) return null;
 
-        return new Shopping_List_Item(
+        $item = new Shopping_List_Item(
             $m->shopping_list_item_id,
             $m->name,
             $m->added_at,
             $m->bought_at
         );
+
+$item->Products = $m->products
+    ? $m->products->map(function ($p) {
+        $product = new Product(
+            $p->product_id,
+            $p->name,
+            $p->price,
+            $p->is_favorite ?? false,
+            $p->category
+        );
+        // Single photo relationship
+        $product->Photos = $p->photo ? [$p->photo->url] : [];
+        return $product;
+    })->all()
+    : [];
+
+
+
+        return $item;
     }
 
     public function create(Shopping_List_Item $item): Shopping_List_Item

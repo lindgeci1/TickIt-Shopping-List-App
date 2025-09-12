@@ -1156,6 +1156,36 @@
                         "type": "string",
                         "format": "date-time",
                         "nullable": true
+                    },
+                    "Products": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "ProductID": {
+                                    "type": "integer"
+                                },
+                                "Name": {
+                                    "type": "string"
+                                },
+                                "Price": {
+                                    "type": "number",
+                                    "format": "float"
+                                },
+                                "IsFavorite": {
+                                    "type": "boolean"
+                                },
+                                "Category": {
+                                    "type": "string"
+                                },
+                                "Photos": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
