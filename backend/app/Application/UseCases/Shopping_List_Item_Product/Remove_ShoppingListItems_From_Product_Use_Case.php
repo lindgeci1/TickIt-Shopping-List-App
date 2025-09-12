@@ -23,9 +23,11 @@ class Remove_ShoppingListItems_From_Product_Use_Case implements I_Remove_Shoppin
 
     public function remove(Assign_Products_To_ShoppingListItem_DTO $dto): void
     {
-        // Check if product exists
-        if (!$this->productRepository->findById($dto->ProductID)) {
-            throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
+        // Check if all products exist
+        foreach ($dto->ProductIDs as $productID) {
+            if (!$this->productRepository->findById($productID)) {
+                throw new InvalidArgumentException("Product with ID {$productID} does not exist.");
+            }
         }
 
         // Check if all shopping list items exist
@@ -35,7 +37,7 @@ class Remove_ShoppingListItems_From_Product_Use_Case implements I_Remove_Shoppin
             }
         }
 
-        // Detach product from shopping list items
-        $this->productRepository->detachFromShoppingListItems($dto->ProductID, $dto->ShoppingListItemIDs);
+        // Detach all products from all shopping list items
+        $this->productRepository->detachMultipleProductsFromShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
     }
 }

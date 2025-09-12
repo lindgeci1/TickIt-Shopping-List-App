@@ -675,23 +675,13 @@
                 }
             }
         },
-        "/api/product-shopping-list-item/assign/{ProductID}": {
+        "/api/product-shopping-list-item/assign": {
             "post": {
                 "tags": [
                     "Product_Shopping_List_Item"
                 ],
-                "summary": "Attach a product to selected shopping list items dynamically",
-                "operationId": "6735339673dd2641807ed89da8f5edb4",
-                "parameters": [
-                    {
-                        "name": "ProductID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Attach multiple products to selected shopping list items dynamically",
+                "operationId": "ee87758125d395254b2541331f9ce6ce",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -704,14 +694,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Product successfully assigned to shopping list items",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Assign_Products_To_ShoppingListItem_DTO"
-                                }
-                            }
-                        }
+                        "description": "Products successfully assigned to shopping list items"
                     },
                     "400": {
                         "description": "Validation error"
@@ -719,23 +702,13 @@
                 }
             }
         },
-        "/api/product-shopping-list-item/remove/{ProductID}": {
+        "/api/product-shopping-list-item/remove": {
             "delete": {
                 "tags": [
                     "Product_Shopping_List_Item"
                 ],
-                "summary": "Detach a product from selected shopping list items dynamically",
-                "operationId": "8a1753ac9a75c532c75c4e39f2cde008",
-                "parameters": [
-                    {
-                        "name": "ProductID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Detach multiple products from selected shopping list items dynamically",
+                "operationId": "aeacb91ad6b429855ed6e5a001936718",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -748,7 +721,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Product successfully removed from shopping list items"
+                        "description": "Products successfully removed from shopping list items"
                     },
                     "400": {
                         "description": "Validation error"
@@ -756,23 +729,13 @@
                 }
             }
         },
-        "/api/product-shopping-list-item/update/{ProductID}": {
+        "/api/product-shopping-list-item/update": {
             "put": {
                 "tags": [
                     "Product_Shopping_List_Item"
                 ],
-                "summary": "Replace all shopping list items for a product with a new selection",
-                "operationId": "b413e2590584be68026c71e8ef0c1b17",
-                "parameters": [
-                    {
-                        "name": "ProductID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Replace all shopping list items for multiple products with a new selection",
+                "operationId": "d35b839d26158f3b05c5839d790e48ab",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -998,11 +961,11 @@
             },
             "Assign_Products_To_ShoppingListItem_DTO": {
                 "required": [
-                    "ProductID",
+                    "ProductIDs",
                     "ShoppingListItemIDs"
                 ],
                 "properties": {
-                    "ProductID": {
+                    "ProductIDs": {
                         "type": "integer"
                     },
                     "ShoppingListItemIDs": {

@@ -8,8 +8,8 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     schema="Assign_Products_To_ShoppingListItem_DTO",
  *     type="object",
- *     required={"ProductID","ShoppingListItemIDs"},
- *     @OA\Property(property="ProductID", type="integer"),
+ *     required={"ProductIDs","ShoppingListItemIDs"},
+ *     @OA\Property(property="ProductIDs", type="integer"),
  *     @OA\Property(
  *         property="ShoppingListItemIDs",
  *         type="array",
@@ -20,12 +20,12 @@ use OpenApi\Annotations as OA;
  */
 class Assign_Products_To_ShoppingListItem_DTO
 {
-    public int $ProductID;
+    public array $ProductIDs;
     public array $ShoppingListItemIDs;
 
-    public function __construct(int $ProductID, array $ShoppingListItemIDs)
+    public function __construct(array $ProductIDs, array $ShoppingListItemIDs)
     {
-        $this->ProductID = $ProductID;
+        $this->ProductIDs = $ProductIDs;
         $this->ShoppingListItemIDs = $ShoppingListItemIDs;
     }
 }
