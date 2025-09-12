@@ -21,20 +21,22 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
                 $m->bought_at
             );
 
-$item->Products = $m->products
-    ? $m->products->map(function ($p) {
-        $product = new Product(
-            $p->product_id,
-            $p->name,
-            $p->price,
-            $p->is_favorite ?? false,
-            $p->category
-        );
-        // Single photo relationship
-        $product->Photos = $p->photo ? [$p->photo->url] : [];
-        return $product;
-    })->all()
-    : [];
+ $item->Products = $m->products
+                ? $m->products->map(function ($p) {
+                    $product = new Product(
+                        $p->product_id,
+                        $p->name,
+                        $p->price,
+                        $p->is_favorite ?? false,
+                        $p->category
+                    );
+                    // Single photo relationship
+                    $product->Photos = $p->photo ? [$p->photo->url] : [];
+                    // Status comes directly from Product
+                    $product->Status = $p->status ?? null;
+                    return $product;
+                })->all()
+                : [];
 
 
             return $item;
@@ -53,20 +55,20 @@ $item->Products = $m->products
             $m->bought_at
         );
 
-$item->Products = $m->products
-    ? $m->products->map(function ($p) {
-        $product = new Product(
-            $p->product_id,
-            $p->name,
-            $p->price,
-            $p->is_favorite ?? false,
-            $p->category
-        );
-        // Single photo relationship
-        $product->Photos = $p->photo ? [$p->photo->url] : [];
-        return $product;
-    })->all()
-    : [];
+ $item->Products = $m->products
+            ? $m->products->map(function ($p) {
+                $product = new Product(
+                    $p->product_id,
+                    $p->name,
+                    $p->price,
+                    $p->is_favorite ?? false,
+                    $p->category
+                );
+                $product->Photos = $p->photo ? [$p->photo->url] : [];
+                $product->Status = $p->status ?? null;
+                return $product;
+            })->all()
+            : [];
 
 
 

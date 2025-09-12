@@ -1149,6 +1149,15 @@
                                     "items": {
                                         "type": "string"
                                     }
+                                },
+                                "Status": {
+                                    "description": "Status of the product in the shopping list",
+                                    "type": "string",
+                                    "enum": [
+                                        "ToBuy",
+                                        "Bought"
+                                    ],
+                                    "nullable": true
                                 }
                             },
                             "type": "object"

@@ -24,7 +24,14 @@ use App\Domain\Entities\Product as ProductEntity;
  *             @OA\Property(property="Price", type="number", format="float"),
  *             @OA\Property(property="IsFavorite", type="boolean"),
  *             @OA\Property(property="Category", type="string"),
- *             @OA\Property(property="Photos", type="array", @OA\Items(type="string"))
+ *             @OA\Property(property="Photos", type="array", @OA\Items(type="string")),
+ *             @OA\Property(
+ *                 property="Status",
+ *                 type="string",
+ *                 enum={"ToBuy","Bought"},
+ *                 nullable=true,
+ *                 description="Status of the product in the shopping list"
+ *             )
  *         )
  *     )
  * )
@@ -37,7 +44,7 @@ class Shopping_List_Item_DTO
     public ?string $BoughtAt = null;
 
     /**
-     * @var array<int, array> List of full product details
+     * @var array<int, array> List of full product details including Status
      */
     public array $Products = [];
 
@@ -49,7 +56,7 @@ class Shopping_List_Item_DTO
             $this->AddedAt = $entity->AddedAt;
             $this->BoughtAt = $entity->BoughtAt;
 
-            // Map products with full details including photos
+            // Map products with full details including Status and photos
             $this->Products = array_map(function (ProductEntity $p) {
                 return [
                     'ProductID' => $p->ProductID,
@@ -58,6 +65,7 @@ class Shopping_List_Item_DTO
                     'IsFavorite' => $p->IsFavorite,
                     'Category' => $p->Category,
                     'Photos' => $p->Photos ?? [],
+                    'Status' => $p->Status, 
                 ];
             }, $entity->Products ?? []);
         }

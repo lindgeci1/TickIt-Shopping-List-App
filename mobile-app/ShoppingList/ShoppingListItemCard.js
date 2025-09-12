@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from "react-native";
 import ProductCard from "../Product/ProductCard";
-import { removeFromShoppingList } from "./removeFromShoppingList";
-import { updateProductStatus } from "./updateProductStatus";
+import { removeProductsFromShoppingList } from "../Product/removeProductsFromShoppingList";
+import { updateProductsStatusesFromShoppingList } from "../Product/updateProductsStatusesFromShoppingList";
 
 export default function ShoppingListItemCard({ item, index }) {
   const [expanded, setExpanded] = useState(false);
@@ -39,7 +39,7 @@ export default function ShoppingListItemCard({ item, index }) {
     const productIds = selectedProducts.map((p) => p.ProductID);
     const shoppingListIds = [item.Shopping_List_ItemID];
 
-    await removeFromShoppingList(productIds, shoppingListIds);
+    await removeProductsFromShoppingList(productIds, shoppingListIds);
 
     setProducts((prev) => prev.filter((p) => !selectedProducts.includes(p)));
 
@@ -54,7 +54,7 @@ export default function ShoppingListItemCard({ item, index }) {
     const productIds = selectedProducts.map((p) => p.ProductID);
     const shoppingListIds = [item.Shopping_List_ItemID];
 
-    await updateProductStatus(productIds, shoppingListIds);
+    await updateProductsStatusesFromShoppingList(productIds, shoppingListIds);
 
     // Update local state
     setProducts((prev) =>

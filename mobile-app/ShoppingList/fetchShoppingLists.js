@@ -5,7 +5,7 @@ import { Alert } from "react-native";
  * Fetches all shopping lists from the API.
  * @returns {Promise<Array>} Array of shopping list objects
  */
-export const fetchLists = async () => {
+export const fetchShoppingLists = async () => {
   try {
     const response = await fetch(`${VITE_BASE_API_URL}/api/shopping-list/all`);
     if (!response.ok) {
