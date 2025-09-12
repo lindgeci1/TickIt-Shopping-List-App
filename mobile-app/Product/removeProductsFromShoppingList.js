@@ -7,9 +7,9 @@ import { Alert } from "react-native";
  * @param {number[]} productIds - Array of product IDs to remove
  * @param {number[]} shoppingListIds - Array of shopping list IDs
  */
-export const removeFromShoppingList = async (productIds, shoppingListIds) => {
+export const removeProductsFromShoppingList = async (productIds, shoppingListIds) => {
   try {
-    console.log("Calling removeFromShoppingList...");
+    console.log("Calling removeProductsFromShoppingList...");
     console.log("Products to remove:", productIds);
     console.log("Shopping lists:", shoppingListIds);
 

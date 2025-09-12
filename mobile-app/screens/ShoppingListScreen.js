@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import ShoppingListItemCard from "../ShoppingList/ShoppingListItemCard";
 import Footer from "../components/Footer";
-import { fetchLists } from "../ShoppingList/fetchLists"; // <-- renamed import
+import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists"; // <-- renamed import
 
 export default function ShoppingListScreen({ navigation }) {
   const [lists, setLists] = useState([]);
@@ -10,7 +10,7 @@ export default function ShoppingListScreen({ navigation }) {
 
   const loadLists = async () => {
     setLoading(true);
-    const data = await fetchLists();
+    const data = await fetchShoppingLists();
     setLists(data);
     setLoading(false);
   };
