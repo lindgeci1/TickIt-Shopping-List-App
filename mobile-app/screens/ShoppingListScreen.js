@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from "react-native";
-import { VITE_BASE_API_URL } from "@env";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import ShoppingListItemCard from "../ShoppingList/ShoppingListItemCard";
 import Footer from "../components/Footer";
+import { fetchLists } from "../ShoppingList/fetchLists"; // <-- renamed import
 
 export default function ShoppingListScreen({ navigation }) {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchShoppingLists = async () => {
-    try {
-      const response = await fetch(`${VITE_BASE_API_URL}/api/shopping-list/all`);
-      const json = await response.json();
-      setLists(json);
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Failed to fetch shopping lists");
-    } finally {
-      setLoading(false);
-    }
+  const loadLists = async () => {
+    setLoading(true);
+    const data = await fetchLists();
+    setLists(data);
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchShoppingLists();
+    loadLists();
   }, []);
 
   if (loading)

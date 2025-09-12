@@ -966,10 +966,14 @@
                 ],
                 "properties": {
                     "ProductIDs": {
-                        "type": "integer"
+                        "description": "Array of product IDs to assign to shopping list items",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     },
                     "ShoppingListItemIDs": {
-                        "description": "Array of shopping list item IDs to assign to the product",
+                        "description": "Array of shopping list item IDs to assign products to",
                         "type": "array",
                         "items": {
                             "type": "integer"

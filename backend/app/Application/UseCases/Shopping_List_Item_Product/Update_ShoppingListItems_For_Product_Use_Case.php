@@ -23,9 +23,11 @@ class Update_ShoppingListItems_For_Product_Use_Case implements I_Update_Shopping
 
     public function update(Assign_Products_To_ShoppingListItem_DTO $dto): void
     {
-        // Check if product exists
-        if (!$this->productRepository->findById($dto->ProductID)) {
-            throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
+        // Check if all products exist
+        foreach ($dto->ProductIDs as $productID) {
+            if (!$this->productRepository->findById($productID)) {
+                throw new InvalidArgumentException("Product with ID {$productID} does not exist.");
+            }
         }
 
         // Check if all shopping list items exist
@@ -35,7 +37,12 @@ class Update_ShoppingListItems_For_Product_Use_Case implements I_Update_Shopping
             }
         }
 
-        // Sync product's shopping list items (replace old with new)
-        $this->productRepository->syncShoppingListItems($dto->ProductID, $dto->ShoppingListItemIDs);
+        // Sync each product's shopping list items (replace old with new)
+        $this->productRepository->syncMultipleProductsToShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
+
+        // ✅ Update all product statuses to 'Bought' after sync
+        foreach ($dto->ProductIDs as $productID) {
+            $this->productRepository->updateStatus($productID, 'Bought');
+        }
     }
 }

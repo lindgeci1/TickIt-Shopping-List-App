@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import Footer from "../components/Footer";
-import ProductCard from "../ShoppingList/ProductCard";
+import ProductCard from "../Product/ProductCard";
 import { fetchMarkets } from "../Market/fetchMarkets";
 import { handleMarketPress } from "../Market/handleMarketPress";
 import { renderMarketChip } from "../Market/renderMarketChip";

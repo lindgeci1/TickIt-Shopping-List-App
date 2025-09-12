@@ -1,7 +1,7 @@
 import { VITE_BASE_API_URL } from "@env";
 import { Alert } from "react-native";
 
-export const addToShoppingList = async (productIds, shoppingListIds) => {
+export const addProductsToShoppingList = async (productIds, shoppingListIds) => {
   try {
     // console.log("Calling addToShoppingList...");
     // console.log("Products to add:", productIds);

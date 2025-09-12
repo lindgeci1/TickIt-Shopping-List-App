@@ -18,5 +18,6 @@ interface I_Product_Repository
     public function searchByName(string $query): array;
     public function attachMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void;
     public function detachMultipleProductsFromShoppingLists(array $productIDs, array $shoppingListItemIDs): void;
-    public function syncShoppingListItems(int $productID, array $shoppingListItemIDs): void;
+     public function syncMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void;
+    public function updateStatus(int $productID, ?string $status): bool;
 }

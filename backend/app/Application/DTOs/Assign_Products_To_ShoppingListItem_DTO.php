@@ -9,12 +9,17 @@ use OpenApi\Annotations as OA;
  *     schema="Assign_Products_To_ShoppingListItem_DTO",
  *     type="object",
  *     required={"ProductIDs","ShoppingListItemIDs"},
- *     @OA\Property(property="ProductIDs", type="integer"),
+ *     @OA\Property(
+ *         property="ProductIDs",
+ *         type="array",
+ *         @OA\Items(type="integer"),
+ *         description="Array of product IDs to assign to shopping list items"
+ *     ),
  *     @OA\Property(
  *         property="ShoppingListItemIDs",
  *         type="array",
  *         @OA\Items(type="integer"),
- *         description="Array of shopping list item IDs to assign to the product"
+ *         description="Array of shopping list item IDs to assign products to"
  *     )
  * )
  */

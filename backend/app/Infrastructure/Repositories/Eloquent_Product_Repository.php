@@ -76,14 +76,17 @@ class Eloquent_Product_Repository implements I_Product_Repository
             }
         }
 
-        public function syncShoppingListItems(int $productID, array $shoppingListItemIDs): void
-        {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) return;
+            public function syncMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void
+            {
+                foreach ($productIDs as $productID) {
+                    $productModel = ProductModel::find($productID);
+                    if (!$productModel) continue;
 
-            // Replace existing shopping list items with the new list
-            $productModel->shoppingListItems()->sync($shoppingListItemIDs);
-        }
+                    // Replace existing shopping list items with the new list
+                    $productModel->shoppingListItems()->sync($shoppingListItemIDs);
+                }
+            }
+
 
     public function findById(int $productID): ?Product
 {
@@ -173,4 +176,15 @@ public function searchByName(string $query): array
     {
         return ProductModel::where('name', $name)->exists();
     }
+
+public function updateStatus(int $productID, ?string $status): bool
+{
+    $m = ProductModel::find($productID);
+    if (!$m) return false;
+
+    $m->status = $status; // null is allowed now
+    return $m->save();
+}
+
+
 }
