@@ -54,22 +54,26 @@ class Eloquent_Product_Repository implements I_Product_Repository
         // Replace existing markets with the new list
         $productModel->markets()->sync($marketIDs);
     }
-        public function attachToShoppingListItems(int $productID, array $shoppingListItemIDs): void
+        public function attachMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void
         {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) return;
+            foreach ($productIDs as $productID) {
+                $productModel = ProductModel::find($productID);
+                if (!$productModel) continue;
 
-            // Add new shopping list items without removing existing ones
-            $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
+                $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
+            }
         }
 
-        public function detachFromShoppingListItems(int $productID, array $shoppingListItemIDs): void
-        {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) return;
 
-            // Remove only the given shopping list item IDs, keep the rest
-            $productModel->shoppingListItems()->detach($shoppingListItemIDs);
+        public function detachMultipleProductsFromShoppingLists(array $productIDs, array $shoppingListItemIDs): void
+        {
+            foreach ($productIDs as $productID) {
+                $productModel = ProductModel::find($productID);
+                if (!$productModel) continue;
+
+                // Detach only the given shopping list items, keep the rest
+                $productModel->shoppingListItems()->detach($shoppingListItemIDs);
+            }
         }
 
         public function syncShoppingListItems(int $productID, array $shoppingListItemIDs): void

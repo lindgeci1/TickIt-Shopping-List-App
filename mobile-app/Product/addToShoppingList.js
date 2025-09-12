@@ -1,29 +1,32 @@
 import { VITE_BASE_API_URL } from "@env";
 import { Alert } from "react-native";
 
-/**
- * Adds a product to a specific shopping list.
- *
- * @param {number} productId - The ID of the product to add
- * @param {number} shoppingListId - The ID of the target shopping list
- */
-export const addToShoppingList = async (productId, shoppingListId) => {
+export const addToShoppingList = async (productIds, shoppingListIds) => {
   try {
-    const response = await fetch(`${VITE_BASE_API_URL}/api/product-shopping-list-item/assign/${productId}`, {
+    // console.log("Calling addToShoppingList...");
+    // console.log("Products to add:", productIds);
+    // console.log("Shopping lists:", shoppingListIds);
+
+    const response = await fetch(`${VITE_BASE_API_URL}/api/product-shopping-list-item/assign`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ProductID: productId, ShoppingListItemIDs: [shoppingListId] }),
+      body: JSON.stringify({ ProductIDs: productIds, ShoppingListItemIDs: shoppingListIds }),
     });
 
     const text = await response.text();
-    // console.log("Add product raw response:", text);
+    // console.log("Raw response:", text);
 
     if (!response.ok) {
-      Alert.alert("❌ Error", "Failed to add product: " + text);
+      console.error("Failed to add products:", text);
+      Alert.alert("❌ Error", "Failed to add products: " + text);
       return;
     }
 
-    Alert.alert("✅ Success", "Product added to list!");
+    // console.log("Products added successfully!");
+    Alert.alert(
+      "Success",
+      "The selected products have been successfully added to the shopping list."
+    );
   } catch (error) {
     console.error("Add to shopping list error:", error);
     Alert.alert("❌ Error", "Failed to add product: " + error.message);

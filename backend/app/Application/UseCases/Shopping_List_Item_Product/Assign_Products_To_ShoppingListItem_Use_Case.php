@@ -23,9 +23,11 @@ class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_
 
     public function assign(Assign_Products_To_ShoppingListItem_DTO $dto): void
     {
-        // Check if product exists
-        if (!$this->productRepository->findById($dto->ProductID)) {
-            throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
+        // Check if all products exist
+        foreach ($dto->ProductIDs as $productID) {
+            if (!$this->productRepository->findById($productID)) {
+                throw new InvalidArgumentException("Product with ID {$productID} does not exist.");
+            }
         }
 
         // Check all shopping list items exist
@@ -35,7 +37,7 @@ class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_
             }
         }
 
-        // Attach product to shopping list items
-        $this->productRepository->attachToShoppingListItems($dto->ProductID, $dto->ShoppingListItemIDs);
+        // Attach all products to all shopping list items
+        $this->productRepository->attachMultipleProductsToShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
     }
 }
