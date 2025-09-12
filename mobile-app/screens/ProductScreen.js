@@ -4,7 +4,7 @@ import {
 } from "react-native";
 import Footer from "../components/Footer";
 import ShoppingListModal from "../Product/ShoppingListModal";
-
+import ProductCard from "../ShoppingList/ProductCard";
 import { fetchProducts } from "../Product/fetchProducts";
 import { fetchShoppingLists } from "../Product/fetchShoppingLists";
 import { addToShoppingList } from "../Product/addToShoppingList";
@@ -41,30 +41,17 @@ export default function ProductScreen({ navigation }) {
     filterProducts(allProducts, setProducts, search, newCategory);
   };
 
-  const renderProduct = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.photoBox}>
-        <Image
-          source={{ uri: item.Photos?.[0] || "https://via.placeholder.com/50" }}
-          style={styles.photo}
-          resizeMode="cover"
-        />
-      </View>
-      <View style={styles.infoBox}>
-        <Text style={styles.name}>{item.Name || "Unnamed Product"}</Text>
-        <Text style={styles.category}>{item.Category || "No category"}</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => {
-            setSelectedProduct(item);
-            setModalVisible(true);
-          }}
-        >
-          <Text style={styles.addButtonText}>+ Add to Buying List</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+const renderProduct = ({ item }) => (
+  <ProductCard
+    product={item}
+    showPrice={false}
+    onAdd={(p) => {
+      setSelectedProduct(p);
+      setModalVisible(true);
+    }}
+  />
+);
+
 
   return (
     <View style={styles.container}>
@@ -93,16 +80,17 @@ export default function ProductScreen({ navigation }) {
         })}
       </View>
 
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item.ProductID.toString()}
-        renderItem={renderProduct}
-        contentContainerStyle={{ paddingVertical: 10 }}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
-          <Text style={{ textAlign: "center", marginTop: 20, color: "#666" }}>No products found</Text>
-        )}
-      />
+<FlatList
+  data={products}
+  keyExtractor={(item) => item.ProductID.toString()}
+  renderItem={renderProduct}
+  contentContainerStyle={{ paddingVertical: 10 }}
+  showsVerticalScrollIndicator={false}
+  ListEmptyComponent={() => (
+    <Text style={{ textAlign: "center", marginTop: 20, color: "#666" }}>No products found</Text>
+  )}
+/>
+
 
       {/* Shopping List Modal */}
       <ShoppingListModal
