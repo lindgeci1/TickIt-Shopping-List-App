@@ -3,10 +3,10 @@ import {
   View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity
 } from "react-native";
 import Footer from "../components/Footer";
-import ShoppingListModal from "../Product/ShoppingListModal";
+import ShoppingListScreen from "../ShoppingList/ShoppingListScreen";
 import ProductCard from "../Product/ProductCard";
 import { fetchProducts } from "../Product/fetchProducts";
-import { fetchShoppingLists } from "../Product/fetchShoppingLists";
+import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { filterProducts } from "../Product/filterProducts";
 import { VITE_BASE_API_URL } from "@env";
@@ -135,7 +135,7 @@ return (
     />
 
     {/* Shopping List Modal */}
-    <ShoppingListModal
+    <ShoppingListScreen
       visible={modalVisible}
       onClose={() => setModalVisible(false)}
       shoppingLists={shoppingLists}

@@ -3,14 +3,14 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from "react
 import ProductCard from "../Product/ProductCard";
 import { removeProductsFromShoppingList } from "../Product/removeProductsFromShoppingList";
 import { updateProductsStatusesFromShoppingList } from "../Product/updateProductsStatusesFromShoppingList";
-
-export default function ShoppingListItemCard({ item, index }) {
+import { deleteShoppingList } from "../ShoppingList/deleteShoppingList";
+import { Feather } from "@expo/vector-icons"; // Trash bin icon
+export default function ShoppingLists({ item, index, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [editMode, setEditMode] = useState(false); // distinguish remove vs edit
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [products, setProducts] = useState([]);
-
   const [showToBuy, setShowToBuy] = useState(false);
   const [showBought, setShowBought] = useState(false);
 
@@ -31,7 +31,32 @@ export default function ShoppingListItemCard({ item, index }) {
         : [...prev, product]
     );
   };
+const handleDeleteList = () => {
+    Alert.alert(
+      "Delete List",
+      `Are you sure you want to delete "${item.Name}"?\nThis action cannot be undone.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteShoppingList(item.Shopping_List_ItemID);
 
+              // Notify parent
+              if (onDelete) {
+                onDelete(item.Shopping_List_ItemID);
+              }
+            } catch (error) {
+              console.log("Delete failed:", error);
+              Alert.alert("Error", "Failed to delete the shopping list.");
+            }
+          },
+        },
+      ]
+    );
+  };
   // Remove workflow
   const handleRemoveSelected = async () => {
     if (selectedProducts.length === 0) return;
@@ -74,21 +99,31 @@ export default function ShoppingListItemCard({ item, index }) {
   const boughtProducts = products.filter((p) => p.Status === "Bought");
 
   return (
-    <View style={[styles.card, { backgroundColor: listBackgroundColor }]}>
+<View style={styles.card}>
       {/* Header */}
-      <TouchableOpacity
-        onPress={() => setExpanded(!expanded)}
-        style={styles.headerRow}
-      >
-        <Text style={styles.name}>{item.Name}</Text>
-        <Text style={styles.createdAt}>
-          {new Date(item.AddedAt).toLocaleDateString()}{" "}
-          {new Date(item.AddedAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
-      </TouchableOpacity>
+     <TouchableOpacity
+  onPress={() => setExpanded(!expanded)}
+  style={styles.headerRow}
+>
+  <View style={styles.textContainer}>
+    <Text style={styles.name}>{item.Name}</Text>
+    <Text style={styles.createdAt}>
+      {new Date(item.AddedAt).toLocaleDateString()}{" "}
+      {new Date(item.AddedAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}
+    </Text>
+  </View>
+
+  <View style={styles.deleteContainer}>
+    <View style={styles.verticalLine} />
+    <TouchableOpacity onPress={handleDeleteList} style={styles.trashButton}>
+      <Feather name="trash-2" size={22} color="#c00" />
+    </TouchableOpacity>
+  </View>
+</TouchableOpacity>
+
 
       <Text style={styles.count}>{products.length} Products</Text>
 
@@ -203,26 +238,47 @@ export default function ShoppingListItemCard({ item, index }) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-    backgroundColor: "#fff",
-  },
+card: {
+  padding: 12,
+  borderRadius: 12,
+  marginBottom: 12,
+   backgroundColor: "#8c82ff", // lighter theme color
+  shadowColor: "#000",
+  shadowOpacity: 0.1,
+  shadowOffset: { width: 0, height: 2 },
+  shadowRadius: 4,
+  elevation: 3,
+},
+
   headerRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 8,
+    justifyContent: "space-between",
+    padding: 12,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginVertical: 6,
+    elevation: 2, // shadow for Android
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+  },
+    textContainer: {
+    flex: 1, // take remaining space
   },
   name: { fontSize: 16, fontWeight: "700", color: "#6c63ff" },
-  createdAt: { fontSize: 12, color: "#666" },
-  count: { fontSize: 12, color: "#666", marginVertical: 4 },
+      createdAt: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 2,
+  },
+count: { 
+  fontSize: 12, 
+  color: "#fff", // changed to white
+  marginVertical: 4,
+},
+
 
   sectionHeader: {
     flexDirection: "row",
