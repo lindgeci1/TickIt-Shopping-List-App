@@ -1,24 +1,30 @@
 import { VITE_BASE_API_URL } from "@env";
-import { Alert } from "react-native";
 
-/**
- * Fetches all shopping lists from the API.
- * @returns {Promise<Array>} Array of shopping list objects
- */
-export const fetchShoppingLists = async () => {
+export const fetchShoppingLists = async (setShoppingLists, setErrorMessage) => {
   try {
     const response = await fetch(`${VITE_BASE_API_URL}/api/shopping-list/all`);
     if (!response.ok) {
-      const text = await response.text();
-      console.error("Failed to fetch shopping lists:", text);
-      Alert.alert("Error", "Failed to fetch shopping lists: " + text);
-      return [];
+      // Try to parse backend validation message
+      const errorData = await response.json().catch(() => null);
+      if (errorData?.message) {
+        setErrorMessage(errorData.message);
+        console.error("Backend validation error:", errorData);
+      } else {
+        throw new Error(`Error ${response.status}`);
+      }
+      return;
     }
-    const json = await response.json();
-    return json;
+
+    const data = await response.json();
+    setShoppingLists(data);
+    // console.log("Fetched shopping lists:", data);
   } catch (error) {
-    console.error("Error fetching shopping lists:", error);
-    Alert.alert("Error", "Failed to fetch shopping lists: " + error.message);
-    return [];
+    // Show backend message if exists
+    console.error("Error fetching lists:", error.response?.data || error);
+    if (error.response?.data?.message) {
+      setErrorMessage(error.response.data.message);
+    } else {
+      setErrorMessage("Failed to fetch shopping lists. Please try again.");
+    }
   }
 };
