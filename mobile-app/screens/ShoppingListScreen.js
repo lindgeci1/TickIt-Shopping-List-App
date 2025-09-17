@@ -52,13 +52,15 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
       </Text>
 
       {/* Search bar */}
-      <TextInput
-        style={[styles.searchBar, { backgroundColor: "#f0f0ff", color: "#333" }]}
-        placeholder="Search lists..."
-        placeholderTextColor="#aaa"
-        value={search}
-        onChangeText={handleSearchChange}
-      />
+{/* Search bar */}
+<TextInput
+  style={[styles.searchBar, { backgroundColor: "#e8e8ff", color: "#555" }]} // matches ProductScreen
+  placeholder="Search lists..."
+  placeholderTextColor="#555" // same as categoryText
+  value={search}
+  onChangeText={handleSearchChange}
+/>
+
 
       {/* Error message */}
       {errorMessage.length > 0 && (
@@ -109,19 +111,21 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 15, backgroundColor: "#f9f9fc" },
   header: { fontSize: 22, fontWeight: "700" },
-  searchBar: {
-    borderRadius: 12,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginBottom: 15,
-    fontSize: 16,
-    fontWeight: "500",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-  },
+searchBar: {
+  height: 48,
+  borderWidth: 1.5,            // same as category chips
+  borderColor: "#d1d1f0",      // same as inactive category border
+  borderRadius: 12,
+  paddingHorizontal: 16,
+  fontSize: 16,
+  marginBottom: 20,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 2,                 // subtle shadow for Android
+},
+
   toast: {
     alignSelf: "center",
     marginBottom: 10,
