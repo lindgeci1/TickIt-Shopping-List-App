@@ -16,7 +16,7 @@ const categoriesList = [
   { name: "Electronics" }, { name: "Clothing" }, { name: "Cleaning" },
 ];
 
-export default function ProductScreen({ navigation }) {
+export default function ProductScreen({ navigation, topPadding }) {
   const [allProducts, setAllProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -73,15 +73,17 @@ export default function ProductScreen({ navigation }) {
   );
 
 return (
-  <View style={styles.container}>
-    <Text style={styles.headerTitle}>Browse Products</Text>
+<View style={[styles.container, { paddingTop: topPadding + 15 }]}>
 
-    <TextInput
-      style={styles.searchBar}
-      placeholder="🔍  Search products..."
-      value={search}
-      onChangeText={handleSearchChange}
-    />
+<Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Products</Text>
+
+<TextInput
+  style={styles.searchBar}
+  placeholder="Search products..."
+  placeholderTextColor="#aaa" // light grey placeholder
+  value={search}
+  onChangeText={handleSearchChange}
+/>
 
 
 
@@ -92,7 +94,11 @@ return (
         return (
           <TouchableOpacity
             key={cat.name}
-            style={[styles.categoryChip, { backgroundColor: isActive ? "#6c63ff22" : "#fff" }]}
+            style={[styles.categoryChip, { 
+  backgroundColor: isActive ? "#6c63ff22" : "#fff",
+  borderColor: isActive ? "#6c63ff" : "#ddd", // adds visible border for active
+}]}
+
             onPress={() => handleCategoryPress(cat.name)}
           >
             <Text style={styles.categoryText}>{cat.name}</Text>
@@ -125,12 +131,14 @@ return (
       data={products}
       keyExtractor={(item) => item.ProductID.toString()}
       renderItem={renderProduct}
-      contentContainerStyle={{ paddingVertical: 10 }}
+      contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
+
       showsVerticalScrollIndicator={false}
       ListEmptyComponent={() => (
-        <Text style={{ textAlign: "center", marginTop: 20, color: "#666" }}>
-          No products found
-        </Text>
+<Text style={styles.emptyText}>
+  No products found
+</Text>
+
       )}
     />
 
@@ -178,8 +186,27 @@ return (
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 15, backgroundColor: "#f9f9fc" },
-  headerTitle: { fontSize: 22, fontWeight: "700", marginBottom: 12, color: "#2d3436" },
-  searchBar: { height: 45, borderWidth: 1, borderColor: "#ddd", borderRadius: 12, paddingHorizontal: 15, marginBottom: 15, backgroundColor: "#fff" },
+headerTitle: {
+  fontSize: 24,
+  fontWeight: "700",
+  marginBottom: 15,
+  color: "#6c63ff", // purple theme
+},
+searchBar: {
+  height: 48,
+  borderWidth: 0,
+  borderRadius: 12,
+  paddingHorizontal: 16,
+  backgroundColor: "#f0f0ff", // light purple background
+  color: "#333",
+  fontSize: 16,
+  marginBottom: 20,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 2, // adds subtle shadow for Android
+},
   sectionLabel: { fontSize: 16, fontWeight: "600", marginVertical: 8, color: "#444" },
   categoriesContainer: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 15 },
   categoryChip: { borderWidth: 1.5, paddingVertical: 6, paddingHorizontal: 14, borderRadius: 20, marginBottom: 8 },
@@ -192,4 +219,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   globalAddButtonText: { color: "#fff", fontWeight: "700" },
+  emptyText: {
+  textAlign: "center",
+  marginTop: 40,       // a bit more spacing
+  color: "#6c63ff",    // purple theme
+  fontSize: 16,
+  fontWeight: "500",
+  fontStyle: "italic",
+}
+
 });
