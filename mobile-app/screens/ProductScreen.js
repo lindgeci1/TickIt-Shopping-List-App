@@ -75,37 +75,44 @@ export default function ProductScreen({ navigation, topPadding }) {
 return (
 <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
 
-<Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Products</Text>
+{/* <Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Products</Text> */}
 
+{/* Search input only, no header */}
 <TextInput
   style={styles.searchBar}
   placeholder="Search products..."
-  placeholderTextColor="#aaa" // light grey placeholder
+  placeholderTextColor="#555" // same as categoryText
   value={search}
   onChangeText={handleSearchChange}
 />
 
 
+{/* Categories below */}
+<Text style={styles.sectionLabel}>Categories</Text>
+<View style={styles.categoriesContainer}>
+  {categoriesList.map((cat) => {
+    const isActive = cat.name === activeCategory;
+    return (
+      <TouchableOpacity
+        key={cat.name}
+        style={[
+          styles.categoryChip,
+          { 
+            backgroundColor: isActive ? "#6c63ff22" : "#e8e8ff",
+            borderColor: isActive ? "#6c63ff" : "#d1d1f0",
+          }
+        ]}
+        onPress={() => handleCategoryPress(cat.name)}
+      >
+        <Text style={[
+          styles.categoryText,
+          { color: isActive ? "#6c63ff" : "#555" }
+        ]}>{cat.name}</Text>
+      </TouchableOpacity>
+    );
+  })}
+</View>
 
-    <Text style={styles.sectionLabel}>Categories</Text>
-    <View style={styles.categoriesContainer}>
-      {categoriesList.map((cat) => {
-        const isActive = cat.name === activeCategory;
-        return (
-          <TouchableOpacity
-            key={cat.name}
-            style={[styles.categoryChip, { 
-  backgroundColor: isActive ? "#6c63ff22" : "#fff",
-  borderColor: isActive ? "#6c63ff" : "#ddd", // adds visible border for active
-}]}
-
-            onPress={() => handleCategoryPress(cat.name)}
-          >
-            <Text style={styles.categoryText}>{cat.name}</Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
     <TouchableOpacity
       style={styles.globalAddButton}
       onPress={handleAddToBuyingList}
@@ -194,10 +201,11 @@ headerTitle: {
 },
 searchBar: {
   height: 48,
-  borderWidth: 0,
+  borderWidth: 1.5,           // same as category chips
+  borderColor: "#d1d1f0",     // same as inactive category border
   borderRadius: 12,
   paddingHorizontal: 16,
-  backgroundColor: "#f0f0ff", // light purple background
+  backgroundColor: "#e8e8ff", // same as inactive category background
   color: "#333",
   fontSize: 16,
   marginBottom: 20,
@@ -205,12 +213,33 @@ searchBar: {
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.05,
   shadowRadius: 4,
-  elevation: 2, // adds subtle shadow for Android
+  elevation: 2, // subtle shadow for Android
 },
   sectionLabel: { fontSize: 16, fontWeight: "600", marginVertical: 8, color: "#444" },
-  categoriesContainer: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 15 },
-  categoryChip: { borderWidth: 1.5, paddingVertical: 6, paddingHorizontal: 14, borderRadius: 20, marginBottom: 8 },
-  categoryText: { fontSize: 13, fontWeight: "600", color: "#6c63ff" },
+categoriesContainer: { 
+  flexDirection: "row", 
+  flexWrap: "wrap", 
+  justifyContent: "center", // center all chips in the row
+  marginBottom: 15,
+  gap: 10, // optional, space between chips (if your RN version supports it)
+},
+categoryChip: { 
+  width: "30%",               // smaller width, won't expand to edges
+  height: 30,                 
+  borderWidth: 1.5, 
+  borderRadius: 20, 
+  marginBottom: 12,           // space between rows
+  alignItems: "center",       
+  justifyContent: "center",   
+  paddingHorizontal: 0,
+},
+categoryText: { 
+  fontSize: 14,               
+  fontWeight: "600", 
+  color: "#6c63ff" 
+},
+
+
   globalAddButton: {
     backgroundColor: "#6c63ff",
     paddingVertical: 10,
