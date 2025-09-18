@@ -10,7 +10,7 @@ class Product_Market extends Model
 {
     protected $table = 'product_market';
     protected $primaryKey = 'product_market_id';
-    protected $fillable = ['product_id', 'market_id'];
+    protected $fillable = ['product_id', 'market_id', 'price']; // price added
     public $timestamps = false;
 
     public function product()

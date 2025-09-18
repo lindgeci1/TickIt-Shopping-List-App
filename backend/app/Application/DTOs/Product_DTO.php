@@ -42,7 +42,7 @@ class Product_DTO
         if ($product) {
             $this->ProductID = $product->ProductID;
             $this->Name = $product->Name;
-            $this->Price = $product->Price;
+
             $this->IsFavorite = $product->IsFavorite;
             $this->Category = $product->Category;
 

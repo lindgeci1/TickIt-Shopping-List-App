@@ -12,7 +12,7 @@ interface I_Product_Repository
     public function update(Product $product): bool;
     public function delete(int $ProductID): bool;
     public function existsByName(string $name): bool;
-    public function attachToMarkets(int $productID, array $marketIDs): void;
+    public function attachToMarkets(int $productID, array $marketsWithPrices): void;
     public function detachFromMarkets(int $productID, array $marketIDs): void;
     public function syncMarkets(int $productID, array $marketIDs): void;
     public function searchByName(string $query): array;

@@ -29,7 +29,6 @@ class Eloquent_Market_Repository implements I_Market_Repository
                 $product = new Product(
                     $p->product_id,
                     $p->name,
-                    $p->price,
                     $p->is_favorite,
                     $p->category
                 );
@@ -58,7 +57,6 @@ class Eloquent_Market_Repository implements I_Market_Repository
             $product = new Product(
                 $p->product_id,
                 $p->name,
-                $p->price,
                 $p->is_favorite,
                 $p->category
             );
