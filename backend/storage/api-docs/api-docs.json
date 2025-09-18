@@ -550,7 +550,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
+                                "$ref": "#/components/schemas/Remove_Markets_From_Product_DTO"
                             }
                         }
                     }
@@ -943,17 +943,30 @@
             "Assign_Markets_To_Product_DTO": {
                 "required": [
                     "ProductID",
-                    "MarketIDs"
+                    "Markets"
                 ],
                 "properties": {
                     "ProductID": {
                         "type": "integer"
                     },
-                    "MarketIDs": {
-                        "description": "Array of market IDs to assign",
+                    "Markets": {
+                        "description": "Array of market objects with ID and price",
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "required": [
+                                "MarketID",
+                                "Price"
+                            ],
+                            "properties": {
+                                "MarketID": {
+                                    "type": "integer"
+                                },
+                                "Price": {
+                                    "type": "number",
+                                    "format": "float"
+                                }
+                            },
+                            "type": "object"
                         }
                     }
                 },
@@ -1097,6 +1110,25 @@
                     },
                     "ProductID": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Remove_Markets_From_Product_DTO": {
+                "required": [
+                    "ProductID",
+                    "MarketIDs"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "type": "integer"
+                    },
+                    "MarketIDs": {
+                        "description": "Array of market IDs from which the product should be removed",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "type": "object"

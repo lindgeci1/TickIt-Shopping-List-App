@@ -21,18 +21,27 @@ class Assign_Markets_To_Product_Use_Case implements I_Assign_Markets_To_Product_
         $this->marketRepository = $marketRepository;
     }
 
-        public function assign(Assign_Markets_To_Product_DTO $dto): void
-        {
-            if (!$this->productRepository->findById($dto->ProductID)) {
-                throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
-            }
-
-            foreach ($dto->MarketIDs as $marketId) {
-                if (!$this->marketRepository->findById($marketId)) {
-                    throw new InvalidArgumentException("Market with ID $marketId does not exist.");
-                }
-            }
-
-            $this->productRepository->attachToMarkets($dto->ProductID, $dto->MarketIDs);
+    public function assign(Assign_Markets_To_Product_DTO $dto): void
+    {
+        // Check if product exists
+        if (!$this->productRepository->findById($dto->ProductID)) {
+            throw new InvalidArgumentException("Product with ID {$dto->ProductID} does not exist.");
         }
+
+        // Validate markets and prepare array for repository
+        $marketsWithPrices = [];
+        foreach ($dto->Markets as $marketData) {
+            $marketId = $marketData['MarketID'];
+            $price = $marketData['Price'];
+
+            if (!$this->marketRepository->findById($marketId)) {
+                throw new InvalidArgumentException("Market with ID $marketId does not exist.");
+            }
+
+            $marketsWithPrices[] = ['MarketID' => $marketId, 'Price' => $price];
+        }
+
+        // Attach product to markets with their respective prices
+        $this->productRepository->attachToMarkets($dto->ProductID, $marketsWithPrices);
+    }
 }

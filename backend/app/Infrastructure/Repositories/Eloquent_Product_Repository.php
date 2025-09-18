@@ -16,7 +16,6 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 $product = new Product(
                     $m->product_id,
                     $m->name,
-                    $m->price,
                     $m->is_favorite,
                     $m->category,
                 );
@@ -28,21 +27,29 @@ class Eloquent_Product_Repository implements I_Product_Repository
             })->all();
         }
 
-    public function attachToMarkets(int $productID, array $marketIDs): void
-    {
-        $productModel = ProductModel::find($productID);
-        if (!$productModel) return;
+        public function attachToMarkets(int $productID, array $marketsWithPrices): void
+        {
+            $productModel = ProductModel::find($productID);
+            if (!$productModel) return;
 
-        // Add new markets without removing existing ones
-        $productModel->markets()->syncWithoutDetaching($marketIDs);
-    }
+            // Prepare data for syncWithoutDetaching
+            // $marketsWithPrices should be in the form: [marketId => ['price' => 2.5], ...]
+            $attachData = [];
+            foreach ($marketsWithPrices as $market) {
+                $attachData[$market['MarketID']] = ['price' => $market['Price']];
+            }
+
+            // Attach markets with their respective prices
+            $productModel->markets()->syncWithoutDetaching($attachData);
+        }
+
 
     public function detachFromMarkets(int $productID, array $marketIDs): void
     {
         $productModel = ProductModel::find($productID);
         if (!$productModel) return;
 
-        // Remove only the given market IDs, keep the rest
+        // Detach the product from the given markets
         $productModel->markets()->detach($marketIDs);
     }
 
@@ -96,7 +103,6 @@ class Eloquent_Product_Repository implements I_Product_Repository
     $product = new Product(
         $m->product_id,
         $m->name,
-        $m->price,
         $m->is_favorite,
         $m->category,
     );
@@ -116,7 +122,6 @@ public function searchByName(string $query): array
         $product = new Product(
             $m->product_id,
             $m->name,
-            $m->price,
             $m->is_favorite,
             $m->category
         );
@@ -133,7 +138,6 @@ public function searchByName(string $query): array
     {
         $m = new ProductModel();
         $m->name = $product->Name;
-        $m->price = $product->Price;
         $m->is_favorite = $product->IsFavorite;
         $m->category = $product->Category;
         $m->save();
@@ -141,7 +145,6 @@ public function searchByName(string $query): array
         return new Product(
             $m->product_id,
             $m->name,
-            $m->price,
             $m->is_favorite,
             $m->category,
         );
@@ -153,7 +156,6 @@ public function searchByName(string $query): array
         if (!$m) return false;
 
         $m->name = $product->Name;
-        $m->price = $product->Price;
         $m->is_favorite = $product->IsFavorite;
         $m->category = $product->Category;
         $saved = $m->save();

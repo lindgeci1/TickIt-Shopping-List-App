@@ -9,34 +9,32 @@ use App\Infrastructure\Models\Shopping_List_Item;
 class Product extends Model
 {
     protected $table = 'products';
-    protected $primaryKey = 'product_id'; // lowercase
-    protected $fillable = ['name', 'price', 'is_favorite', 'category', 'status'];
+    protected $primaryKey = 'product_id';
+    protected $fillable = ['name', 'is_favorite', 'category', 'status']; // price removed
 
     public $timestamps = false;
 
-    // A product can belong to many markets
     public function markets()
     {
         return $this->belongsToMany(
             Market::class,
-            'product_market',   // pivot table
-            'product_id',       // foreign key on pivot table for product
-            'market_id'         // foreign key on pivot table for market
+            'product_market',
+            'product_id',
+            'market_id'
         );
     }
 
-    // A product can belong to many shopping list items
     public function shoppingListItems()
     {
         return $this->belongsToMany(
             Shopping_List_Item::class,
-            'shopping_list_item_product',   // pivot table
-            'product_id',                   // foreign key on pivot table for product
-            'shopping_list_item_id'         // foreign key on pivot table for shopping_list_item
+            'shopping_list_item_product',
+            'product_id',
+            'shopping_list_item_id'
         );
     }
 
-        public function photo()
+    public function photo()
     {
         return $this->hasOne(Product_Photo::class, 'product_id', 'product_id');
     }
