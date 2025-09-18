@@ -42,7 +42,7 @@ use App\Application\Interfaces\ShoppingList\I_Delete_Shopping_List_Item_Use_Case
 
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
-use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Case;
+use App\Application\Interfaces\ProductMarket\I_Get_Preferred_Market_Use_Case;
 
 use App\Application\Interfaces\Product_Photo\I_Add_Product_Photo_Use_Case;
 use App\Application\Interfaces\Product_Photo\I_Delete_Product_Photo_Use_Case;
@@ -77,7 +77,7 @@ use App\Application\UseCases\ShoppingList\Delete_Shopping_List_Item_Use_Case;
 
 use App\Application\UseCases\ProductMarket\Assign_Markets_To_Product_Use_Case;
 use App\Application\UseCases\ProductMarket\Remove_Markets_From_Product_Use_Case;
-use App\Application\UseCases\ProductMarket\Update_Markets_For_Product_Use_Case;
+use App\Application\UseCases\ProductMarket\Get_Preferred_Market_Use_Case;
 
 use App\Application\UseCases\Product_Photo\Add_Product_Photo_Use_Case;
 use App\Application\UseCases\Product_Photo\Delete_Product_Photo_Use_Case;
@@ -125,7 +125,7 @@ class AppServiceProvider extends ServiceProvider
         // Product-Market Service
         $this->app->bind(I_Assign_Markets_To_Product_Use_Case::class, Assign_Markets_To_Product_Use_Case::class);
         $this->app->bind(I_Remove_Markets_From_Product_Use_Case::class, Remove_Markets_From_Product_Use_Case::class);
-        $this->app->bind(I_Update_Markets_For_Product_Use_Case::class, Update_Markets_For_Product_Use_Case::class);
+        $this->app->bind(I_Get_Preferred_Market_Use_Case::class, Get_Preferred_Market_Use_Case::class);
         // Product-Photo Service
         $this->app->bind(I_Add_Product_Photo_Use_Case::class, Add_Product_Photo_Use_Case::class);
         $this->app->bind(I_Delete_Product_Photo_Use_Case::class, Delete_Product_Photo_Use_Case::class);

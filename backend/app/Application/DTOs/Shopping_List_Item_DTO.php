@@ -61,11 +61,10 @@ class Shopping_List_Item_DTO
                 return [
                     'ProductID' => $p->ProductID,
                     'Name' => $p->Name,
-                    'Price' => $p->Price,
                     'IsFavorite' => $p->IsFavorite,
                     'Category' => $p->Category,
                     'Photos' => $p->Photos ?? [],
-                    'Status' => $p->Status, 
+                    'Status' => $p->Status,
                 ];
             }, $entity->Products ?? []);
         }

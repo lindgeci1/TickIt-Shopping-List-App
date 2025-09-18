@@ -5,10 +5,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Application\Interfaces\ProductMarket\I_Assign_Markets_To_Product_Use_Case;
 use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
-use App\Application\Interfaces\ProductMarket\I_Update_Markets_For_Product_Use_Case;
+use App\Application\Interfaces\ProductMarket\I_Get_Preferred_Market_Use_Case;
 use InvalidArgumentException;
 use App\Application\DTOs\Assign_Markets_To_Product_DTO;
 use App\Application\DTOs\Remove_Markets_From_Product_DTO;
+use App\Application\DTOs\Preferred_Market_DTO;
 /**
  * @OA\Tag(
  *     name="Product_Market",
@@ -19,17 +20,16 @@ class Product_Market_Controller extends Controller
 {
     private I_Assign_Markets_To_Product_Use_Case $assignMarketsUseCase;
     private I_Remove_Markets_From_Product_Use_Case $removeMarketsUseCase;
-    private I_Update_Markets_For_Product_Use_Case $updateMarketsUseCase;
-
+    private I_Get_Preferred_Market_Use_Case $getPreferredMarketUseCase;
 
     public function __construct(
         I_Assign_Markets_To_Product_Use_Case $assignMarketsUseCase,
         I_Remove_Markets_From_Product_Use_Case $removeMarketsUseCase,
-        I_Update_Markets_For_Product_Use_Case $updateMarketsUseCase
+        I_Get_Preferred_Market_Use_Case $getPreferredMarketUseCase
     ) {
         $this->assignMarketsUseCase = $assignMarketsUseCase;
         $this->removeMarketsUseCase = $removeMarketsUseCase;
-        $this->updateMarketsUseCase = $updateMarketsUseCase;
+        $this->getPreferredMarketUseCase = $getPreferredMarketUseCase;
     }
 
     /**
@@ -73,53 +73,59 @@ class Product_Market_Controller extends Controller
      *     @OA\Response(response=400, description="Validation error")
      * )
      */
-public function removeMarkets(Request $request, int $ProductID)
+        public function removeMarkets(Request $request, int $ProductID)
+        {
+            $marketIds = $request->input('MarketIDs', $request->input('marketIDs', []));
+
+            if (empty($marketIds)) {
+                return response()->json(['message' => 'No markets selected'], 400);
+            }
+
+            $dto = new Remove_Markets_From_Product_DTO($ProductID, $marketIds);
+
+            try {
+                $this->removeMarketsUseCase->remove($dto);
+                return response()->json(['success' => true]);
+            } catch (\Exception $ex) {
+                return response()->json(['message' => $ex->getMessage()], 500);
+            }
+        }
+
+
+/**
+ * @OA\Get(
+ *     path="/api/product-market/preferred/{ProductID}",
+ *     summary="Get the market with the cheapest price for a product",
+ *     tags={"Product_Market"},
+ *     @OA\Parameter(
+ *         name="ProductID",
+ *         in="path",
+ *         required=true,
+ *         description="ID of the product to check",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Cheapest market found for the product",
+ *         @OA\JsonContent(ref="#/components/schemas/Preferred_Market_DTO")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found or no markets assigned",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string")
+ *         )
+ *     )
+ * )
+ */
+public function preferredMarket(int $ProductID)
 {
-    $marketIds = $request->input('MarketIDs', $request->input('marketIDs', []));
-    Log::info('RemoveMarkets request', ['ProductID' => $ProductID, 'MarketIDs' => $marketIds]);
-
-    if (empty($marketIds)) {
-        Log::warning('No markets selected for removeMarkets', ['ProductID' => $ProductID]);
-        return response()->json(['message' => 'No markets selected'], 400);
-    }
-
-    $dto = new Remove_Markets_From_Product_DTO($ProductID, $marketIds);
-
     try {
-        $this->removeMarketsUseCase->remove($dto);
-        Log::info('Markets removed successfully', ['ProductID' => $ProductID]);
-        return response()->json(['success' => true]);
+        $dto = $this->getPreferredMarketUseCase->getPreferredMarket($ProductID);
+        return response()->json($dto);
     } catch (\Exception $ex) {
-        Log::error('Error in removeMarkets', ['exception' => $ex]);
-        return response()->json(['message' => $ex->getMessage()], 500);
+        return response()->json(['message' => $ex->getMessage()], 404);
     }
 }
 
-        /**
-     * @OA\Put(
-     *     path="/api/product-market/update/{ProductID}",
-     *     summary="Replace all markets for a product with a new selection",
-     *     tags={"Product_Market"},
-     *     @OA\Parameter(name="ProductID", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Markets_To_Product_DTO")),
-     *     @OA\Response(response=200, description="Product markets successfully updated"),
-     *     @OA\Response(response=400, description="Validation error")
-     * )
-     */
-    public function updateMarkets(Request $request, int $ProductID)
-    {
-        $marketIds = $request->input('MarketIDs', $request->input('market_ids', []));
-        if (empty($marketIds)) {
-            return response()->json(['message' => 'No markets selected'], 400);
-        }
-
-        $dto = new Assign_Markets_To_Product_DTO($ProductID, $marketIds);
-
-        try {
-            $this->updateMarketsUseCase->update($dto);
-            return response()->json(['success' => true]);
-        } catch (InvalidArgumentException $ex) {
-            return response()->json(['message' => $ex->getMessage()], 404);
-        }
-    }
 }

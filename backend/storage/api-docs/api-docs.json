@@ -565,39 +565,49 @@
                 }
             }
         },
-        "/api/product-market/update/{ProductID}": {
-            "put": {
+        "/api/product-market/preferred/{ProductID}": {
+            "get": {
                 "tags": [
                     "Product_Market"
                 ],
-                "summary": "Replace all markets for a product with a new selection",
-                "operationId": "ec12b49cb31fd47530b5ef6fb4e026a9",
+                "summary": "Get the market with the cheapest price for a product",
+                "operationId": "0d071257773804c2a822e2d9d170252f",
                 "parameters": [
                     {
                         "name": "ProductID",
                         "in": "path",
+                        "description": "ID of the product to check",
                         "required": true,
                         "schema": {
                             "type": "integer"
                         }
                     }
                 ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Assign_Markets_To_Product_DTO"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
-                        "description": "Product markets successfully updated"
+                        "description": "Cheapest market found for the product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Preferred_Market_DTO"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Validation error"
+                    "404": {
+                        "description": "Product not found or no markets assigned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1045,6 +1055,23 @@
                     },
                     "MarketID": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Preferred_Market_DTO": {
+                "required": [
+                    "ProductID",
+                    "PreferredMarketLogo"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "description": "The ID of the product",
+                        "type": "integer"
+                    },
+                    "PreferredMarketLogo": {
+                        "description": "URL of the market logo with the cheapest price for this product",
+                        "type": "string"
                     }
                 },
                 "type": "object"

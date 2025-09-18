@@ -6,8 +6,11 @@ export default function ProductCard({
   selectionMode = false,
   selected = false,
   onSelect,
-  showPrice = true, // new prop
+  showPrice = true, 
+  preferredMarketLogo, 
+  marketMessage, // ✅ add this line
 }) {
+
   return (
     <View style={styles.card}>
       {selectionMode && (
@@ -26,13 +29,36 @@ export default function ProductCard({
           resizeMode="cover"
         />
       </View>
-      <View style={styles.infoBox}>
-        <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
-        <Text style={styles.category}>{product.Category || "No category"}</Text>
-        {showPrice && product.Price != null && (
-          <Text style={styles.price}>${product.Price}</Text>
-        )}
-      </View>
+
+<View style={styles.infoBox}>
+  <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
+  <Text style={styles.category}>{product.Category || "No category"}</Text>
+  {showPrice && product.Price != null && (
+    <Text style={styles.price}>${product.Price}</Text>
+  )}
+
+  {/* Add this line here */}
+{/* Show message only if product has no preferred market */}
+{!preferredMarketLogo && marketMessage && (
+  <Text style={styles.marketMessage}>{marketMessage}</Text>
+)}
+
+</View>
+
+
+{preferredMarketLogo && (
+  <View style={styles.logoBox}>
+    <Text style={styles.preferredText}>Preferred:</Text>
+    <Image
+      source={{ uri: preferredMarketLogo }}
+      style={styles.logo}
+      resizeMode="cover"
+    />
+  </View>
+)}
+
+
+
     </View>
   );
 }
@@ -73,4 +99,30 @@ const styles = StyleSheet.create({
   name: { fontSize: 15, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
   category: { fontSize: 12, color: "#888", marginBottom: 2 },
   price: { fontSize: 13, fontWeight: "600", color: "#444" },
+ logoBox: {
+  flexDirection: "row",       // horizontal layout
+  alignItems: "center",
+  marginLeft: 10,
+},
+preferredText: {
+  fontSize: 12,
+  color: "#6c63ff",   
+  marginRight: 6,            // space between text and logo
+},
+logo: {
+  width: 50,                  // rectangular shape
+  height: 30,
+  borderRadius: 6,            // small rounded corners
+  borderWidth: 1.5,
+  borderColor: "#6c63ff",
+},
+
+marketMessage: {
+  fontSize: 12,
+  color: "red",
+  marginTop: 4,
+  fontStyle: "italic",
+},
+
+
 });

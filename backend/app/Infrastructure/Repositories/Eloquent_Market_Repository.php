@@ -39,6 +39,25 @@ class Eloquent_Market_Repository implements I_Market_Repository
             return $market;
         })->all();
     }
+    //! duke qita me e ndreqe
+        public function getMarketsForProduct(int $productId): array
+        {
+            // Join product_market and market_photos to get price and logo URL
+            $markets = MarketModel::query()
+                ->join('product_market', 'markets.market_id', '=', 'product_market.market_id')
+                ->leftJoin('market_photos', 'markets.market_id', '=', 'market_photos.market_id')
+                ->where('product_market.product_id', $productId)
+                ->select(
+                    'markets.market_id as MarketID',
+                    'markets.name as Name',
+                    'market_photos.url as Logo', // get logo from market_photos
+                    'product_market.price as Price'
+                )
+                ->get()
+                ->toArray();
+
+            return $markets;
+        }
 
     public function findById(int $MarketID): ?Market
     {
