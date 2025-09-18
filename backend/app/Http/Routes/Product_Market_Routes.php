@@ -7,5 +7,5 @@ Route::prefix('product-market')->group(function () {
 
     Route::post('/assign/{ProductID}', [Product_Market_Controller::class, 'assignMarkets']);
     Route::delete('/remove/{ProductID}', [Product_Market_Controller::class, 'removeMarkets']);
-    Route::put('/update/{ProductID}', [Product_Market_Controller::class, 'updateMarkets']); // new route
+    Route::get('/preferred/{ProductID}', [Product_Market_Controller::class, 'preferredMarket']);
 });

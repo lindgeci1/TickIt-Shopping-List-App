@@ -13,4 +13,5 @@ interface I_Market_Repository
     public function update(Market $market): bool;
     public function delete(int $MarketID): bool;
     public function existsByName(string $name): bool;
+    public function getMarketsForProduct(int $productId): array;
 }

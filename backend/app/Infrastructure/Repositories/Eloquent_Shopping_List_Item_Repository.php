@@ -26,7 +26,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
                     $product = new Product(
                         $p->product_id,
                         $p->name,
-                        $p->price,
                         $p->is_favorite ?? false,
                         $p->category
                     );
@@ -60,7 +59,6 @@ class Eloquent_Shopping_List_Item_Repository implements I_Shopping_List_Item_Rep
                 $product = new Product(
                     $p->product_id,
                     $p->name,
-                    $p->price,
                     $p->is_favorite ?? false,
                     $p->category
                 );

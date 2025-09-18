@@ -25,11 +25,38 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
-
+const [preferredMarkets, setPreferredMarkets] = useState({});
+const [marketMessages, setMarketMessages] = useState({});
   useEffect(() => {
     fetchProducts(setAllProducts, setProducts);
     fetchShoppingLists(setShoppingLists);
   }, []);
+useEffect(() => {
+  const fetchAllPreferredMarkets = async () => {
+    const logos = {};
+    const messages = {};
+    for (let product of products) {
+      if (!preferredMarkets[product.ProductID]) {
+        try {
+          const res = await fetch(`${VITE_BASE_API_URL}/api/product-market/preferred/${product.ProductID}`);
+          const data = await res.json();
+
+          logos[product.ProductID] = data.PreferredMarketLogo || null;
+          messages[product.ProductID] = data.message || "Product is not assigned to any market"; // default message
+
+        } catch (err) {
+          console.error("Failed to fetch preferred market", err);
+          logos[product.ProductID] = null;
+          messages[product.ProductID] = "Product is not assigned to any market";
+        }
+      }
+    }
+    setPreferredMarkets(prev => ({ ...prev, ...logos }));
+    setMarketMessages(prev => ({ ...prev, ...messages }));
+  };
+
+  if (products.length) fetchAllPreferredMarkets();
+}, [products]);
 
   const handleSearchChange = (text) => {
     setSearch(text);
@@ -61,16 +88,18 @@ export default function ProductScreen({ navigation, topPadding }) {
     }
   };
 
-  const renderProduct = ({ item }) => (
+const renderProduct = ({ item }) => (
 <ProductCard
   product={item}
   selectionMode={selectionMode}
   selected={selectedProducts.includes(item)}
   onSelect={() => toggleSelection(item)}
-  showPrice={false} // hide price
+  showPrice={false}
+  preferredMarketLogo={preferredMarkets[item.ProductID]}
+  marketMessage={marketMessages[item.ProductID]} // ✅ pass it here
 />
 
-  );
+);
 
 return (
 <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
