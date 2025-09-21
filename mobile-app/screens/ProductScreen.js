@@ -4,7 +4,7 @@ import {
 } from "react-native";
 import Footer from "../components/Footer";
 import ShoppingListScreen from "../ShoppingList/ShoppingListScreen";
-import ProductCard from "../Product/ProductCard";
+import ProductCardTOBrowse from "../Product/ProductCardTOBrowse";
 import { fetchProducts } from "../Product/fetchProducts";
 import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
@@ -27,6 +27,7 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
 const [preferredMarkets, setPreferredMarkets] = useState({});
 const [marketMessages, setMarketMessages] = useState({});
+const [preferredMarketPrices, setPreferredMarketPrices] = useState({});
   useEffect(() => {
     fetchProducts(setAllProducts, setProducts);
     fetchShoppingLists(setShoppingLists);
@@ -35,24 +36,30 @@ useEffect(() => {
   const fetchAllPreferredMarkets = async () => {
     const logos = {};
     const messages = {};
+    const prices = {}; // <-- new object to store prices
+
     for (let product of products) {
       if (!preferredMarkets[product.ProductID]) {
         try {
           const res = await fetch(`${VITE_BASE_API_URL}/api/product-market/preferred/${product.ProductID}`);
           const data = await res.json();
-
+        console.log("Preferred market API response:", data);
           logos[product.ProductID] = data.PreferredMarketLogo || null;
+          prices[product.ProductID] = data.Price ?? null;
           messages[product.ProductID] = data.message || "Product is not assigned to any market"; // default message
 
         } catch (err) {
           console.error("Failed to fetch preferred market", err);
           logos[product.ProductID] = null;
+          prices[product.ProductID] = null; // fallback if error
           messages[product.ProductID] = "Product is not assigned to any market";
         }
       }
     }
+
     setPreferredMarkets(prev => ({ ...prev, ...logos }));
     setMarketMessages(prev => ({ ...prev, ...messages }));
+    setPreferredMarketPrices(prev => ({ ...prev, ...prices })); // <-- update state
   };
 
   if (products.length) fetchAllPreferredMarkets();
@@ -89,22 +96,22 @@ useEffect(() => {
   };
 
 const renderProduct = ({ item }) => (
-<ProductCard
-  product={item}
-  selectionMode={selectionMode}
-  selected={selectedProducts.includes(item)}
-  onSelect={() => toggleSelection(item)}
-  showPrice={false}
-  preferredMarketLogo={preferredMarkets[item.ProductID]}
-  marketMessage={marketMessages[item.ProductID]} // ✅ pass it here
-/>
-
+  <ProductCardTOBrowse
+    product={item}
+    selectionMode={selectionMode}
+    selected={selectedProducts.includes(item)}
+    onSelect={() => toggleSelection(item)}
+    showPrice={false} // general product price
+    preferredMarketLogo={preferredMarkets[item.ProductID]}
+    preferredMarketPrice={preferredMarketPrices[item.ProductID]}
+    marketMessage={marketMessages[item.ProductID]}
+  />
 );
 
 return (
 <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
 
-{/* <Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Products</Text> */}
+<Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Products</Text>
 
 {/* Search input only, no header */}
 <TextInput
@@ -164,19 +171,21 @@ return (
     )}
 
     <FlatList
-      data={products}
-      keyExtractor={(item) => item.ProductID.toString()}
-      renderItem={renderProduct}
-      contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
+  key="two-columns" // <-- force FlatList to treat it as fresh
+  data={products}
+  keyExtractor={(item) => item.ProductID.toString()}
+  renderItem={renderProduct}
+  numColumns={2} // fixed number of columns
+  columnWrapperStyle={{ justifyContent: "space-between" }}
+  contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
+  showsVerticalScrollIndicator={false}
+  ListEmptyComponent={() => (
+    <Text style={styles.emptyText}>
+      No products found
+    </Text>
+  )}
+/>
 
-      showsVerticalScrollIndicator={false}
-      ListEmptyComponent={() => (
-<Text style={styles.emptyText}>
-  No products found
-</Text>
-
-      )}
-    />
 
     {/* Shopping List Modal */}
     <ShoppingListScreen

@@ -8,6 +8,7 @@ export default function ProductCard({
   onSelect,
   showPrice = true, 
   preferredMarketLogo, 
+  preferredMarketPrice,
   marketMessage, // ✅ add this line
 }) {
 
@@ -45,15 +46,17 @@ export default function ProductCard({
 
 </View>
 
-
 {preferredMarketLogo && (
-  <View style={styles.logoBox}>
+  <View style={styles.preferredBox}>
     <Text style={styles.preferredText}>Preferred:</Text>
     <Image
       source={{ uri: preferredMarketLogo }}
-      style={styles.logo}
+      style={styles.preferredLogo}
       resizeMode="cover"
     />
+    {preferredMarketPrice != null && (
+      <Text style={styles.preferredPrice}>€{preferredMarketPrice.toFixed(2)}</Text>
+    )}
   </View>
 )}
 
@@ -122,6 +125,35 @@ marketMessage: {
   color: "red",
   marginTop: 4,
   fontStyle: "italic",
+},
+logoPrice: {
+  fontSize: 13,
+  fontWeight: "600",
+  color: "#444",
+  marginLeft: 6, // space between logo and price
+},preferredBox: {
+  alignItems: "center",
+  marginLeft: 10,
+  justifyContent: "center",
+},
+preferredText: {
+  fontSize: 10,             // smaller
+  color: "#6c63ff",
+  fontWeight: "600",
+  marginBottom: 2,          // tighter spacing
+},
+preferredLogo: {
+  width: 40,                // smaller logo
+  height: 25,
+  borderRadius: 4,
+  borderWidth: 1,
+  borderColor: "#6c63ff",
+  marginBottom: 2,          // tighter spacing
+},
+preferredPrice: {
+  fontSize: 12,             // slightly smaller price
+  fontWeight: "700",
+  color: "#444",
 },
 
 

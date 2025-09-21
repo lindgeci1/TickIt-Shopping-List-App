@@ -1,14 +1,14 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // <-- Make sure you install expo/vector-icons
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Footer({ navigation, currentRoute }) {
   const tabs = [
     {
       name: "Product",
       label: "Products",
-      icon: "bag-handle-outline", // lighter outline
-      activeIcon: "bag-handle", // filled version when active
+      icon: "bag-handle-outline",
+      activeIcon: "bag-handle",
     },
     {
       name: "Market",
@@ -25,46 +25,44 @@ export default function Footer({ navigation, currentRoute }) {
   ];
 
   return (
-    <View style={styles.footer}>
-      {tabs.map((tab) => {
-        const isActive = currentRoute === tab.name;
-        return (
-          <TouchableOpacity
-            key={tab.name}
-            style={styles.iconContainer}
-            onPress={() => navigation.navigate(tab.name)}
-          >
-            <Ionicons
-              name={isActive ? tab.activeIcon : tab.icon}
-              size={26}
-              color={isActive ? "#6c63ff" : "#999"}
-            />
-            <Text style={[styles.label, isActive && styles.activeLabel]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
+    <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "transparent" }}>
+      <View style={styles.footer}>
+        {tabs.map((tab) => {
+          const isActive = currentRoute === tab.name;
+          return (
+            <TouchableOpacity
+              key={tab.name}
+              style={styles.iconContainer}
+              onPress={() => navigation.navigate(tab.name)}
+            >
+              <Ionicons
+                name={isActive ? tab.activeIcon : tab.icon}
+                size={26}
+                color={isActive ? "#6c63ff" : "#999"}
+              />
+              <Text style={[styles.label, isActive && styles.activeLabel]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   footer: {
-    height: 80,
-    backgroundColor: "#fff",
+    height: 40,
     borderTopWidth: 1,
     borderColor: "#ddd",
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "flex-start", // 👈 align items at the top of footer
-    paddingTop: 3, // 👈 push icons/text upward a little
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    alignItems: "flex-start",
+    paddingTop: 3,
+    marginHorizontal: -15,
+    backgroundColor: "transparent", // no white bar
   },
-
   iconContainer: {
     paddingTop: 5,
     alignItems: "center",
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#999",
     marginTop: 4,
-    fontStyle: "italic", // italic text like you asked
+    fontStyle: "italic",
   },
   activeLabel: {
     color: "#6c63ff",

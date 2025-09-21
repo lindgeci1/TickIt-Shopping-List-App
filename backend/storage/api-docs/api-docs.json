@@ -1062,7 +1062,8 @@
             "Preferred_Market_DTO": {
                 "required": [
                     "ProductID",
-                    "PreferredMarketLogo"
+                    "PreferredMarketLogo",
+                    "Price"
                 ],
                 "properties": {
                     "ProductID": {
@@ -1072,6 +1073,11 @@
                     "PreferredMarketLogo": {
                         "description": "URL of the market logo with the cheapest price for this product",
                         "type": "string"
+                    },
+                    "Price": {
+                        "description": "The cheapest price of the product in that market",
+                        "type": "number",
+                        "format": "float"
                     }
                 },
                 "type": "object"
