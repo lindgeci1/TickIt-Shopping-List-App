@@ -3,9 +3,11 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Market;
-use App\Domain\Entities\Product;
+use App\Infrastructure\Models\Product;
 use App\Domain\Interfaces\I_Market_Repository;
 use App\Infrastructure\Models\Market as MarketModel;
+use App\Domain\Entities\Product as ProductEntity;
+use App\Domain\Entities\Market as MarketEntity;
 
 class Eloquent_Market_Repository implements I_Market_Repository
 {
@@ -26,7 +28,7 @@ class Eloquent_Market_Repository implements I_Market_Repository
 
             // Map linked products
             $market->Products = $m->products->map(function ($p) {
-                $product = new Product(
+                $product = new ProductEntity(
                     $p->product_id,
                     $p->name,
                     $p->is_favorite,
@@ -39,25 +41,33 @@ class Eloquent_Market_Repository implements I_Market_Repository
             return $market;
         })->all();
     }
-    //! duke qita me e ndreqe
-        public function getMarketsForProduct(int $productId): array
-        {
-            // Join product_market and market_photos to get price and logo URL
-            $markets = MarketModel::query()
-                ->join('product_market', 'markets.market_id', '=', 'product_market.market_id')
-                ->leftJoin('market_photos', 'markets.market_id', '=', 'market_photos.market_id')
-                ->where('product_market.product_id', $productId)
-                ->select(
-                    'markets.market_id as MarketID',
-                    'markets.name as Name',
-                    'market_photos.url as Logo', // get logo from market_photos
-                    'product_market.price as Price'
-                )
-                ->get()
-                ->toArray();
 
-            return $markets;
-        }
+
+public function getCheapestMarketForProduct(int $productId): ?array
+{
+    // Load product with all linked markets and their photos, including pivot price
+    $product = Product::with(['markets.photo'])->find($productId);
+
+    if (!$product || $product->markets->isEmpty()) {
+        return null;
+    }
+
+    // Make sure pivot price is loaded
+    $product->markets->each(function ($market) {
+        $market->pivot->price = $market->pivot->price ?? 0;
+    });
+
+    // Find the market with the cheapest price
+    $cheapestMarket = $product->markets->sortBy(fn($m) => $m->pivot->price)->first();
+
+    return [
+        'MarketID' => $cheapestMarket->market_id,
+        'Name'     => $cheapestMarket->name,
+        'Logo'     => optional($cheapestMarket->photo)->url,
+        'Price'    => $cheapestMarket->pivot->price,  // <-- included here
+    ];
+}
+
 
     public function findById(int $MarketID): ?Market
     {
@@ -73,7 +83,7 @@ class Eloquent_Market_Repository implements I_Market_Repository
         $market->Photos = $model->photo ? [$model->photo->url] : [];
 
         $market->Products = $model->products->map(function ($p) {
-            $product = new Product(
+            $product = new ProductEntity(
                 $p->product_id,
                 $p->name,
                 $p->is_favorite,

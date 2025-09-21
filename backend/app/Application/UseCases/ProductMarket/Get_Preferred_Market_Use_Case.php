@@ -28,19 +28,14 @@ class Get_Preferred_Market_Use_Case implements I_Get_Preferred_Market_Use_Case
             throw new InvalidArgumentException("Product with ID $productId does not exist.");
         }
 
-        $markets = $this->marketRepository->getMarketsForProduct($productId);
+        $cheapestMarket = $this->marketRepository->getCheapestMarketForProduct($productId);
 
-        if (empty($markets)) {
+        if (!$cheapestMarket) {
             throw new InvalidArgumentException("Product is not assigned to any market.");
         }
 
-        $cheapestMarket = null;
-        foreach ($markets as $market) {
-            if ($cheapestMarket === null || $market['Price'] < $cheapestMarket['Price']) {
-                $cheapestMarket = $market;
-            }
-        }
+        // cheapestMarket is already an array: ['MarketID' => ..., 'Name' => ..., 'Logo' => ..., 'Price' => ...]
+        return new Preferred_Market_DTO($productId, $cheapestMarket['Logo'], $cheapestMarket['Price']);
 
-        return new Preferred_Market_DTO($productId, $cheapestMarket['Logo']);
     }
 }
