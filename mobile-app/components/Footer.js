@@ -53,7 +53,7 @@ export default function Footer({ navigation, currentRoute }) {
 
 const styles = StyleSheet.create({
   footer: {
-    height: 40,
+    height: 35,
     borderTopWidth: 1,
     borderColor: "#ddd",
     flexDirection: "row",
