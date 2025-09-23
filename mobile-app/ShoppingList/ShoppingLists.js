@@ -99,30 +99,30 @@ const handleDeleteList = () => {
   const boughtProducts = products.filter((p) => p.Status === "Bought");
 
   return (
-<View style={styles.card}>
-      {/* Header */}
-     <TouchableOpacity
-  onPress={() => setExpanded(!expanded)}
-  style={styles.headerRow}
->
-  <View style={styles.textContainer}>
-    <Text style={styles.name}>{item.Name}</Text>
-    <Text style={styles.createdAt}>
-      {new Date(item.AddedAt).toLocaleDateString()}{" "}
-      {new Date(item.AddedAt).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}
-    </Text>
-  </View>
+        <View style={styles.card}>
+              {/* Header */}
+            <TouchableOpacity
+          onPress={() => setExpanded(!expanded)}
+          style={styles.headerRow}
+        >
+        <View style={styles.textContainer}>
+          <Text style={styles.name}>{item.Name}</Text>
+          <Text style={styles.createdAt}>
+            {new Date(item.AddedAt).toLocaleDateString()}{" "}
+            {new Date(item.AddedAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </Text>
+        </View>
 
-  <View style={styles.deleteContainer}>
-    <View style={styles.verticalLine} />
-    <TouchableOpacity onPress={handleDeleteList} style={styles.trashButton}>
-      <Feather name="trash-2" size={22} color="#c00" />
-    </TouchableOpacity>
-  </View>
-</TouchableOpacity>
+        <View style={styles.deleteContainer}>
+          <View style={styles.verticalLine} />
+          <TouchableOpacity onPress={handleDeleteList} style={styles.trashButton}>
+            <Feather name="trash-2" size={22} color="#c00" />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
 
 
       <Text style={styles.count}>{products.length} Products</Text>
