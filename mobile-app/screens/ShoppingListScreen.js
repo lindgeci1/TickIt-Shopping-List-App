@@ -3,8 +3,7 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, TextInput } from "
 import ShoppingLists from "../ShoppingList/ShoppingLists";
 import Footer from "../components/Footer";
 import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
-import { filterLists } from "../ShoppingList/filterLists"; // <- import the filter function
-
+import ShoppingListFilterPanel from "../ShoppingList/ShoppingListFilterPanel";
 export default function ShoppingListScreen({ navigation, topPadding }) {
   const [lists, setLists] = useState([]);
   const [allLists, setAllLists] = useState([]); // keep original lists for filtering
@@ -12,7 +11,8 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [search, setSearch] = useState("");
-
+  const [activeQuickDate, setActiveQuickDate] = useState(null);
+  const [customDate, setCustomDate] = useState(null);
   const loadLists = async () => {
     setLoading(true);
     setErrorMessage("");
@@ -22,7 +22,7 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
       fetchedLists = data;      // ✅ capture the data
       setLists(data);           // update UI list
     }, setErrorMessage);
-
+    console.log("Fetched lists:", fetchedLists);  // <-- log the raw data
     setAllLists(fetchedLists);  // ✅ always up-to-date copy for filtering
     setLoading(false);
   };
@@ -36,10 +36,6 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
     loadLists();
   }, []);
 
-  const handleSearchChange = (text) => {
-    setSearch(text);
-    filterLists(allLists, setLists, text);
-  };
 
   if (loading)
     return <ActivityIndicator size="large" color="#6c63ff" style={{ flex: 1 }} />;
@@ -53,12 +49,15 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
 
       {/* Search bar */}
 {/* Search bar */}
-<TextInput
-  style={[styles.searchBar, { backgroundColor: "#e8e8ff", color: "#555" }]} // matches ProductScreen
-  placeholder="Search lists..."
-  placeholderTextColor="#555" // same as categoryText
-  value={search}
-  onChangeText={handleSearchChange}
+<ShoppingListFilterPanel
+  allLists={allLists}
+  setFilteredLists={setLists}
+  search={search}
+  setSearch={setSearch}
+  activeQuickDate={activeQuickDate}
+  setActiveQuickDate={setActiveQuickDate}
+  customDate={customDate}
+  setCustomDate={setCustomDate}
 />
 
 
