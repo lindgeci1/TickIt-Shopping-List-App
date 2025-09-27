@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import Footer from "../components/Footer";
-import ProductCard from "../Product/ProductCard";
+import ProductCardBM from "../Product/ProductCardBM";
 import { fetchMarkets } from "../Market/fetchMarkets";
 import { handleMarketPress } from "../Market/handleMarketPress";
 import { renderMarketChip } from "../Market/renderMarketChip";
@@ -16,7 +16,7 @@ export default function MarketScreen({ navigation, topPadding }) {
   }, []);
 
   const renderProduct = (item) => (
-    <ProductCard
+    <ProductCardBM
       product={item}
       showPrice={true} // show price in MarketScreen
     />

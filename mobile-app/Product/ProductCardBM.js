@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import usePreferredMarkets from "./usePreferredMarkets"; // your existing hook
 
-export default function ProductCard({
+export default function ProductCardBM({
   product,
   selectionMode = false,
   selected = false,
@@ -14,13 +13,7 @@ export default function ProductCard({
 }) {
   // Make the array stable using useMemo
   const productArray = useMemo(() => [product], [product.ProductID]);
-  
-  const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferredMarkets(productArray);
 
-  // Use hook data, fallback to original props
-  const logo = preferredMarkets[product.ProductID] ?? preferredMarketLogo;
-  const price = preferredMarketPrices[product.ProductID] ?? preferredMarketPrice;
-  const message = marketMessages[product.ProductID] ?? marketMessage;
 
   return (
 <View style={styles.card}>
@@ -49,27 +42,7 @@ export default function ProductCard({
       {showPrice && product.Price != null && (
         <Text style={styles.price}>${product.Price}</Text>
       )}
-      {!logo && message && (
-        <Text style={styles.marketMessage}>{message}</Text>
-      )}
     </View>
-
-    {/* Vertical line */}
-    {logo && <View style={styles.verticalLine} />}
-
-{logo && (
-  <View style={styles.preferredBox}>
-    <Image
-      source={{ uri: logo }}
-      style={styles.preferredLogo}
-      resizeMode="cover"
-    />
-    {price != null && (
-      <Text style={styles.preferredPrice}>€{price.toFixed(2)}</Text>
-    )}
-  </View>
-)}
-
 
   </View>
 </View>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from "react-native";
-import ProductCard from "../Product/ProductCard";
+import ProductCardSL from "../Product/ProductCardSL";
 import { removeProductsFromShoppingList } from "../Product/removeProductsFromShoppingList";
 import { updateProductsStatusesFromShoppingList } from "../Product/updateProductsStatusesFromShoppingList";
 import { deleteShoppingList } from "../ShoppingList/deleteShoppingList";
@@ -145,7 +145,7 @@ const handleDeleteList = () => {
               data={toBuyProducts}
               keyExtractor={(p) => p.ProductID.toString()}
               renderItem={({ item: product }) => (
-                <ProductCard
+                <ProductCardSL
                   product={product}
                   showPrice={false}
                   selectionMode={selectionMode}
@@ -173,7 +173,7 @@ const handleDeleteList = () => {
               data={boughtProducts}
               keyExtractor={(p) => p.ProductID.toString()}
               renderItem={({ item: product }) => (
-                <ProductCard
+                <ProductCardSL
                   product={product}
                   showPrice={false}
                   selectionMode={selectionMode}
