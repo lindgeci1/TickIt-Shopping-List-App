@@ -15,7 +15,7 @@ const Separator = ({ widthPercent = 80, thickness = 1, marginVertical = 6, color
   <View style={{ width: `${widthPercent}%`, height: thickness, backgroundColor: color, marginVertical }} />
 );
 
-export default function ProductCardTOBrowse({
+export default function ProductCardBP({
   product,
   selectionMode = false,
   selected = false,
@@ -29,7 +29,7 @@ export default function ProductCardTOBrowse({
   const scale = useRef(new Animated.Value(1)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   const checkScale = useRef(new Animated.Value(0)).current;
-
+const CHECK_SIZE = 32;
   // Animate card scale on selection
   useEffect(() => {
     Animated.spring(scale, {

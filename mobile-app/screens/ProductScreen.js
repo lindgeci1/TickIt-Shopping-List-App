@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Footer from "../components/Footer";
 import ShoppingListScreen from "../ShoppingList/ShoppingListScreen";
-import ProductCardTOBrowse from "../Product/ProductCardTOBrowse";
+import ProductCardBP from "../Product/ProductCardBP";
 import { fetchProducts } from "../Product/fetchProducts";
 import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
@@ -71,7 +71,7 @@ const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferred
   };
 
   const renderProduct = ({ item }) => (
-    <ProductCardTOBrowse
+    <ProductCardBP
       product={item}
       selectionMode={selectionMode}
       selected={selectedProducts.includes(item)}
