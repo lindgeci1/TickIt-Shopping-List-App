@@ -9,6 +9,7 @@ use App\Application\Interfaces\Product\I_Get_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Delete_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Search_Product_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Favorite_Products_Use_Case;
 use App\Application\DTOs\Product_DTO;
 use InvalidArgumentException;
 
@@ -26,6 +27,7 @@ class Product_Controller extends Controller
     private I_Update_Product_Use_Case $updateProductService;
     private I_Delete_Product_Use_Case $deleteProductService;
     private I_Search_Product_Use_Case $searchProductService;
+    private I_Get_Favorite_Products_Use_Case $getFavoriteProductsService;
 
     public function __construct(
         I_GetAll_Products_Use_Case $getAllProductsService,
@@ -33,14 +35,16 @@ class Product_Controller extends Controller
         I_Get_Product_Use_Case $getProductService,
         I_Update_Product_Use_Case $updateProductService,
         I_Delete_Product_Use_Case $deleteProductService,
-         I_Search_Product_Use_Case $searchProductService
+        I_Search_Product_Use_Case $searchProductService,
+        I_Get_Favorite_Products_Use_Case $getFavoriteProductsService
     ) {
         $this->getAllProductsService = $getAllProductsService;
         $this->createProductService = $createProductService;
         $this->getProductService = $getProductService;
         $this->updateProductService = $updateProductService;
         $this->deleteProductService = $deleteProductService;
-         $this->searchProductService = $searchProductService;
+        $this->searchProductService = $searchProductService;
+        $this->getFavoriteProductsService = $getFavoriteProductsService;
     }
 
     /**
@@ -186,5 +190,23 @@ class Product_Controller extends Controller
 
         $results = $this->searchProductService->searchByName($name);
         return response()->json($results, 200);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/product/favorites",
+     *     summary="Get all favorite products",
+     *     tags={"Product"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of favorite products",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
+     *     )
+     * )
+     */
+    public function getFavorites()
+    {
+        $favorites = $this->getFavoriteProductsService->getFavorites();
+        return response()->json($favorites, 200);
     }
 }

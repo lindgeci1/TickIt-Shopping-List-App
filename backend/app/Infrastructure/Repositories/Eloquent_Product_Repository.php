@@ -26,6 +26,46 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 return $product;
             })->all();
         }
+        public function countShoppingListsForProduct(int $productID): int
+        {
+            $productModel = ProductModel::find($productID);
+            if (!$productModel) {
+                return 0;
+            }
+
+            // Count how many shopping list items this product is attached to
+            return $productModel->shoppingListItems()->count();
+        }
+        public function findFavorites(): array
+        {
+            $models = ProductModel::with('photo')
+                ->where('is_favorite', true)
+                ->get();
+
+            return $models->map(function ($m) {
+                $product = new Product(
+                    $m->product_id,
+                    $m->name,
+                    $m->is_favorite,
+                    $m->category
+                );
+
+                $product->Photos = $m->photo ? [$m->photo->url] : [];
+
+                return $product;
+            })->all();
+        }
+
+        public function updateIsFavorite(int $productID, bool $isFavorite): bool
+        {
+            $productModel = ProductModel::find($productID);
+            if (!$productModel) {
+                return false;
+            }
+
+            $productModel->is_favorite = $isFavorite;
+            return $productModel->save();
+        }
 
         public function attachToMarkets(int $productID, array $marketsWithPrices): void
         {
