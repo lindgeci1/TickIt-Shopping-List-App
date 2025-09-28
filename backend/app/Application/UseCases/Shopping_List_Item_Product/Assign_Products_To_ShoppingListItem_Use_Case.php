@@ -46,7 +46,7 @@ class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_
             // so all shopping lists containing this product will see the change
             $this->productRepository->updateStatus($productID, 'ToBuy');
 
-             // ✅ Check how many shopping lists this product is linked to
+             // Check how many shopping lists this product is linked to
             $shoppingListCount = $this->productRepository->countShoppingListsForProduct($productID);
 
             // ✅ If linked to more than 1, mark as favorite
