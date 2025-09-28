@@ -20,4 +20,7 @@ interface I_Product_Repository
     public function detachMultipleProductsFromShoppingLists(array $productIDs, array $shoppingListItemIDs): void;
      public function syncMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void;
     public function updateStatus(int $productID, ?string $status): bool;
+    public function countShoppingListsForProduct(int $productID): int;
+    public function updateIsFavorite(int $productID, bool $isFavorite): bool;
+    public function findFavorites(): array;
 }

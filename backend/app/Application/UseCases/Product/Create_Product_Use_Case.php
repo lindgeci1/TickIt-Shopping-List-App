@@ -34,7 +34,7 @@ class Create_Product_Use_Case implements I_Create_Product_Use_Case
         $product = new Product(
             $dto->ProductID ?? null,
             $dto->Name,
-            $dto->IsFavorite ?? false,
+            false,
             $dto->Category
         );
 

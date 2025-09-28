@@ -484,6 +484,30 @@
                 }
             }
         },
+        "/api/product/favorites": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get all favorite products",
+                "operationId": "42f038e1ed3b55a2496a2634d4473d76",
+                "responses": {
+                    "200": {
+                        "description": "List of favorite products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/product-market/assign/{ProductID}": {
             "post": {
                 "tags": [
