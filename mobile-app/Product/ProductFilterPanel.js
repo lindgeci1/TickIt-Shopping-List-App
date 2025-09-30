@@ -21,7 +21,7 @@ export default function ProductFilterPanel({
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [allMarketProducts, setAllMarketProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
-const [favoritesActive, setFavoritesActive] = useState(false);
+
   const toggleFilterExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setFilterExpanded(!filterExpanded);
@@ -44,26 +44,17 @@ const [favoritesActive, setFavoritesActive] = useState(false);
     setMarketProducts(category ? allMarketProducts.filter(p => p.Category === category) : allMarketProducts);
   };
 
-const handleShowFavorites = async () => {
-  try {
-    const favoriteData = await fetchFavoriteProducts(); 
-    console.log("🔥 Fetched favorites:", favoriteData);
-    setFavoriteProducts(favoriteData);
-    setMarketProducts(favoriteData);
-    setFavoritesActive(true); // mark favorites as active
-  } catch (err) {
-    console.error(err);
-    Alert.alert("❌ Error", "Failed to fetch favorites");
-  }
-};
-
-const handleClearFavorites = () => {
-  setFavoritesActive(false);
-  setMarketProducts(activeCategory 
-    ? allMarketProducts.filter(p => p.Category === activeCategory) 
-    : allMarketProducts
-  );
-};
+  const handleShowFavorites = async () => {
+    try {
+      const favoriteData = await fetchFavoriteProducts(); // fetch returns data now
+      setFavoriteProducts(favoriteData); // local state
+      setParentFavoriteProducts?.(favoriteData); // update parent if prop provided
+      setMarketProducts(favoriteData); // immediately show favorites
+    } catch (err) {
+      console.error(err);
+      Alert.alert("❌ Error", "Failed to fetch favorites");
+    }
+  };
 
   return (
     <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
@@ -100,15 +91,10 @@ const handleClearFavorites = () => {
 
           {/* Favorites */}
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-  <TouchableOpacity onPress={handleShowFavorites} style={{ flex: 1, borderWidth: 1.5, borderColor: "#d1d1f0", borderRadius: 12, backgroundColor: "#fff", padding: 10 }}>
-    <Text style={{ color: "#6c63ff", fontWeight: "600" }}>Favorites</Text>
-  </TouchableOpacity>
-  {favoritesActive && (
-    <TouchableOpacity onPress={handleClearFavorites} style={{ marginLeft: 6 }}>
-      <Ionicons name="close-circle" size={22} color="red" />
-    </TouchableOpacity>
-  )}
-</View>
+            <TouchableOpacity onPress={handleShowFavorites} style={{ flex: 1, borderWidth: 1.5, borderColor: "#d1d1f0", borderRadius: 12, backgroundColor: "#fff", padding: 10 }}>
+              <Text style={{ color: "#6c63ff", fontWeight: "600" }}>Favorites</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
