@@ -36,6 +36,7 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [marketProducts, setMarketProducts] = useState([]);
 const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferredMarkets(products);
 const [favoriteProducts, setFavoriteProducts] = useState([]);
+const [favoritesMode, setFavoritesMode] = useState(false);
   useEffect(() => {
     fetchProducts(setAllProducts, setProducts);
     fetchShoppingLists(setShoppingLists);
@@ -106,7 +107,10 @@ const [favoriteProducts, setFavoriteProducts] = useState([]);
   activeMarket={activeMarket}
   setActiveMarket={setActiveMarket}
   setMarketProducts={setMarketProducts}
-  setFavoriteProducts={setFavoriteProducts} // <- new prop
+  setFavoriteProducts={setFavoriteProducts} // favorite data
+  favoritesMode={favoritesMode} // <-- add this
+  setFavoritesMode={setFavoritesMode} // <-- add this
+  setSearch={setSearch}
 />
 
       {/* Add to Buying List */}
@@ -133,7 +137,11 @@ const [favoriteProducts, setFavoriteProducts] = useState([]);
 
       {/* Products Grid */}
 <FlatList
-  data={favoriteProducts.length > 0 ? favoriteProducts : (activeMarket ? marketProducts : products)}
+  data={
+    favoritesMode ? favoriteProducts
+    : activeMarket ? marketProducts
+    : products
+  }
   keyExtractor={(item) => item.ProductID.toString()}
   renderItem={renderProduct}
   numColumns={2}
@@ -144,6 +152,7 @@ const [favoriteProducts, setFavoriteProducts] = useState([]);
     <Text style={styles.emptyText}>No products found</Text>
   )}
 />
+
 
 
       {/* Shopping List Modal */}

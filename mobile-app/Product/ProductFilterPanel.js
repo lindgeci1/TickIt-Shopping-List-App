@@ -25,6 +25,8 @@ export default function ProductFilterPanel({
   setActiveMarket,
   setMarketProducts,
   setFavoriteProducts: setParentFavoriteProducts,
+   favoritesMode,
+  setFavoritesMode,
   setSearch // added if you pass search setter from parent
 }) {
   const [filterExpanded, setFilterExpanded] = useState(false);
@@ -32,7 +34,7 @@ export default function ProductFilterPanel({
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [allMarketProducts, setAllMarketProducts] = useState([]);
   const [favoriteProducts, setFavoriteProducts] = useState([]);
-  const [favoritesMode, setFavoritesMode] = useState(false);
+  // const [favoritesMode, setFavoritesMode] = useState(false);
 
   const toggleFilterExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -69,24 +71,24 @@ export default function ProductFilterPanel({
     setMarketProducts(category ? allMarketProducts.filter(p => p.Category === category) : allMarketProducts);
   };
 
-  const handleShowFavorites = async () => {
-    try {
-      const favoriteData = await fetchFavoriteProducts();
-      setFavoriteProducts(favoriteData);
-      setParentFavoriteProducts?.(favoriteData);
-      setMarketProducts(favoriteData);
+const handleShowFavorites = async () => {
+  try {
+    const favoriteData = await fetchFavoriteProducts();
+    setFavoriteProducts(favoriteData);
+    setParentFavoriteProducts?.(favoriteData);
 
-      // Reset other filters
-      onCategoryPress(null);
-      setActiveMarket(null);
-      setAllMarketProducts([]);
-      setSearch?.(""); // clear search if setter provided
-      setFavoritesMode(true); // disable other filters
-    } catch (err) {
-      console.error(err);
-      Alert.alert("❌ Error", "Failed to fetch favorites");
-    }
-  };
+    // Reset other filters
+    onCategoryPress(null);
+    setActiveMarket(null);
+    setAllMarketProducts([]);
+    setSearch?.(""); // clear search if setter provided
+    setFavoritesMode(true); // enable favorites mode
+  } catch (err) {
+    console.error(err);
+    Alert.alert("❌ Error", "Failed to fetch favorites");
+  }
+};
+
 
   return (
     <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
@@ -115,31 +117,33 @@ export default function ProductFilterPanel({
         <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Filters</Text>
       </TouchableOpacity>
 
-      {/* Filters */}
+
 {/* Filters */}
 {filterExpanded && (
-  <View style={{ marginTop: 12, gap: 10 }}>
-    
-    {/* Favorites - moved to top row */}
-    <View style={{ marginBottom: 10, flexDirection: "row", alignItems: "center", gap: 6 }}>
+  <View style={{ marginTop: 12, padding: 12, backgroundColor: "#fff", borderRadius: 8, gap: 12, shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } }}>
+
+    {/* Favorites Row */}
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
       <TouchableOpacity
         onPress={handleShowFavorites}
         disabled={!!activeCategory || !!activeMarket} 
         style={{
-          borderWidth: 1.5,
+          flex: 1,
+          borderWidth: 1,
           borderColor: "#d1d1f0",
-          borderRadius: 12,
-          backgroundColor: (!!activeCategory || !!activeMarket) ? "#eee" : "#fff",
-          paddingHorizontal: 16,
-          paddingVertical: 10,
+          borderRadius: 6,
+          backgroundColor: (!!activeCategory || !!activeMarket) ? "#f0f0f0" : "#f9f9ff",
+          paddingVertical: 8,
+          alignItems: "center",
+          marginRight: 6
         }}
       >
-        <Text style={{ color: (!!activeCategory || !!activeMarket) ? "#aaa" : "#6c63ff", fontWeight: "600" }}>
+        <Text style={{ color: (!!activeCategory || !!activeMarket) ? "#aaa" : "#6c63ff", fontWeight: "600", fontSize: 13 }}>
           Favorites
         </Text>
       </TouchableOpacity>
 
-      {(favoriteProducts.length > 0 || favoritesMode) && (  // <-- show x even if empty
+      {(favoriteProducts.length > 0 || favoritesMode) && (
         <TouchableOpacity
           onPress={() => {
             setFavoriteProducts([]);
@@ -147,16 +151,15 @@ export default function ProductFilterPanel({
             setMarketProducts([]);
             setFavoritesMode(false);
           }}
+          style={{ padding: 4 }}
         >
-          <Ionicons name="close-circle" size={22} color="red" />
+          <Ionicons name="close-circle" size={20} color="red" />
         </TouchableOpacity>
       )}
     </View>
 
-
-
-    {/* Category + Market on same line */}
-    <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 10 }}>
+    {/* Grid: Category & Market */}
+    <View style={{ flexDirection: "row", gap: 8 }}>
       {/* Category */}
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
@@ -164,20 +167,21 @@ export default function ProductFilterPanel({
           disabled={favoritesMode}
           style={{
             flex: 1,
-            borderWidth: 1.5,
+            borderWidth: 1,
             borderColor: "#d1d1f0",
-            borderRadius: 12,
-            backgroundColor: favoritesMode ? "#eee" : "#fff",
-            padding: 10
+            borderRadius: 6,
+            backgroundColor: favoritesMode ? "#f0f0f0" : "#f9f9ff",
+            paddingVertical: 8,
+            paddingHorizontal: 10,
           }}
         >
-          <Text style={{ color: favoritesMode ? "#aaa" : "#6c63ff", fontWeight: "600" }}>
-            {activeCategory || "Select Category"}
+          <Text style={{ color: favoritesMode ? "#aaa" : "#6c63ff", fontWeight: "600", fontSize: 13 }}>
+            {activeCategory || "Category"}
           </Text>
         </TouchableOpacity>
         {activeCategory && !favoritesMode && (
           <TouchableOpacity onPress={() => handleCategorySelect(null)} style={{ marginLeft: 6 }}>
-            <Ionicons name="close-circle" size={22} color="red" />
+            <Ionicons name="close-circle" size={20} color="red" />
           </TouchableOpacity>
         )}
       </View>
@@ -189,28 +193,29 @@ export default function ProductFilterPanel({
           disabled={favoritesMode}
           style={{
             flex: 1,
-            borderWidth: 1.5,
+            borderWidth: 1,
             borderColor: "#d1d1f0",
-            borderRadius: 12,
-            backgroundColor: favoritesMode ? "#eee" : "#fff",
-            padding: 10,
-            flexDirection: "row",
-            alignItems: "center"
+            borderRadius: 6,
+            backgroundColor: favoritesMode ? "#f0f0f0" : "#f9f9ff",
+            paddingVertical: 8,
+            paddingHorizontal: 10,
           }}
         >
-          <Text style={{ color: favoritesMode ? "#aaa" : "#6c63ff", fontWeight: "600" }}>
-            {activeMarket?.Name || "Select Market"}
+          <Text style={{ color: favoritesMode ? "#aaa" : "#6c63ff", fontWeight: "600", fontSize: 13 }}>
+            {activeMarket?.Name || "Market"}
           </Text>
         </TouchableOpacity>
         {activeMarket && !favoritesMode && (
           <TouchableOpacity onPress={() => { setActiveMarket(null); setAllMarketProducts([]); setMarketProducts([]); }} style={{ marginLeft: 6 }}>
-            <Ionicons name="close-circle" size={22} color="red" />
+            <Ionicons name="close-circle" size={20} color="red" />
           </TouchableOpacity>
         )}
       </View>
     </View>
   </View>
 )}
+
+
 
 
       {/* Category Modal */}
