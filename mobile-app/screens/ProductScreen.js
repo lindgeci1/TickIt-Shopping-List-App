@@ -35,7 +35,8 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [activeMarket, setActiveMarket] = useState(null);
   const [marketProducts, setMarketProducts] = useState([]);
 const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferredMarkets(products);
-
+const [favoriteProducts, setFavoriteProducts] = useState([]);
+const [favoritesMode, setFavoritesMode] = useState(false);
   useEffect(() => {
     fetchProducts(setAllProducts, setProducts);
     fetchShoppingLists(setShoppingLists);
@@ -96,17 +97,21 @@ const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferred
       <Text style={[styles.headerTitle, { marginBottom: 15 }]}>Browse Products</Text>
 
       {/* Filter Screen List */}
-      <ProductFilterPanel
-        categoriesList={categoriesList}
-        search={search}
-        onSearchChange={handleSearchChange}
-        activeCategory={activeCategory}
-        onCategoryPress={handleCategoryPress}
-        markets={markets}
-        activeMarket={activeMarket}
-        setActiveMarket={setActiveMarket}
-        setMarketProducts={setMarketProducts}
-      />
+<ProductFilterPanel
+  categoriesList={categoriesList}
+  search={search}
+  onSearchChange={handleSearchChange}
+  activeCategory={activeCategory}
+  onCategoryPress={handleCategoryPress}
+  markets={markets}
+  activeMarket={activeMarket}
+  setActiveMarket={setActiveMarket}
+  setMarketProducts={setMarketProducts}
+  setFavoriteProducts={setFavoriteProducts} // favorite data
+  favoritesMode={favoritesMode} // <-- add this
+  setFavoritesMode={setFavoritesMode} // <-- add this
+  setSearch={setSearch}
+/>
 
       {/* Add to Buying List */}
       <TouchableOpacity
@@ -131,18 +136,24 @@ const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferred
       )}
 
       {/* Products Grid */}
-      <FlatList
-        data={activeMarket ? marketProducts : products}
-        keyExtractor={(item) => item.ProductID.toString()}
-        renderItem={renderProduct}
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        contentContainerStyle={{ paddingBottom: 120 }}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>No products found</Text>
-        )}
-      />
+<FlatList
+  data={
+    favoritesMode ? favoriteProducts
+    : activeMarket ? marketProducts
+    : products
+  }
+  keyExtractor={(item) => item.ProductID.toString()}
+  renderItem={renderProduct}
+  numColumns={2}
+  columnWrapperStyle={{ justifyContent: "space-between" }}
+  contentContainerStyle={{ paddingBottom: 120 }}
+  showsVerticalScrollIndicator={false}
+  ListEmptyComponent={() => (
+    <Text style={styles.emptyText}>No products found</Text>
+  )}
+/>
+
+
 
       {/* Shopping List Modal */}
       <ShoppingListScreen
