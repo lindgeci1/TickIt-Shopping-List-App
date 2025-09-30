@@ -1,14 +1,27 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, LayoutAnimation, Modal, FlatList, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, LayoutAnimation, Modal, FlatList, Image, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { VITE_BASE_API_URL } from "@env";
+import { fetchFavoriteProducts } from "../Product/fetchFavoriteProducts";
 
-export default function ProductFilterPanel({ categoriesList, search, onSearchChange, activeCategory, onCategoryPress, markets, activeMarket, setActiveMarket, setMarketProducts }) {
+export default function ProductFilterPanel({
+  categoriesList,
+  search,
+  onSearchChange,
+  activeCategory,
+  onCategoryPress,
+  markets,
+  activeMarket,
+  setActiveMarket,
+  setMarketProducts,
+  setFavoriteProducts: setParentFavoriteProducts // new prop
+}) {
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [allMarketProducts, setAllMarketProducts] = useState([]);
-
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+const [favoritesActive, setFavoritesActive] = useState(false);
   const toggleFilterExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setFilterExpanded(!filterExpanded);
@@ -30,6 +43,27 @@ export default function ProductFilterPanel({ categoriesList, search, onSearchCha
     onCategoryPress(category);
     setMarketProducts(category ? allMarketProducts.filter(p => p.Category === category) : allMarketProducts);
   };
+
+const handleShowFavorites = async () => {
+  try {
+    const favoriteData = await fetchFavoriteProducts(); 
+    console.log("🔥 Fetched favorites:", favoriteData);
+    setFavoriteProducts(favoriteData);
+    setMarketProducts(favoriteData);
+    setFavoritesActive(true); // mark favorites as active
+  } catch (err) {
+    console.error(err);
+    Alert.alert("❌ Error", "Failed to fetch favorites");
+  }
+};
+
+const handleClearFavorites = () => {
+  setFavoritesActive(false);
+  setMarketProducts(activeCategory 
+    ? allMarketProducts.filter(p => p.Category === activeCategory) 
+    : allMarketProducts
+  );
+};
 
   return (
     <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
@@ -63,6 +97,18 @@ export default function ProductFilterPanel({ categoriesList, search, onSearchCha
             </TouchableOpacity>
             {activeMarket && <TouchableOpacity onPress={() => { setActiveMarket(null); setAllMarketProducts([]); setMarketProducts([]); }} style={{ marginLeft: 6 }}><Ionicons name="close-circle" size={22} color="red" /></TouchableOpacity>}
           </View>
+
+          {/* Favorites */}
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+  <TouchableOpacity onPress={handleShowFavorites} style={{ flex: 1, borderWidth: 1.5, borderColor: "#d1d1f0", borderRadius: 12, backgroundColor: "#fff", padding: 10 }}>
+    <Text style={{ color: "#6c63ff", fontWeight: "600" }}>Favorites</Text>
+  </TouchableOpacity>
+  {favoritesActive && (
+    <TouchableOpacity onPress={handleClearFavorites} style={{ marginLeft: 6 }}>
+      <Ionicons name="close-circle" size={22} color="red" />
+    </TouchableOpacity>
+  )}
+</View>
         </View>
       )}
 
