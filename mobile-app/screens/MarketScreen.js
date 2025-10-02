@@ -12,15 +12,33 @@ export default function MarketScreen({ navigation, topPadding }) {
   const [marketProducts, setMarketProducts] = useState([]);
 
   useEffect(() => {
-    fetchMarkets(setMarkets);
+    fetchMarkets((data) => {
+      // console.log("Fetched markets:", data);
+      setMarkets(data);
+    });
   }, []);
 
-  const renderProduct = (item) => (
-    <ProductCardBM
-      product={item}
-      showPrice={true} // show price in MarketScreen
-    />
+const handleMarketSelection = (market) => {
+  handleMarketPress(
+    market,
+    activeMarket,
+    setActiveMarket,
+    (products) => {
+      // products currently is market.Products.map(p => p.Product) ?
+      // We need to wrap each product with its price
+      const productsWithMarket = market.Products.map(p => ({
+  Product: p.Product,
+  Price: p.Price,
+  Market: market,
+}));
+
+setMarketProducts(productsWithMarket);
+    }
   );
+};
+
+
+  const renderProduct = (item) => <ProductCardBM productWrapper={item} />;
 
   return (
     <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
@@ -28,36 +46,25 @@ export default function MarketScreen({ navigation, topPadding }) {
         Browse Markets
       </Text>
 
-      {/* Helper text above markets */}
       {!activeMarket && markets.length > 0 && (
         <Text style={styles.helperText}>
           Tap a market to view products with their prices
         </Text>
       )}
 
-      {/* Separation */}
       <View style={styles.separator} />
 
-      {/* Horizontal list of markets */}
       <FlatList
         horizontal
         data={markets}
-        keyExtractor={(item) => item.MarketID.toString()}
+        keyExtractor={(item, index) => item?.MarketID?.toString() || index.toString()}
         renderItem={({ item }) =>
-          renderMarketChip(item, activeMarket, (market) =>
-            handleMarketPress(
-              market,
-              activeMarket,
-              setActiveMarket,
-              setMarketProducts
-            )
-          )
+          renderMarketChip(item, activeMarket, handleMarketSelection)
         }
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 10 }}
       />
 
-      {/* Active market products */}
       {activeMarket && (
         <>
           <Text style={[styles.sectionLabel, { color: "#6c63ff" }]}>
@@ -65,8 +72,10 @@ export default function MarketScreen({ navigation, topPadding }) {
           </Text>
 
           <FlatList
-            data={marketProducts}
-            keyExtractor={(item) => item.ProductID.toString()}
+            data={marketProducts} // each item: { Product: {...}, Price: number }
+            keyExtractor={(item, index) =>
+              item?.Product?.ProductID?.toString() || index.toString()
+            }
             renderItem={({ item }) => renderProduct(item)}
             contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
             showsVerticalScrollIndicator={false}

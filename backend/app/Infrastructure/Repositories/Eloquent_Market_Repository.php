@@ -8,39 +8,53 @@ use App\Domain\Interfaces\I_Market_Repository;
 use App\Infrastructure\Models\Market as MarketModel;
 use App\Domain\Entities\Product as ProductEntity;
 use App\Domain\Entities\Market as MarketEntity;
-
+use App\Infrastructure\Models\Product_Market;
 class Eloquent_Market_Repository implements I_Market_Repository
 {
-    public function findAll(): array
-    {
-        // Include 1-to-1 photo and linked products
-        $models = MarketModel::with(['photo', 'products.photo'])->get();
 
-        return $models->map(function ($m) {
-            $market = new Market(
-                $m->market_id,
-                $m->name,
-                $m->location
+
+public function findAll(): array
+{
+    $models = MarketModel::with(['photo', 'products.photo'])->get();
+
+    return $models->map(function ($m) {
+        $market = new Market(
+            $m->market_id,
+            $m->name,
+            $m->location
+        );
+
+        // Add market photo if exists
+        $market->Photos = $m->photo ? [$m->photo->url] : [];
+
+        // Map linked products and attach price separately
+        $market->Products = $m->products->map(function ($p) use ($m) {
+
+            // Create the product entity (no price property)
+            $product = new ProductEntity(
+                $p->product_id,
+                $p->name,
+                $p->is_favorite,
+                $p->category
             );
 
-            // Add photo if exists
-            $market->Photos = $m->photo ? [$m->photo->url] : [];
+            $product->Photos = $p->photo ? [$p->photo->url] : [];
 
-            // Map linked products
-            $market->Products = $m->products->map(function ($p) {
-                $product = new ProductEntity(
-                    $p->product_id,
-                    $p->name,
-                    $p->is_favorite,
-                    $p->category
-                );
-                $product->Photos = $p->photo ? [$p->photo->url] : [];
-                return $product;
-            })->all();
+            // 🔍 Find pivot price for this specific product-market pair
+            $pivot = Product_Market::where('product_id', $p->product_id)
+                ->where('market_id', $m->market_id)
+                ->first();
 
-            return $market;
+            // ✅ Return a structured array with product data + price separately
+            return [
+                'Product' => $product,
+                'Price' => $pivot ? (float) $pivot->price : null // ✅ cast to float
+            ];
         })->all();
-    }
+
+        return $market;
+    })->all();
+}
 
 
 public function getCheapestMarketForProduct(int $productId): ?array
