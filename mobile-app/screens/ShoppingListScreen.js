@@ -22,7 +22,7 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
       fetchedLists = data;      // ✅ capture the data
       setLists(data);           // update UI list
     }, setErrorMessage);
-    console.log("Fetched lists:", fetchedLists);  // <-- log the raw data
+    // console.log("Fetched lists:", fetchedLists);  // <-- log the raw data
     setAllLists(fetchedLists);  // ✅ always up-to-date copy for filtering
     setLoading(false);
   };
