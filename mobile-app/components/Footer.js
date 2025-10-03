@@ -4,28 +4,16 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function Footer({ navigation, currentRoute }) {
   const tabs = [
-    {
-      name: "Product",
-      label: "Products",
-      icon: "bag-handle-outline",
-      activeIcon: "bag-handle",
-    },
-    {
-      name: "Market",
-      label: "Markets",
-      icon: "storefront-outline",
-      activeIcon: "storefront",
-    },
-    {
-      name: "ShoppingList",
-      label: "Lists",
-      icon: "list-outline",
-      activeIcon: "list",
-    },
+    { name: "Product", label: "Products", icon: "bag-handle-outline", activeIcon: "bag-handle" },
+    { name: "Market", label: "Markets", icon: "storefront-outline", activeIcon: "storefront" },
+    { name: "ShoppingList", label: "Lists", icon: "list-outline", activeIcon: "list" },
   ];
 
   return (
-    <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "transparent" }}>
+    <SafeAreaView
+      edges={["bottom"]}
+      style={styles.safeArea}
+    >
       <View style={styles.footer}>
         {tabs.map((tab) => {
           const isActive = currentRoute === tab.name;
@@ -33,16 +21,20 @@ export default function Footer({ navigation, currentRoute }) {
             <TouchableOpacity
               key={tab.name}
               style={styles.iconContainer}
-              onPress={() => navigation.navigate(tab.name)}
+              onPress={() => {
+                const currentIndex = tabs.findIndex((t) => t.name === currentRoute);
+                const nextIndex = tabs.findIndex((t) => t.name === tab.name);
+                const direction = nextIndex > currentIndex ? "right" : "left";
+
+                navigation.navigate(tab.name, { direction });
+              }}
             >
               <Ionicons
                 name={isActive ? tab.activeIcon : tab.icon}
                 size={26}
                 color={isActive ? "#6c63ff" : "#999"}
               />
-              <Text style={[styles.label, isActive && styles.activeLabel]}>
-                {tab.label}
-              </Text>
+              <Text style={[styles.label, isActive && styles.activeLabel]}>{tab.label}</Text>
             </TouchableOpacity>
           );
         })}
@@ -52,26 +44,26 @@ export default function Footer({ navigation, currentRoute }) {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: "#fff",
+  },
   footer: {
-    height: 35,
-    borderTopWidth: 1,
-    borderColor: "#ddd",
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "flex-start",
-    paddingTop: 3,
-    marginHorizontal: -15,
-    backgroundColor: "transparent", // no white bar
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+    paddingVertical: 8,
+    backgroundColor: "#fff",
   },
   iconContainer: {
-    paddingTop: 5,
     alignItems: "center",
     flex: 1,
   },
   label: {
     fontSize: 12,
     color: "#999",
-    marginTop: 4,
+    marginTop: 2,
     fontStyle: "italic",
   },
   activeLabel: {

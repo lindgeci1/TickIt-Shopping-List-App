@@ -171,7 +171,7 @@ const [favoritesMode, setFavoritesMode] = useState(false);
           setModalVisible(false);
         }}
       />
-      <Footer navigation={navigation} currentRoute="Product" />
+      {/* <Footer navigation={navigation} currentRoute="Product" /> */}
     </View>
   );
 }
