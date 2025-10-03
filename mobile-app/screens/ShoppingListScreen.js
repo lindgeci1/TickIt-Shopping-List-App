@@ -102,7 +102,7 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
 
 
       {/* Footer */}
-      <Footer navigation={navigation} currentRoute="ShoppingList" />
+      {/* <Footer navigation={navigation} currentRoute="ShoppingList" /> */}
     </View>
   );
 }

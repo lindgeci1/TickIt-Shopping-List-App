@@ -86,7 +86,7 @@ setMarketProducts(productsWithMarket);
         </>
       )}
 
-      <Footer navigation={navigation} currentRoute="Market" />
+      {/* <Footer navigation={navigation} currentRoute="Market" /> */}
     </View>
   );
 }
