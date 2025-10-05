@@ -107,9 +107,11 @@ const [favoritesMode, setFavoritesMode] = useState(false);
   activeMarket={activeMarket}
   setActiveMarket={setActiveMarket}
   setMarketProducts={setMarketProducts}
-  setFavoriteProducts={setFavoriteProducts} // favorite data
-  favoritesMode={favoritesMode} // <-- add this
-  setFavoritesMode={setFavoritesMode} // <-- add this
+  setProducts={setProducts}          // <--- add this
+  allProducts={allProducts}          // <--- add this
+  setFavoriteProducts={setFavoriteProducts}
+  favoritesMode={favoritesMode}
+  setFavoritesMode={setFavoritesMode}
   setSearch={setSearch}
 />
 

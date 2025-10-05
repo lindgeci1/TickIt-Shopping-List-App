@@ -26,8 +26,10 @@ export default function ProductFilterPanel({
   setMarketProducts,
   setFavoriteProducts: setParentFavoriteProducts,
    favoritesMode,
+   setProducts,
   setFavoritesMode,
   setSearch // added if you pass search setter from parent
+  , allProducts
 }) {
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -40,36 +42,59 @@ export default function ProductFilterPanel({
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setFilterExpanded(!filterExpanded);
   };
+const applyFilters = (products, category, searchTerm) => {
+  return products.filter(p => {
+    const matchesCategory = category ? p.Category === category : true;
+    const matchesSearch = searchTerm
+      ? p.Name.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+    return matchesCategory && matchesSearch;
+  });
+};
+const handleMarketSelect = async (market) => {
+  setActiveMarket(market);
+  if (!market) {
+    setAllMarketProducts([]);
+    setMarketProducts([]);
+    return;
+  }
+  try {
+    const res = await fetch(`${VITE_BASE_API_URL}/api/market/${market.MarketID}`);
+    const json = await res.json();
+    const productsFromMarket = (json.Products || []).map(p => ({
+      ProductID: p.ProductID,
+      Name: p.Name,
+      Category: p.Category,
+      Photos: p.Photos || []
+    }));
+    setAllMarketProducts(productsFromMarket);
 
-  const handleMarketSelect = async (market) => {
-    setActiveMarket(market);
-    if (!market) {
-      setAllMarketProducts([]);
-      setMarketProducts([]);
-      return;
-    }
-    try {
-      const res = await fetch(`${VITE_BASE_API_URL}/api/market/${market.MarketID}`);
-      const json = await res.json();
-      const productsFromMarket = (json.Products || []).map(p => ({
-        ProductID: p.ProductID,
-        Name: p.Name,
-        Category: p.Category,
-        Photos: p.Photos || []
-      }));
-      setAllMarketProducts(productsFromMarket);
-      setMarketProducts(activeCategory ? productsFromMarket.filter(p => p.Category === activeCategory) : productsFromMarket);
-    } catch (err) {
-      console.error(err);
-      setAllMarketProducts([]);
-      setMarketProducts([]);
-    }
-  };
+    // Use the latest search term here too
+    setMarketProducts(applyFilters(productsFromMarket, activeCategory, search));
+  } catch (err) {
+    console.error(err);
+    setAllMarketProducts([]);
+    setMarketProducts([]);
+  }
+};
+const handleCategorySelect = (category) => {
+  onCategoryPress(category);
+  setMarketProducts(applyFilters(allMarketProducts, category, search));
+};
+const handleSearchChange = (text) => {
+  setSearch(text);
 
-  const handleCategorySelect = (category) => {
-    onCategoryPress(category);
-    setMarketProducts(category ? allMarketProducts.filter(p => p.Category === category) : allMarketProducts);
-  };
+  if (favoritesMode) return; // optionally skip if showing favorites
+
+  if (activeMarket) {
+    setMarketProducts(applyFilters(allMarketProducts, activeCategory, text));
+  } else {
+    // filter allProducts directly
+    setParentFavoriteProducts?.(null); // optional: reset favorites
+    setMarketProducts([]); // clear marketProducts
+    setProducts(applyFilters(allProducts, activeCategory, text)); // <--- update products array
+  }
+};
 
 const handleShowFavorites = async () => {
   try {
@@ -106,7 +131,7 @@ const handleShowFavorites = async () => {
           placeholder="Search for a product..."
           placeholderTextColor="#777"
           value={search}
-          onChangeText={onSearchChange}
+          onChangeText={handleSearchChange}
         />
 
       </View>
