@@ -15,6 +15,51 @@
         }
     ],
     "paths": {
+        "/api/test-db": {
+            "get": {
+                "tags": [
+                    "Database"
+                ],
+                "summary": "Test database connection",
+                "operationId": "a90703b341944f91789bccb5cbfcdac4",
+                "responses": {
+                    "200": {
+                        "description": "Database connection successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "dbVersion": {
+                                            "type": "string"
+                                        },
+                                        "currentTime": {
+                                            "type": "string"
+                                        },
+                                        "publicTableCount": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Database connection failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/market/all": {
             "get": {
                 "tags": [
@@ -1285,6 +1330,10 @@
         {
             "name": "Shopping_List",
             "description": "API Endpoints for Shopping List Items"
+        },
+        {
+            "name": "Database",
+            "description": "Database"
         }
     ]
 }
