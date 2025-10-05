@@ -8,7 +8,6 @@ import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { filterProducts } from "../Product/filterProducts";
 import { fetchMarkets } from "../Market/fetchMarkets";
-import usePreferredMarkets from "../Product/usePreferredMarkets";
 
 const categoriesList = [{name:"Food"},{name:"Hygiene"},{name:"Drinks"},{name:"Electronics"},{name:"Clothing"},{name:"Cleaning"}];
 
@@ -27,7 +26,6 @@ export default function ProductScreen({ navigation, topPadding }) {
         [favoriteProducts,setFavoriteProducts] = useState([]),
         [favoritesMode,setFavoritesMode] = useState(false),
         [errorMessage,setErrorMessage] = useState("");
-  const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferredMarkets(products);
   const [filterExpanded,setFilterExpanded] = useState(false);
 
   useEffect(()=>{ fetchProducts(setAllProducts,setProducts); },[]);
@@ -44,10 +42,13 @@ export default function ProductScreen({ navigation, topPadding }) {
   };
 
   const renderProduct = ({item})=>(
-    <ProductCardBP
-      product={item} selectionMode={selectionMode} selected={selectedProducts.includes(item)} onSelect={()=>toggleSelection(item)} showPrice={false}
-      preferredMarketLogo={preferredMarkets[item.ProductID]} preferredMarketPrice={preferredMarketPrices[item.ProductID]} marketMessage={marketMessages[item.ProductID]}
-    />
+  <ProductCardBP
+    product={item}
+    selectionMode={selectionMode}
+    selected={selectedProducts.includes(item)}
+    onSelect={() => toggleSelection(item)}
+    showPrice={false}
+  />
   );
 
   return (

@@ -1,44 +1,95 @@
-import React, { useRef, useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Animated, LayoutAnimation } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Animated, LayoutAnimation, Easing, ActivityIndicator } from "react-native";
+import { usePreferredMarkets } from "../Product/usePreferredMarkets"; 
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = (width - 20) * 0.45;
 
-export default function ProductCardBP({ product, selectionMode=false, selected=false, onSelect, showPrice=true, preferredMarketLogo, preferredMarketPrice, marketMessage }) {
-  const [expanded,setExpanded] = useState(false);
+export default function ProductCardBP({ product, selectionMode=false, selected=false, onSelect, showPrice=true }) {
+  const [expanded, setExpanded] = useState(false);
+  const [loadingPref, setLoadingPref] = useState(false);
+  const [preferredMarketLogo, setPreferredMarketLogo] = useState(null);
+  const [preferredMarketPrice, setPreferredMarketPrice] = useState(null);
+  const [marketMessage, setMarketMessage] = useState(null);
+
   const scale = useRef(new Animated.Value(1)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   const checkScale = useRef(new Animated.Value(0)).current;
 
-  const toggleExpand = () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setExpanded(!expanded); };
+const toggleExpand = async () => {
+  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  setExpanded(prev => !prev);
 
-  useEffect(()=>{
-    Animated.spring(scale,{toValue:selected?0.95:1,friction:7,useNativeDriver:true}).start();
-    Animated.timing(overlayOpacity,{toValue:selected?0.25:0,duration:200,useNativeDriver:true}).start();
-    Animated.spring(checkScale,{toValue:selected?1:0,friction:5,useNativeDriver:true}).start();
-  },[selected]);
+  if (!expanded && !preferredMarketLogo && !loadingPref) {
+    setLoadingPref(true);
+    try {
+      // Call the function with an array of products (here just one)
+      const data = await usePreferredMarkets([product]);
+      
+      // Access values by ProductID
+      const productId = product.ProductID;
+      setPreferredMarketLogo(data.logos[productId]);
+      setPreferredMarketPrice(data.prices[productId]);
+      setMarketMessage(data.messages[productId]);
+    } catch (err) {
+      console.error("Failed to fetch preferred market info:", err);
+    } finally {
+      setLoadingPref(false);
+    }
+  }
+};
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(scale, { toValue: selected ? 0.95 : 1, friction: 7, useNativeDriver: true }),
+      Animated.timing(overlayOpacity, { toValue: selected ? 0.25 : 0, duration: 200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      Animated.spring(checkScale, { toValue: selected ? 1 : 0, friction: 5, useNativeDriver: true })
+    ]).start();
+  }, [selected]);
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={selectionMode?onSelect:toggleExpand} style={{margin:6}}>
-      <Animated.View style={[styles.card,{width:CARD_WIDTH,transform:[{scale}]},selected&&styles.selectedCard]}>
-        {selectionMode && <Animated.View style={[styles.overlay,{opacity:overlayOpacity}]}/>}
-        {selectionMode && <Animated.View style={[styles.centerCheck,{transform:[{scale:checkScale}]}]}><Text style={styles.checkMark}>✓</Text></Animated.View>}
-        <Image source={{uri:product.Photos?.[0]||"https://via.placeholder.com/100"}} style={styles.photo} resizeMode="cover"/>
+    <TouchableOpacity activeOpacity={0.9} onPress={selectionMode ? onSelect : toggleExpand} style={{ margin: 6 }}>
+      <Animated.View style={[styles.card, { width: CARD_WIDTH, transform: [{ scale }] }, selected && styles.selectedCard]}>
+        {selectionMode && <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]} />}
+        {selectionMode && <Animated.View style={[styles.centerCheck, { transform: [{ scale: checkScale }] }]}><Text style={styles.checkMark}>✓</Text></Animated.View>}
+        <Image source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/100" }} style={styles.photo} resizeMode="cover" />
         <View style={styles.infoBox}>
-          <Text style={styles.name}>{product.Name||"Unnamed Product"}</Text>
-          <View style={{width:"80%",height:1,backgroundColor:"#e0e0e0",marginVertical:6}}/>
-          {showPrice && product.Price!=null && <Text style={styles.price}>${product.Price.toFixed(2)}</Text>}
+          <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
+          <View style={{ width: "80%", height: 1, backgroundColor: "#e0e0e0", marginVertical: 6 }} />
+          {showPrice && product.Price != null && <Text style={styles.price}>${product.Price.toFixed(2)}</Text>}
           {!preferredMarketLogo && marketMessage && <Text style={styles.marketMessage}>{marketMessage}</Text>}
         </View>
-        {expanded && preferredMarketLogo && <View style={styles.preferredBox}>
-          <View style={styles.preferredRow}><Text style={styles.preferredLabel}>Category:</Text><Text style={styles.preferredPrice}>{product.Category||"No category"}</Text></View>
-          <View style={styles.preferredRow}><Text style={styles.preferredLabel}>Preferred:</Text><Image source={{uri:preferredMarketLogo}} style={styles.preferredLogo}/></View>
-          <View style={styles.preferredRow}><Text style={styles.preferredLabel}>Price:</Text>{preferredMarketPrice!=null && <Text style={styles.preferredPrice}>€{preferredMarketPrice.toFixed(2)}</Text>}</View>
-        </View>}
+
+        {expanded && (
+          <View style={styles.preferredBox}>
+            {loadingPref ? (
+              <ActivityIndicator size="small" color="#6c63ff" />
+            ) : (
+              <>
+                <View style={styles.preferredRow}>
+                  <Text style={styles.preferredLabel}>Category:</Text>
+                  <Text style={styles.preferredPrice}>{product.Category || "No category"}</Text>
+                </View>
+                {preferredMarketLogo && (
+                  <>
+                    <View style={styles.preferredRow}>
+                      <Text style={styles.preferredLabel}>Preferred:</Text>
+                      <Image source={{ uri: preferredMarketLogo }} style={styles.preferredLogo} />
+                    </View>
+                    <View style={styles.preferredRow}>
+                      <Text style={styles.preferredLabel}>Price:</Text>
+                      <Text style={styles.preferredPrice}>€{preferredMarketPrice?.toFixed(2)}</Text>
+                    </View>
+                  </>
+                )}
+              </>
+            )}
+          </View>
+        )}
       </Animated.View>
     </TouchableOpacity>
   );
 }
+
 
 const styles = StyleSheet.create({
   card:{backgroundColor:"#fff",borderRadius:12,padding:10,alignItems:"center",shadowColor:"#000",shadowOffset:{width:0,height:2},shadowOpacity:0.08,shadowRadius:4,elevation:3},
