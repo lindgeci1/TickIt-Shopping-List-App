@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import usePreferredMarkets from "./usePreferredMarkets"; // your existing hook
+import { usePreferredMarkets } from "./usePreferredMarkets"; // async function
 
 export default function ProductCardSL({
   product,
@@ -12,70 +12,71 @@ export default function ProductCardSL({
   preferredMarketPrice,
   marketMessage,
 }) {
-  // Make the array stable using useMemo
-  const productArray = useMemo(() => [product], [product.ProductID]);
-  
-  const { preferredMarkets, marketMessages, preferredMarketPrices } = usePreferredMarkets(productArray);
+  const [preferredMarkets, setPreferredMarkets] = useState({});
+  const [preferredMarketPrices, setPreferredMarketPrices] = useState({});
+  const [marketMessages, setMarketMessages] = useState({});
 
-  // Use hook data, fallback to original props
+  const productArray = useMemo(() => [product], [product.ProductID]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await usePreferredMarkets(productArray);
+      setPreferredMarkets(data.logos);
+      setPreferredMarketPrices(data.prices);
+      setMarketMessages(data.messages);
+    }
+    fetchData();
+  }, [productArray]);
+
   const logo = preferredMarkets[product.ProductID] ?? preferredMarketLogo;
   const price = preferredMarketPrices[product.ProductID] ?? preferredMarketPrice;
   const message = marketMessages[product.ProductID] ?? marketMessage;
 
   return (
-<View style={styles.card}>
-  {selectionMode && (
-    <TouchableOpacity
-      style={[styles.checkbox, selected && styles.checked]}
-      onPress={onSelect}
-    >
-      {selected && <Text style={styles.checkMark}>✓</Text>}
-    </TouchableOpacity>
-  )}
-
-  <View style={styles.photoBox}>
-    <Image
-      source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/50" }}
-      style={styles.photo}
-      resizeMode="cover"
-    />
-  </View>
-
-  {/* Wrap info + preferred in a horizontal container */}
-  <View style={styles.contentRow}>
-    <View style={styles.infoBox}>
-      <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
-      <Text style={styles.category}>{product.Category || "No category"}</Text>
-      {showPrice && product.Price != null && (
-        <Text style={styles.price}>${product.Price}</Text>
+    <View style={styles.card}>
+      {selectionMode && (
+        <TouchableOpacity
+          style={[styles.checkbox, selected && styles.checked]}
+          onPress={onSelect}
+        >
+          {selected && <Text style={styles.checkMark}>✓</Text>}
+        </TouchableOpacity>
       )}
-      {!logo && message && (
-        <Text style={styles.marketMessage}>{message}</Text>
-      )}
+      <View style={styles.photoBox}>
+        <Image
+          source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/50" }}
+          style={styles.photo}
+          resizeMode="cover"
+        />
+      </View>
+      <View style={styles.contentRow}>
+        <View style={styles.infoBox}>
+          <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
+          <Text style={styles.category}>{product.Category || "No category"}</Text>
+          {showPrice && product.Price != null && (
+            <Text style={styles.price}>${product.Price}</Text>
+          )}
+          {!logo && message && <Text style={styles.marketMessage}>{message}</Text>}
+        </View>
+
+        {logo && <View style={styles.verticalLine} />}
+        {logo && (
+          <View style={styles.preferredBox}>
+            <Image
+              source={{ uri: logo }}
+              style={styles.preferredLogo}
+              resizeMode="cover"
+            />
+            {price != null && (
+              <Text style={styles.preferredPrice}>€{price.toFixed(2)}</Text>
+            )}
+          </View>
+        )}
+      </View>
     </View>
-
-    {/* Vertical line */}
-    {logo && <View style={styles.verticalLine} />}
-
-{logo && (
-  <View style={styles.preferredBox}>
-    <Image
-      source={{ uri: logo }}
-      style={styles.preferredLogo}
-      resizeMode="cover"
-    />
-    {price != null && (
-      <Text style={styles.preferredPrice}>€{price.toFixed(2)}</Text>
-    )}
-  </View>
-)}
-
-
-  </View>
-</View>
-
   );
 }
+
 
 // Styles remain the same as your original code
 const styles = StyleSheet.create({
