@@ -16,28 +16,26 @@ export default function ProductCardBP({ product, selectionMode=false, selected=f
   const overlayOpacity = useRef(new Animated.Value(0)).current;
   const checkScale = useRef(new Animated.Value(0)).current;
 
-const toggleExpand = async () => {
-  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  setExpanded(prev => !prev);
+  const toggleExpand = async () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpanded(prev => !prev);
 
-  if (!expanded && !preferredMarketLogo && !loadingPref) {
-    setLoadingPref(true);
-    try {
-      // Call the function with an array of products (here just one)
-      const data = await usePreferredMarkets([product]);
-      
-      // Access values by ProductID
-      const productId = product.ProductID;
-      setPreferredMarketLogo(data.logos[productId]);
-      setPreferredMarketPrice(data.prices[productId]);
-      setMarketMessage(data.messages[productId]);
-    } catch (err) {
-      console.error("Failed to fetch preferred market info:", err);
-    } finally {
-      setLoadingPref(false);
+    if (!expanded && !preferredMarketLogo && !loadingPref) {
+      setLoadingPref(true);
+      try {
+        const data = await usePreferredMarkets([product]);
+        const productId = product.ProductID;
+        setPreferredMarketLogo(data.logos[productId]);
+        setPreferredMarketPrice(data.prices[productId]);
+        setMarketMessage(data.messages[productId]);
+      } catch (err) {
+        console.error("Failed to fetch preferred market info:", err);
+      } finally {
+        setLoadingPref(false);
+      }
     }
-  }
-};
+  };
+
   useEffect(() => {
     Animated.parallel([
       Animated.spring(scale, { toValue: selected ? 0.95 : 1, friction: 7, useNativeDriver: true }),
@@ -47,64 +45,85 @@ const toggleExpand = async () => {
   }, [selected]);
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={selectionMode ? onSelect : toggleExpand} style={{ margin: 6 }}>
+    <TouchableOpacity activeOpacity={0.9} onPress={selectionMode ? onSelect : toggleExpand} style={{ margin: 4 }}>
       <Animated.View style={[styles.card, { width: CARD_WIDTH, transform: [{ scale }] }, selected && styles.selectedCard]}>
         {selectionMode && <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]} />}
         {selectionMode && <Animated.View style={[styles.centerCheck, { transform: [{ scale: checkScale }] }]}><Text style={styles.checkMark}>✓</Text></Animated.View>}
+        
         <Image source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/100" }} style={styles.photo} resizeMode="cover" />
+        
         <View style={styles.infoBox}>
-          <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
-          <View style={{ width: "80%", height: 1, backgroundColor: "#e0e0e0", marginVertical: 6 }} />
+          <Text style={styles.name} numberOfLines={2}>{product.Name || "Unnamed Product"}</Text>
+          <View style={{ width: "80%", height: 1, backgroundColor: "#e0e0e0", marginVertical: 4 }} />
           {showPrice && product.Price != null && <Text style={styles.price}>${product.Price.toFixed(2)}</Text>}
           {!preferredMarketLogo && marketMessage && <Text style={styles.marketMessage}>{marketMessage}</Text>}
         </View>
 
-        {expanded && (
-          <View style={styles.preferredBox}>
-            {loadingPref ? (
-              <ActivityIndicator size="small" color="#6c63ff" />
-            ) : (
-              <>
-                <View style={styles.preferredRow}>
-                  <Text style={styles.preferredLabel}>Category:</Text>
-                  <Text style={styles.preferredPrice}>{product.Category || "No category"}</Text>
-                </View>
-                {preferredMarketLogo && (
-                  <>
-                    <View style={styles.preferredRow}>
-                      <Text style={styles.preferredLabel}>Preferred:</Text>
-                      <Image source={{ uri: preferredMarketLogo }} style={styles.preferredLogo} />
-                    </View>
-                    <View style={styles.preferredRow}>
-                      <Text style={styles.preferredLabel}>Price:</Text>
-                      <Text style={styles.preferredPrice}>€{preferredMarketPrice?.toFixed(2)}</Text>
-                    </View>
-                  </>
-                )}
-              </>
-            )}
+{expanded && (
+  <View style={styles.preferredBox}>
+    {loadingPref ? (
+      <ActivityIndicator size="small" color="#6c63ff" />
+    ) : (
+      preferredMarketLogo && (
+        <View style={styles.preferredRow}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image source={{ uri: preferredMarketLogo }} style={styles.preferredLogo} />
+            <Text style={styles.preferredTag}>Preferred</Text>
           </View>
-        )}
+          <Text style={styles.preferredPrice}>€{preferredMarketPrice?.toFixed(2)}</Text>
+        </View>
+      )
+    )}
+  </View>
+)}
+
+
       </Animated.View>
     </TouchableOpacity>
   );
 }
 
-
 const styles = StyleSheet.create({
-  card:{backgroundColor:"#fff",borderRadius:12,padding:10,alignItems:"center",shadowColor:"#000",shadowOffset:{width:0,height:2},shadowOpacity:0.08,shadowRadius:4,elevation:3},
-  selectedCard:{borderWidth:2,borderColor:"#6c63ff",shadowColor:"#6c63ff",shadowOffset:{width:0,height:4},shadowOpacity:0.2,shadowRadius:6},
-  overlay:{...StyleSheet.absoluteFillObject,backgroundColor:"#6c63ff",borderRadius:12,zIndex:5},
-  centerCheck:{position:"absolute",top:"50%",left:"50%",zIndex:10,backgroundColor:"#6c63ff",width:32,height:32,borderRadius:16,alignItems:"center",justifyContent:"center",shadowColor:"#000",shadowOffset:{width:0,height:1},shadowOpacity:0.3,shadowRadius:2,transform:[{translateX:-16},{translateY:-16}]},
-  checkMark:{color:"#fff",fontWeight:"bold",fontSize:18},
-  photo:{width:110,height:110,borderRadius:12,marginBottom:8,backgroundColor:"#f0f0ff"},
-  infoBox:{alignItems:"center",marginBottom:8,width:"100%"},
-  name:{fontSize:14,fontWeight:"700",color:"#2d3436",textAlign:"center"},
-  price:{fontSize:14,fontWeight:"600",color:"#444",marginTop:2},
-  marketMessage:{fontSize:11,color:"red",fontStyle:"italic",textAlign:"center",marginTop:4},
-  preferredBox:{backgroundColor:"#f8f8ff",padding:6,borderRadius:10,width:"90%",marginTop:6,alignItems:"center"},
-  preferredRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",width:"100%",marginVertical:2},
-  preferredLabel:{fontSize:10,color:"#6c63ff",fontWeight:"600",marginRight:4},
-  preferredLogo:{width:40,height:25,borderRadius:4,borderWidth:1,borderColor:"#6c63ff"},
-  preferredPrice:{fontSize:12,fontWeight:"700",color:"#444"}
+  card:{backgroundColor:"#fff",borderRadius:10,padding:6,alignItems:"center",shadowColor:"#000",shadowOffset:{width:0,height:1},shadowOpacity:0.06,shadowRadius:3,elevation:2},
+  selectedCard:{borderWidth:1.5,borderColor:"#6c63ff",shadowColor:"#6c63ff",shadowOffset:{width:0,height:2},shadowOpacity:0.15,shadowRadius:4},
+  overlay:{...StyleSheet.absoluteFillObject,backgroundColor:"#6c63ff",borderRadius:10,zIndex:5},
+  centerCheck:{position:"absolute",top:"50%",left:"50%",zIndex:10,backgroundColor:"#6c63ff",width:28,height:28,borderRadius:14,alignItems:"center",justifyContent:"center",shadowColor:"#000",shadowOffset:{width:0,height:1},shadowOpacity:0.25,shadowRadius:2,transform:[{translateX:-14},{translateY:-14}]},
+  checkMark:{color:"#fff",fontWeight:"bold",fontSize:16},
+  photo:{width:100,height:100,borderRadius:10,marginBottom:6,backgroundColor:"#f0f0ff"},
+  infoBox:{alignItems:"center",marginBottom:6,width:"100%"},
+  name:{fontSize:12,fontWeight:"700",color:"#2d3436",textAlign:"center"},
+  price:{fontSize:12,fontWeight:"600",color:"#444",marginTop:2},
+  marketMessage:{fontSize:10,color:"red",fontStyle:"italic",textAlign:"center",marginTop:2},
+preferredBox: {
+  backgroundColor: "#f8f8ff",
+  padding: 6,
+  borderRadius: 8,
+  width: "90%",
+  marginTop: 4,
+},
+preferredRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+},
+preferredLogo: {
+  width: 30,
+  height: 20,
+  borderRadius: 3,
+  borderWidth: 1,
+  borderColor: "#6c63ff",
+  marginRight: 6,
+},
+preferredTag: {
+  fontSize: 10,
+  color: "#6c63ff",
+  fontWeight: "600",
+},
+preferredPrice: {
+  fontSize: 12,
+  fontWeight: "700",
+  color: "#2d3436",
+},
+
 });

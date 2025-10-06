@@ -63,7 +63,7 @@ export default function ProductFilterPanel({
             <TouchableOpacity onPress={handleShowFavorites} disabled={!!activeCategory||!!activeMarket} style={{flex:1,borderWidth:1,borderColor:"#d1d1f0",borderRadius:6,backgroundColor:(!!activeCategory||!!activeMarket)?"#f0f0f0":"#f9f9ff",paddingVertical:8,alignItems:"center",marginRight:6}}>
               <Text style={{color:(!!activeCategory||!!activeMarket)?"#aaa":"#6c63ff",fontWeight:"600",fontSize:13}}>Favorites</Text>
             </TouchableOpacity>
-            {(favoriteProducts.length>0||favoritesMode)&&<TouchableOpacity onPress={()=>{setFavoriteProducts([]); setParentFavoriteProducts?.([]); setMarketProducts([]); setFavoritesMode(false);}} style={{padding:4}}><Ionicons name="close-circle" size={20} color="red"/></TouchableOpacity>}
+            {(favoriteProducts.length>0||favoritesMode)&&<TouchableOpacity onPress={()=>{setFavoriteProducts([]); setParentFavoriteProducts?.([]); setFavoritesMode(false); activeMarket?setMarketProducts(applyFilters(allMarketProducts,activeCategory,search)):setProducts(applyFilters(allProducts,activeCategory,search));}} style={{padding:4}}><Ionicons name="close-circle" size={20} color="red"/></TouchableOpacity>}
           </View>
 
           <View style={{flexDirection:"row",gap:8}}>
