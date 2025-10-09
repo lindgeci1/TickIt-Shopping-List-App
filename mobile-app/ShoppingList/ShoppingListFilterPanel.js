@@ -33,10 +33,22 @@ export default function ShoppingListFilterPanel({
     setFilterExpanded(!filterExpanded);
   };
 
-  const handleSearchChange = (text) => {
-    setSearch(text);
+const handleSearchChange = (text) => {
+  setSearch(text);
+
+  // intersection: search + custom date (if active)
+  if (customDate) {
+    filterListsByCustomDate(
+      allLists.filter(item =>
+        item.Name.toLowerCase().includes(text.toLowerCase())
+      ),
+      setFilteredLists,
+      customDate
+    );
+  } else {
     filterLists(allLists, setFilteredLists, text, activeQuickDate);
-  };
+  }
+};
 
   const quickDateOptions = ["Today", "Yesterday", "Last 7 Days", "This Month"];
 
@@ -52,16 +64,26 @@ const handleQuickDateSelect = (date) => {
 
 const handleCustomDateSelect = (date) => {
   setCustomDate(date);
-  setActiveQuickDate(null); // clear quick date selection
-  filterListsByCustomDate(allLists, setFilteredLists, date); // pass only the date
+  setActiveQuickDate(null);
+
+  // intersection: custom date + search
+  filterListsByCustomDate(
+    allLists.filter(item =>
+      item.Name.toLowerCase().includes(search.toLowerCase())
+    ),
+    setFilteredLists,
+    date
+  );
 };
 
 const clearCustomDate = () => {
   setCustomDate(null);
+
   if (activeQuickDate) {
     filterLists(allLists, setFilteredLists, search, activeQuickDate);
   } else {
-    setFilteredLists(allLists); // show all lists if no date selected
+    // just search (no date)
+    filterLists(allLists, setFilteredLists, search);
   }
 };
 
@@ -132,62 +154,82 @@ const clearCustomDate = () => {
       </TouchableOpacity>
 
       {/* Filter Dropdowns */}
-      {filterExpanded && (
-        <View style={{ marginTop: 12, flexDirection: "row", gap: 10 }}>
-          {/* Quick Date Dropdown */}
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              onPress={() => setShowQuickDateModal(true)}
-              disabled={!!customDate}
-              style={{
-                flex: 1,
-                borderWidth: 1.5,
-                borderColor: "#d1d1f0",
-                borderRadius: 12,
-                   backgroundColor: !!customDate ? "#cccccc" : "#fff", // stronger gray
-                padding: 10,
-              }}
-            >
-              <Text style={{ color: "#6c63ff", fontWeight: "600" }}>
-                {activeQuickDate || "Quick Date"}
-              </Text>
-            </TouchableOpacity>
-            {activeQuickDate && (
-              <TouchableOpacity onPress={clearQuickDate} style={{ marginLeft: 6 }}>
-                <Ionicons name="close-circle" size={22} color="red" />
-              </TouchableOpacity>
-            )}
-          </View>
+{filterExpanded && (
+  <View
+    style={{
+      marginTop: 12,
+      padding: 10,
+      backgroundColor: "#fff",
+      borderRadius: 3,
+      gap: 10,
+      shadowColor: "#000",
+      shadowOpacity: 0.03,
+      shadowRadius: 3,
+      shadowOffset: { width: 0, height: 1 },
+      elevation: 2,
+    }}
+  >
+    <View style={{ flexDirection: "row", gap: 10 }}>
+      {/* Quick Date */}
+      <TouchableOpacity
+        onPress={() => { if(!customDate) setShowQuickDateModal(true) }}
+        activeOpacity={customDate ? 1 : 0.7} // no visual press if disabled
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: !!customDate ? "#f0f0f0" : "#f0f4ff",
+          paddingVertical: 7,
+          paddingHorizontal: 15,
+          borderWidth: 1,
+          borderColor: "#d1d1f0",
+          borderRadius: 3,
+        }}
+      >
+        <Text style={{ color: !!customDate ? "#aaa" : "#1a3cff", fontWeight: "600", fontSize: 14 }}>
+          {activeQuickDate || "Quick Date"}
+        </Text>
+        {activeQuickDate && (
+          <TouchableOpacity onPress={clearQuickDate}>
+            <Ionicons name="close" size={16} color="#888" />
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
 
-          {/* Custom Date Dropdown */}
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              onPress={() => setShowCustomDateModal(true)}
-              disabled={!!activeQuickDate} 
-              style={{
-                flex: 1,
-                borderWidth: 1.5,
-                borderColor: "#d1d1f0",
-                borderRadius: 12,
-                backgroundColor: !!activeQuickDate ?"#cccccc" : "#fff", // stronger gray
-                padding: 10,
-              }}
-            >
-          <Text style={{ color: "#6c63ff", fontWeight: "600" }}>
-            {customDate
-              ? `${customDate.getDate()} ${customDate.toLocaleString("default", { month: "short" })} ${customDate.getFullYear()}`
-              : "Custom Date"}
-          </Text>
+      {/* Custom Date */}
+      <TouchableOpacity
+        onPress={() => { if(!activeQuickDate) setShowCustomDateModal(true) }}
+        activeOpacity={activeQuickDate ? 1 : 0.7} // no visual press if disabled
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: !!activeQuickDate ? "#f0f0f0" : "#f0f4ff",
+          paddingVertical: 7,
+          paddingHorizontal: 15,
+          borderWidth: 1,
+          borderColor: "#d1d1f0",
+          borderRadius: 3,
+        }}
+      >
+        <Text style={{ color: !!activeQuickDate ? "#aaa" : "#1a3cff", fontWeight: "600", fontSize: 14 }}>
+          {customDate
+            ? `${customDate.getDate()} ${customDate.toLocaleString("default",{ month:"short" })} ${customDate.getFullYear()}`
+            : "Custom Date"}
+        </Text>
+        {customDate && (
+          <TouchableOpacity onPress={clearCustomDate}>
+            <Ionicons name="close" size={16} color="#888" />
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+    </View>
+  </View>
+)}
 
-            </TouchableOpacity>
-            {customDate && (
-              <TouchableOpacity onPress={clearCustomDate} style={{ marginLeft: 6 }}>
-                <Ionicons name="close-circle" size={22} color="red" />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      )}
+
 
       {/* Quick Date Modal */}
       <Modal visible={showQuickDateModal} transparent animationType="slide">
