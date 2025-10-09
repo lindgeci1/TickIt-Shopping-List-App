@@ -4,11 +4,17 @@ import { TouchableOpacity, Image, StyleSheet } from "react-native";
 export const renderMarketChip = (item, activeMarket, onPress) => {
   return (
     <TouchableOpacity
-      style={[styles.marketChip, { backgroundColor: "#6c63ff20" }]}
+      style={[
+        styles.marketChip,
+        activeMarket?.MarketID === item.MarketID && {
+          borderWidth: 2,
+          borderColor: "#6c63ff",
+        },
+      ]}
       onPress={() => onPress(item)}
     >
       <Image
-        source={{ uri: item.Photos?.[0] || "https://via.placeholder.com/60" }}
+        source={{ uri: item.Photos?.[0] || "https://via.placeholder.com/50" }}
         style={styles.marketImage}
       />
     </TouchableOpacity>
@@ -17,12 +23,17 @@ export const renderMarketChip = (item, activeMarket, onPress) => {
 
 const styles = StyleSheet.create({
   marketChip: {
-    width: 90,
-    height: 90,
-    borderRadius: 16,
-    marginRight: 12,
+    width: 60,          // smaller width
+    height: 60,         // smaller height
+    borderRadius: 12,   // slightly smaller radius
+    marginRight: 8,     // reduce spacing
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#6c63ff20",
   },
-  marketImage: { width: 60, height: 60, borderRadius: 12 },
+  marketImage: {
+    width: 40,          // smaller image
+    height: 40,
+    borderRadius: 8,
+  },
 });
