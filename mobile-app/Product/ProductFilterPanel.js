@@ -57,32 +57,37 @@ export default function ProductFilterPanel({
         <Text style={{color:"#fff",fontWeight:"600",fontSize:14}}>Filters</Text>
       </TouchableOpacity>
 
-      {filterExpanded && (
-        <View style={{marginTop:12,padding:12,backgroundColor:"#fff",borderRadius:8,gap:12,shadowColor:"#000",shadowOpacity:0.05,shadowRadius:4,shadowOffset:{width:0,height:2}}}>
-          <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-            <TouchableOpacity onPress={handleShowFavorites} disabled={!!activeCategory||!!activeMarket} style={{flex:1,borderWidth:1,borderColor:"#d1d1f0",borderRadius:6,backgroundColor:(!!activeCategory||!!activeMarket)?"#f0f0f0":"#f9f9ff",paddingVertical:8,alignItems:"center",marginRight:6}}>
-              <Text style={{color:(!!activeCategory||!!activeMarket)?"#aaa":"#6c63ff",fontWeight:"600",fontSize:13}}>Favorites</Text>
-            </TouchableOpacity>
-            {(favoriteProducts.length>0||favoritesMode)&&<TouchableOpacity onPress={()=>{setFavoriteProducts([]); setParentFavoriteProducts?.([]); setFavoritesMode(false); activeMarket?setMarketProducts(applyFilters(allMarketProducts,activeCategory,search)):setProducts(applyFilters(allProducts,activeCategory,search));}} style={{padding:4}}><Ionicons name="close-circle" size={20} color="red"/></TouchableOpacity>}
-          </View>
+{filterExpanded && (
+  <View style={{marginTop:12,padding:10,backgroundColor:"#fff",borderRadius:3,gap:10,shadowColor:"#000",shadowOpacity:0.03,shadowRadius:3,shadowOffset:{width:0,height:1},elevation:2}}>
+    
+    {/* First row: Favorites */}
+    <View style={{flexDirection:"row"}}>
+      <TouchableOpacity onPress={handleShowFavorites} activeOpacity={!!activeCategory||!!activeMarket?1:0.7} disabled={!!activeCategory||!!activeMarket}
+        style={{flex:1,flexDirection:"row",alignItems:"center",justifyContent:"space-between",backgroundColor:(!!activeCategory||!!activeMarket)?"#f0f0f0":"#f0f4ff",paddingVertical:7,paddingHorizontal:15,borderWidth:1,borderColor:"#d1d1f0",borderRadius:3}}>
+        <Text style={{color:(!!activeCategory||!!activeMarket)?"#aaa":"#1a3cff",fontWeight:"600",fontSize:14}}>Favorites</Text>
+        {(favoriteProducts.length>0||favoritesMode)&&<TouchableOpacity onPress={()=>{setFavoriteProducts([]);setParentFavoriteProducts?.([]);setFavoritesMode(false);activeMarket?setMarketProducts(applyFilters(allMarketProducts,activeCategory,search)):setProducts(applyFilters(allProducts,activeCategory,search));}}><Ionicons name="close" size={16} color="#888"/></TouchableOpacity>}
+      </TouchableOpacity>
+    </View>
 
-          <View style={{flexDirection:"row",gap:8}}>
-            <View style={{flex:1,flexDirection:"row",alignItems:"center"}}>
-              <TouchableOpacity onPress={()=>!favoritesMode&&setShowCategoryModal(true)} disabled={favoritesMode} style={{flex:1,borderWidth:1,borderColor:"#d1d1f0",borderRadius:6,backgroundColor:favoritesMode?"#f0f0f0":"#f9f9ff",paddingVertical:8,paddingHorizontal:10}}>
-                <Text style={{color:favoritesMode?"#aaa":"#6c63ff",fontWeight:"600",fontSize:13}}>{activeCategory||"Category"}</Text>
-              </TouchableOpacity>
-              {activeCategory&&!favoritesMode&&<TouchableOpacity onPress={()=>handleCategorySelect(null)} style={{marginLeft:6}}><Ionicons name="close-circle" size={20} color="red"/></TouchableOpacity>}
-            </View>
+    {/* Second row: Category + Market */}
+    <View style={{flexDirection:"row",gap:10}}>
+      {/* Category */}
+      <TouchableOpacity onPress={()=>!favoritesMode&&setShowCategoryModal(true)} activeOpacity={favoritesMode?1:0.7} disabled={favoritesMode}
+        style={{flex:1,flexDirection:"row",alignItems:"center",justifyContent:"space-between",backgroundColor:favoritesMode?"#f0f0f0":"#f0f4ff",paddingVertical:7,paddingHorizontal:15,borderWidth:1,borderColor:"#d1d1f0",borderRadius:3}}>
+        <Text style={{color:favoritesMode?"#aaa":"#1a3cff",fontWeight:"600",fontSize:14}}>{activeCategory||"Category"}</Text>
+        {activeCategory&&!favoritesMode&&<TouchableOpacity onPress={()=>handleCategorySelect(null)}><Ionicons name="close" size={16} color="#888"/></TouchableOpacity>}
+      </TouchableOpacity>
 
-            <View style={{flex:1,flexDirection:"row",alignItems:"center"}}>
-              <TouchableOpacity onPress={async()=>{if(!favoritesMode){await onMarketClick?.(); setShowMarketModal(true);}}} disabled={favoritesMode} style={{flex:1,borderWidth:1,borderColor:"#d1d1f0",borderRadius:6,backgroundColor:favoritesMode?"#f0f0f0":"#f9f9ff",paddingVertical:8,paddingHorizontal:10}}>
-                <Text style={{color:favoritesMode?"#aaa":"#6c63ff",fontWeight:"600",fontSize:13}}>{activeMarket?.Name||"Market"}</Text>
-              </TouchableOpacity>
-              {activeMarket&&!favoritesMode&&<TouchableOpacity onPress={()=>{setActiveMarket(null); setAllMarketProducts([]); setMarketProducts([]);}} style={{marginLeft:6}}><Ionicons name="close-circle" size={20} color="red"/></TouchableOpacity>}
-            </View>
-          </View>
-        </View>
-      )}
+      {/* Market */}
+      <TouchableOpacity onPress={async()=>{if(!favoritesMode){await onMarketClick?.();setShowMarketModal(true);}}} activeOpacity={favoritesMode?1:0.7} disabled={favoritesMode}
+        style={{flex:1,flexDirection:"row",alignItems:"center",justifyContent:"space-between",backgroundColor:favoritesMode?"#f0f0f0":"#f0f4ff",paddingVertical:7,paddingHorizontal:15,borderWidth:1,borderColor:"#d1d1f0",borderRadius:3}}>
+        <Text style={{color:favoritesMode?"#aaa":"#1a3cff",fontWeight:"600",fontSize:14}}>{activeMarket?.Name||"Market"}</Text>
+        {activeMarket&&!favoritesMode&&<TouchableOpacity onPress={()=>{setActiveMarket(null);setAllMarketProducts([]);setMarketProducts([]);}}><Ionicons name="close" size={16} color="#888"/></TouchableOpacity>}
+      </TouchableOpacity>
+    </View>
+  </View>
+)}
+
 
       <Modal visible={showCategoryModal} transparent animationType="slide">
         <View style={{flex:1,justifyContent:"center",backgroundColor:"rgba(0,0,0,0.4)"}}>
