@@ -23,4 +23,5 @@ interface I_Product_Repository
     public function countShoppingListsForProduct(int $productID): int;
     public function updateIsFavorite(int $productID, bool $isFavorite): bool;
     public function findFavorites(): array;
+    public function getMarketsWithPriceAndPhoto(int $productID): array;
 }

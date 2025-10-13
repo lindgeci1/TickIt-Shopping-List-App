@@ -28,6 +28,7 @@ use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Delete_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Search_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Favorite_Products_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Product_Markets_Use_Case;
 
 use App\Application\Interfaces\Market\I_GetAll_Markets_Use_Case;
 use App\Application\Interfaces\Market\I_Get_Market_UseCase;
@@ -64,6 +65,7 @@ use App\Application\UseCases\Product\Update_Product_Use_Case;
 use App\Application\UseCases\Product\Delete_Product_Use_Case;
 use App\Application\UseCases\Product\Search_Product_Use_Case;
 use App\Application\UseCases\Product\Get_Favorite_Products_Use_Case;
+use App\Application\UseCases\Product\Get_Product_Markets_Use_Case;
 
 use App\Application\UseCases\Market\GetAll_Markets_Use_Case;
 use App\Application\UseCases\Market\Get_Market_Use_Case;
@@ -113,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Delete_Product_Use_Case::class, Delete_Product_Use_Case::class);
         $this->app->bind(I_Search_Product_Use_Case::class, Search_Product_Use_Case::class);
         $this->app->bind(I_Get_Favorite_Products_Use_Case::class, Get_Favorite_Products_Use_Case::class);
+        $this->app->bind(I_Get_Product_Markets_Use_Case::class, Get_Product_Markets_Use_Case::class);
         // Market Services
         $this->app->bind(I_GetAll_Markets_Use_Case::class, GetAll_Markets_Use_Case::class);
         $this->app->bind(I_Get_Market_UseCase::class, Get_Market_Use_Case::class);
