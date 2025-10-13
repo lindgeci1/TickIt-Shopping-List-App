@@ -10,7 +10,9 @@ use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Delete_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Search_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Favorite_Products_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Product_Markets_Use_Case;
 use App\Application\DTOs\Product_DTO;
+use App\Application\DTOs\Product_Markets_DTO;
 use InvalidArgumentException;
 
 /**
@@ -28,6 +30,7 @@ class Product_Controller extends Controller
     private I_Delete_Product_Use_Case $deleteProductService;
     private I_Search_Product_Use_Case $searchProductService;
     private I_Get_Favorite_Products_Use_Case $getFavoriteProductsService;
+    private I_Get_Product_Markets_Use_Case $getProductMarketsService;
 
     public function __construct(
         I_GetAll_Products_Use_Case $getAllProductsService,
@@ -36,7 +39,8 @@ class Product_Controller extends Controller
         I_Update_Product_Use_Case $updateProductService,
         I_Delete_Product_Use_Case $deleteProductService,
         I_Search_Product_Use_Case $searchProductService,
-        I_Get_Favorite_Products_Use_Case $getFavoriteProductsService
+        I_Get_Favorite_Products_Use_Case $getFavoriteProductsService,
+        I_Get_Product_Markets_Use_Case $getProductMarketsService
     ) {
         $this->getAllProductsService = $getAllProductsService;
         $this->createProductService = $createProductService;
@@ -45,6 +49,7 @@ class Product_Controller extends Controller
         $this->deleteProductService = $deleteProductService;
         $this->searchProductService = $searchProductService;
         $this->getFavoriteProductsService = $getFavoriteProductsService;
+        $this->getProductMarketsService = $getProductMarketsService;
     }
 
     /**
@@ -162,35 +167,35 @@ class Product_Controller extends Controller
         }
     }
 
-     /**
-     * @OA\Get(
-     *     path="/api/product/search",
-     *     summary="Search products by name",
-     *     tags={"Product"},
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="query",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of matching products",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
-     *     )
-     * )
-     */
-    public function search(Request $request)
-    {
-        $name = $request->query('name', '');
+    //  /**
+    //  * @OA\Get(
+    //  *     path="/api/product/search",
+    //  *     summary="Search products by name",
+    //  *     tags={"Product"},
+    //  *     @OA\Parameter(
+    //  *         name="name",
+    //  *         in="query",
+    //  *         required=true,
+    //  *         @OA\Schema(type="string")
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="List of matching products",
+    //  *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
+    //  *     )
+    //  * )
+    //  */
+    // public function search(Request $request)
+    // {
+    //     $name = $request->query('name', '');
 
-        if (empty(trim($name))) {
-            return response()->json([], 200);
-        }
+    //     if (empty(trim($name))) {
+    //         return response()->json([], 200);
+    //     }
 
-        $results = $this->searchProductService->searchByName($name);
-        return response()->json($results, 200);
-    }
+    //     $results = $this->searchProductService->searchByName($name);
+    //     return response()->json($results, 200);
+    // }
 
     /**
      * @OA\Get(
@@ -209,4 +214,37 @@ class Product_Controller extends Controller
         $favorites = $this->getFavoriteProductsService->getFavorites();
         return response()->json($favorites, 200);
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/product/{ProductID}/markets",
+ *     summary="Get markets for a product with price and photo",
+ *     tags={"Product"},
+ *     @OA\Parameter(
+ *         name="ProductID",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of markets with product price and photo",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/Product_Markets_DTO")
+ *         )
+ *     ),
+ *     @OA\Response(response=404, description="Product not found")
+ * )
+ */
+
+    public function getMarkets(int $ProductID)
+{
+    try {
+        $markets = $this->getProductMarketsService->execute($ProductID);
+        return response()->json($markets, 200);
+    } catch (InvalidArgumentException $ex) {
+        return response()->json(['message' => $ex->getMessage()], 404);
+    }
+}
 }

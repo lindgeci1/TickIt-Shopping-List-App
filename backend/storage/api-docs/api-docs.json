@@ -495,40 +495,6 @@
                 }
             }
         },
-        "/api/product/search": {
-            "get": {
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Search products by name",
-                "operationId": "712cc76617e7ab83eaa6b44b296a4efd",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of matching products",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Product_DTO"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/product/favorites": {
             "get": {
                 "tags": [
@@ -549,6 +515,43 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/product/{ProductID}/markets": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get markets for a product with price and photo",
+                "operationId": "a58b47403d7aded3da3d3e1e46b6fa94",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of markets with product price and photo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product_Markets_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
                     }
                 }
             }
@@ -1188,6 +1191,30 @@
                             "ToBuy",
                             "Bought"
                         ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Product_Markets_DTO": {
+                "required": [
+                    "MarketID",
+                    "Name"
+                ],
+                "properties": {
+                    "MarketID": {
+                        "type": "integer"
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Price": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "PhotoURL": {
+                        "type": "string",
                         "nullable": true
                     }
                 },

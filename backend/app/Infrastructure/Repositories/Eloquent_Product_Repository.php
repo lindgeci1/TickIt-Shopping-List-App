@@ -55,6 +55,24 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 return $product;
             })->all();
         }
+        public function getMarketsWithPriceAndPhoto(int $productID): array
+        {
+            $productModel = ProductModel::with(['markets.photo'])->find($productID);
+            if (!$productModel) {
+                return [];
+            }
+
+            // Map markets to simple array including photo and price
+            return $productModel->markets->map(function ($market) {
+                return [
+                    'MarketID' => $market->market_id,
+                    'Name'     => $market->name,
+                    'Price'    => $market->pivot->price ?? null,        // price from product_market pivot
+                    'PhotoURL' => $market->photo ? $market->photo->url : null, // photo from market_photos table
+                ];
+            })->all();
+        }
+
 
         public function updateIsFavorite(int $productID, bool $isFavorite): bool
         {
