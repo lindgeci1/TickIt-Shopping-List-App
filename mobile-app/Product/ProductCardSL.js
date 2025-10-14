@@ -10,9 +10,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useProductMarkets } from "./useProductMarkets";
+import { assignProductToShoppingListItem } from "./assignProductToShoppingListItem"; // import the API function
 
 export default function ProductCardSL({
   product,
+  shoppingListItemId, // <-- pass this as prop
   selectionMode = false,
   selected = false,
   onSelect,
@@ -22,28 +24,56 @@ export default function ProductCardSL({
   const [loadingMarkets, setLoadingMarkets] = useState(false);
   const [marketList, setMarketList] = useState([]);
   const [marketMessage, setMarketMessage] = useState("");
-  const [selectedMarket, setSelectedMarket] = useState(null);
-
+  const [apiError, setApiError] = useState(""); 
   const productArray = useMemo(() => [product], [product.ProductID]);
 
   const handleTap = async () => {
-  setModalVisible(true);
-  if (marketList.length > 0) return;
+    setModalVisible(true);
+    if (marketList.length > 0) return;
 
-  setLoadingMarkets(true);
+    setLoadingMarkets(true);
+    try {
+      const data = await useProductMarkets([product]);
+      const productId = product.ProductID;
+      const list = data[productId] || [];
+      setMarketList(list);
+    } catch (err) {
+      console.error(err);
+      setMarketMessage("Failed to fetch markets");
+    } finally {
+      setLoadingMarkets(false);
+    }
+  };
+
+const handleSelectMarket = async (market) => {
+  const payload = {
+    shopping_list_item_id: shoppingListItemId,
+    product_id: product.ProductID,
+    market_id: market.id,
+  };
+
   try {
-    const data = await useProductMarkets([product]);
-    const productId = product.ProductID;
-    const list = data[productId] || [];
-    console.log("Markets for modal:", list);
-    setMarketList(list);
+    const result = await assignProductToShoppingListItem(payload);
+    setApiError("");       // Clear any previous error
+    setModalVisible(false); // Close modal on success
+    return result;          // Return the backend response
   } catch (err) {
-    console.error(err);
-    setMarketMessage("Failed to fetch markets");
-  } finally {
-    setLoadingMarkets(false);
+    // Show friendly UI message only
+    setApiError(
+      err.message.includes("already assigned")
+        ? "This product is already assigned to this market."
+        : "Failed to assign product to market."
+    );
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => setApiError(""), 3000);
   }
 };
+
+
+
+
+
 
   return (
     <View style={styles.card}>
@@ -80,26 +110,9 @@ export default function ProductCardSL({
 
       {/* Right side — price or market */}
       <View style={styles.rightSection}>
-        {selectedMarket ? (
-          <TouchableOpacity
-            style={styles.selectedMarketBox}
-            onPress={handleTap} // reopen modal to change
-          >
-            <Image
-              source={{ uri: selectedMarket.logo }}
-              style={styles.selectedMarketLogo}
-            />
-            <View style={{ alignItems: "flex-end" }}>
-              <Text style={styles.selectedMarketPrice}>
-                €{selectedMarket.price.toFixed(2)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.tapPriceBox} onPress={handleTap}>
-            <Text style={styles.tapPriceText}>Tap for Price</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.tapPriceBox} onPress={handleTap}>
+          <Text style={styles.tapPriceText}>Tap for Price</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Modal for selecting market */}
@@ -117,10 +130,7 @@ export default function ProductCardSL({
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.row}
-                    onPress={() => {
-                      setSelectedMarket(item);
-                      setModalVisible(false);
-                    }}
+                    onPress={() => handleSelectMarket(item)}
                   >
                     <Image source={{ uri: item.logo }} style={styles.logo} />
                     <Text style={styles.marketName}>{item.name}</Text>
@@ -135,7 +145,11 @@ export default function ProductCardSL({
                 {marketMessage}
               </Text>
             )}
-
+{apiError ? (
+  <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>
+    {apiError}
+  </Text>
+) : null}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
@@ -235,18 +249,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeText: { color: "#fff", fontWeight: "700" },
-  selectedMarketBox: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  selectedMarketLogo: {
-    width: 28,
-    height: 18,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: "#6c63ff",
-    marginRight: 6,
-  },
-  selectedMarketName: { fontSize: 12, fontWeight: "600", color: "#2d3436" },
-  selectedMarketPrice: { fontSize: 12, fontWeight: "700", color: "#6c63ff" },
 });
