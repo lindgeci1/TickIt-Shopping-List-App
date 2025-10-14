@@ -31,8 +31,9 @@ class Shopping_List_Item_Product_Market_Controller extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"shopping_list_item_product_id","market_id"},
-     *             @OA\Property(property="shopping_list_item_product_id", type="integer"),
+     *             required={"shopping_list_item_id","product_id","market_id"},
+     *             @OA\Property(property="shopping_list_item_id", type="integer"),
+     *             @OA\Property(property="product_id", type="integer"),
      *             @OA\Property(property="market_id", type="integer")
      *         )
      *     ),
@@ -40,17 +41,17 @@ class Shopping_List_Item_Product_Market_Controller extends Controller
      *     @OA\Response(response=400, description="Invalid input or assignment failed")
      * )
      */
-   public function assignMarket(Request $request)
-        {
-            $shoppingListItemProductId = (int) $request->input('shopping_list_item_product_id');
-            $marketId = (int) $request->input('market_id');
+    public function assignMarket(Request $request)
+    {
+        $shoppingListItemId = (int) $request->input('shopping_list_item_id');
+        $productId = (int) $request->input('product_id');
+        $marketId = (int) $request->input('market_id');
 
-            try {
-                $dto = $this->assignMarketService->assign($shoppingListItemProductId, $marketId);
-                return response()->json($dto, 200);
-            } catch (InvalidArgumentException $ex) {
-                return response()->json(['message' => $ex->getMessage()], 400);
-            }
+        try {
+            $dto = $this->assignMarketService->assign($shoppingListItemId, $productId, $marketId);
+            return response()->json($dto, 200);
+        } catch (InvalidArgumentException $ex) {
+            return response()->json(['message' => $ex->getMessage()], 400);
         }
-
+    }
 }

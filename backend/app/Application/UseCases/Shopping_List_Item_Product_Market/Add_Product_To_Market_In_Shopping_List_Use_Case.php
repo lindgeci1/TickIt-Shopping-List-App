@@ -15,18 +15,22 @@ class Add_Product_To_Market_In_Shopping_List_Use_Case implements I_Add_Product_T
     {
         $this->repository = $repository;
     }
-
-    public function assign(int $shoppingListItemProductId, int $productMarketId): Shopping_List_Item_Product_Market_DTO
+    public function assign(int $shoppingListItemId, int $productId, int $marketId): Shopping_List_Item_Product_Market_DTO
     {
-        if ($shoppingListItemProductId <= 0) {
-            throw new InvalidArgumentException("Invalid shopping list product ID.");
+        if ($shoppingListItemId <= 0) {
+            throw new InvalidArgumentException("Invalid shopping list item ID.");
         }
 
-        if ($productMarketId <= 0) {
-            throw new InvalidArgumentException("Invalid product market ID.");
+        if ($productId <= 0) {
+            throw new InvalidArgumentException("Invalid product ID.");
         }
 
-        $entity = $this->repository->assignMarket($shoppingListItemProductId, $productMarketId);
+        if ($marketId <= 0) {
+            throw new InvalidArgumentException("Invalid market ID.");
+        }
+
+        // Pass all three IDs to the repository
+        $entity = $this->repository->assignMarket($shoppingListItemId, $productId, $marketId);
 
         return new Shopping_List_Item_Product_Market_DTO($entity);
     }

@@ -87,13 +87,14 @@ export default function ShoppingLists({ item, index, onDelete }) {
           data={toBuyProducts}
           keyExtractor={p => p.ProductID.toString()}
           renderItem={({ item: product }) => (
-            <ProductCardSL
-              product={product}
-              showPrice={true}
-              selectionMode={selectionMode}
-              selected={selectedProducts.includes(product)}
-              onSelect={() => toggleSelection(product)}
-            />
+<ProductCardSL
+  product={product}
+  shoppingListItemId={item.Shopping_List_ItemID} // <-- pass the list ID
+  showPrice={true}
+  selectionMode={selectionMode}
+  selected={selectedProducts.includes(product)}
+  onSelect={() => toggleSelection(product)}
+/>
           )}
           scrollEnabled={false}
           style={styles.productList}
@@ -107,13 +108,14 @@ export default function ShoppingLists({ item, index, onDelete }) {
           data={boughtProducts}
           keyExtractor={p => p.ProductID.toString()}
           renderItem={({ item: product }) => (
-            <ProductCardSL
-              product={product}
-              showPrice={true}
-              selectionMode={selectionMode}
-              selected={selectedProducts.includes(product)}
-              onSelect={() => toggleSelection(product)}
-            />
+<ProductCardSL
+  product={product}
+  shoppingListItemId={item.Shopping_List_ItemID} // <-- pass the list ID
+  showPrice={true}
+  selectionMode={selectionMode}
+  selected={selectedProducts.includes(product)}
+  onSelect={() => toggleSelection(product)}
+/>
           )}
           scrollEnabled={false}
           style={styles.productList}

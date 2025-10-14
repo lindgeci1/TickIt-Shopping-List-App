@@ -3,8 +3,9 @@
 namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Infrastructure\Models\Shopping_List_Item_Product;
-use App\Infrastructure\Models\Product_Market;
+use App\Infrastructure\Models\Shopping_List_Item;
+use App\Infrastructure\Models\Product;
+use App\Infrastructure\Models\Market; // separate Market table
 
 class Shopping_List_Item_Product_Market extends Model
 {
@@ -13,26 +14,37 @@ class Shopping_List_Item_Product_Market extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'shopping_list_item_product_id', // changed
-        'product_market_id',
-        'selected_price', // add this
+        'shopping_list_item_id',   // FK to Shopping_List_Item
+        'product_id',              // FK to Product
+        'market_id',               // FK to Market
+        'selected_price',          // optional price
     ];
 
-    public function shoppingListItemProduct()
+    // Relations
+    public function shoppingListItem()
     {
         return $this->belongsTo(
-            Shopping_List_Item_Product::class, // changed
-            'shopping_list_item_product_id', // changed
-            'shopping_list_item_product_id'
+            Shopping_List_Item::class,
+            'shopping_list_item_id',
+            'shopping_list_item_id'
         );
     }
 
-    public function productMarket()
+    public function product()
     {
         return $this->belongsTo(
-            Product_Market::class,
-            'product_market_id',
-            'product_market_id'
+            Product::class,
+            'product_id',
+            'product_id'
+        );
+    }
+
+    public function market()
+    {
+        return $this->belongsTo(
+            Market::class,
+            'market_id',
+            'market_id'
         );
     }
 }

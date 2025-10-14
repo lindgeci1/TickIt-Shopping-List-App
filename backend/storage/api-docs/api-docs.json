@@ -1032,11 +1032,15 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "shopping_list_item_product_id",
+                                    "shopping_list_item_id",
+                                    "product_id",
                                     "market_id"
                                 ],
                                 "properties": {
-                                    "shopping_list_item_product_id": {
+                                    "shopping_list_item_id": {
+                                        "type": "integer"
+                                    },
+                                    "product_id": {
                                         "type": "integer"
                                     },
                                     "market_id": {
@@ -1375,18 +1379,22 @@
             },
             "Shopping_List_Item_Product_Market_DTO": {
                 "required": [
-                    "Shopping_List_Item_ProductID",
-                    "Product_MarketID"
+                    "Shopping_List_Item_ID",
+                    "Product_ID",
+                    "Market_ID"
                 ],
                 "properties": {
                     "Shopping_List_Item_Product_MarketID": {
                         "type": "integer",
                         "nullable": true
                     },
-                    "Shopping_List_Item_ProductID": {
+                    "Shopping_List_Item_ID": {
                         "type": "integer"
                     },
-                    "Product_MarketID": {
+                    "Product_ID": {
+                        "type": "integer"
+                    },
+                    "Market_ID": {
                         "type": "integer"
                     },
                     "SelectedPrice": {
