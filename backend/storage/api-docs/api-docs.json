@@ -1018,6 +1018,52 @@
                     }
                 }
             }
+        },
+        "/api/shopping-list-item-product-market/assign-market": {
+            "post": {
+                "tags": [
+                    "Shopping_List_Item_Product_Market"
+                ],
+                "summary": "Assign a market for a product in a shopping list",
+                "operationId": "dabe65e52600911049d5240507dc8215",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "shopping_list_item_product_id",
+                                    "market_id"
+                                ],
+                                "properties": {
+                                    "shopping_list_item_product_id": {
+                                        "type": "integer"
+                                    },
+                                    "market_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Market assigned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Shopping_List_Item_Product_Market_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or assignment failed"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1326,6 +1372,30 @@
                     }
                 },
                 "type": "object"
+            },
+            "Shopping_List_Item_Product_Market_DTO": {
+                "required": [
+                    "Shopping_List_Item_ProductID",
+                    "Product_MarketID"
+                ],
+                "properties": {
+                    "Shopping_List_Item_Product_MarketID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Shopping_List_Item_ProductID": {
+                        "type": "integer"
+                    },
+                    "Product_MarketID": {
+                        "type": "integer"
+                    },
+                    "SelectedPrice": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -1357,6 +1427,10 @@
         {
             "name": "Shopping_List",
             "description": "API Endpoints for Shopping List Items"
+        },
+        {
+            "name": "Shopping_List_Item_Product_Market",
+            "description": "Assign a market to a shopping list item product"
         },
         {
             "name": "Database",

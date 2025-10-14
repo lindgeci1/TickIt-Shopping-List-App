@@ -75,9 +75,9 @@ export default function ShoppingLists({ item, index, onDelete }) {
 
       {expanded && <>
         {/* Total Bought Price Bar */}
-        <Text style={{ fontWeight: "600", color: "#333", marginVertical: 4 }}>
+        {/* <Text style={{ fontWeight: "600", color: "#333", marginVertical: 4 }}>
           Total Bought Price: ${boughtTotal.toFixed(2)}
-        </Text>
+        </Text> */}
 
         <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}>
           <Text style={styles.sectionTitle}>To Buy ({toBuyProducts.length})</Text>
