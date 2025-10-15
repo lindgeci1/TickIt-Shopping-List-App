@@ -556,6 +556,48 @@
                 }
             }
         },
+        "/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/market-photo-price": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get market photo and selected price for a product in a shopping list",
+                "operationId": "5b612f02e392f6ddd11416b7c40c323d",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "ShoppingListItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Market photo and selected price data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Market_Photo_Price_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found"
+                    }
+                }
+            }
+        },
         "/api/product-market/assign/{ProductID}": {
             "post": {
                 "tags": [
@@ -1177,6 +1219,39 @@
                     },
                     "MarketID": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Market_Photo_Price_DTO": {
+                "required": [
+                    "MarketID",
+                    "MarketName",
+                    "SelectedPrice"
+                ],
+                "properties": {
+                    "MarketID": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "MarketName": {
+                        "type": "string",
+                        "example": "SuperMarket Central"
+                    },
+                    "PhotoURL": {
+                        "type": "string",
+                        "example": "https://example.com/photo.jpg",
+                        "nullable": true
+                    },
+                    "PhotoPublicID": {
+                        "type": "string",
+                        "example": "market_photos/abc123",
+                        "nullable": true
+                    },
+                    "SelectedPrice": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.99
                     }
                 },
                 "type": "object"

@@ -13,6 +13,7 @@ use App\Application\Interfaces\Product\I_Get_Favorite_Products_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Product_Markets_Use_Case;
 use App\Application\DTOs\Product_DTO;
 use App\Application\DTOs\Product_Markets_DTO;
+use App\Application\Interfaces\Product\I_Get_Market_Photo_Price_Use_Case;
 use InvalidArgumentException;
 
 /**
@@ -31,6 +32,7 @@ class Product_Controller extends Controller
     private I_Search_Product_Use_Case $searchProductService;
     private I_Get_Favorite_Products_Use_Case $getFavoriteProductsService;
     private I_Get_Product_Markets_Use_Case $getProductMarketsService;
+    private I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService;
 
     public function __construct(
         I_GetAll_Products_Use_Case $getAllProductsService,
@@ -40,7 +42,8 @@ class Product_Controller extends Controller
         I_Delete_Product_Use_Case $deleteProductService,
         I_Search_Product_Use_Case $searchProductService,
         I_Get_Favorite_Products_Use_Case $getFavoriteProductsService,
-        I_Get_Product_Markets_Use_Case $getProductMarketsService
+        I_Get_Product_Markets_Use_Case $getProductMarketsService,
+        I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService
     ) {
         $this->getAllProductsService = $getAllProductsService;
         $this->createProductService = $createProductService;
@@ -50,6 +53,7 @@ class Product_Controller extends Controller
         $this->searchProductService = $searchProductService;
         $this->getFavoriteProductsService = $getFavoriteProductsService;
         $this->getProductMarketsService = $getProductMarketsService;
+        $this->getMarketPhotoPriceService = $getMarketPhotoPriceService;
     }
 
     /**
@@ -245,6 +249,48 @@ class Product_Controller extends Controller
         return response()->json($markets, 200);
     } catch (InvalidArgumentException $ex) {
         return response()->json(['message' => $ex->getMessage()], 404);
+    }
+}
+
+/**
+ * @OA\Get(
+ *     path="/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/market-photo-price",
+ *     summary="Get market photo and selected price for a product in a shopping list",
+ *     tags={"Product"},
+ *     @OA\Parameter(
+ *         name="ProductID",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="ShoppingListItemID",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Market photo and selected price data",
+ *         @OA\JsonContent(ref="#/components/schemas/Market_Photo_Price_DTO")
+ *     ),
+ *     @OA\Response(response=404, description="Data not found")
+ * )
+ */
+public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingListItemID)
+{
+    try {
+        $result = $this->getMarketPhotoPriceService->getMarketPhotoAndSelectedPrice($ProductID, $ShoppingListItemID);
+
+        if (!$result) {
+            return response()->json(['message' => 'No market/photo/price data found'], 404);
+        }
+
+        return response()->json($result, 200);
+    } catch (InvalidArgumentException $ex) {
+        return response()->json(['message' => $ex->getMessage()], 400);
+    } catch (\Exception $ex) {
+        return response()->json(['message' => 'Unexpected error: ' . $ex->getMessage()], 500);
     }
 }
 }

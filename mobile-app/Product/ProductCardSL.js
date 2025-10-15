@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useProductMarkets } from "./useProductMarkets";
-import { assignProductToShoppingListItem } from "./assignProductToShoppingListItem"; // import the API function
+import { assignProductToShoppingListItem } from "./assignProductToShoppingListItem";
+import { useMarketPhotoPrice } from "./useMarketPhotoPrice";
 
 export default function ProductCardSL({
   product,
-  shoppingListItemId, // <-- pass this as prop
+  shoppingListItemId,
   selectionMode = false,
   selected = false,
   onSelect,
@@ -24,8 +25,26 @@ export default function ProductCardSL({
   const [loadingMarkets, setLoadingMarkets] = useState(false);
   const [marketList, setMarketList] = useState([]);
   const [marketMessage, setMarketMessage] = useState("");
-  const [apiError, setApiError] = useState(""); 
+  const [apiError, setApiError] = useState("");
+  const [linkedMarket, setLinkedMarket] = useState(null);
+  const [loadingLinkedMarket, setLoadingLinkedMarket] = useState(true);
   const productArray = useMemo(() => [product], [product.ProductID]);
+
+useEffect(() => {
+  const fetchLinkedMarket = async () => {
+    setLoadingLinkedMarket(true);
+    try {
+      const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
+      setLinkedMarket(data); // could be null if no linked market
+    } catch (err) {
+      console.error("Failed to fetch linked market:", err);
+      setLinkedMarket(null);
+    } finally {
+      setLoadingLinkedMarket(false);
+    }
+  };
+  fetchLinkedMarket();
+}, [product.ProductID, shoppingListItemId]);
 
   const handleTap = async () => {
     setModalVisible(true);
@@ -45,35 +64,28 @@ export default function ProductCardSL({
     }
   };
 
-const handleSelectMarket = async (market) => {
-  const payload = {
-    shopping_list_item_id: shoppingListItemId,
-    product_id: product.ProductID,
-    market_id: market.id,
+  const handleSelectMarket = async (market) => {
+    const payload = {
+      shopping_list_item_id: shoppingListItemId,
+      product_id: product.ProductID,
+      market_id: market.id,
+    };
+
+    try {
+      await assignProductToShoppingListItem(payload);
+      setApiError("");
+      setModalVisible(false);
+      const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
+      setLinkedMarket(data);
+    } catch (err) {
+      setApiError(
+        err.message.includes("already assigned")
+          ? "This product is already assigned to this market."
+          : "Failed to assign product to market."
+      );
+      setTimeout(() => setApiError(""), 3000);
+    }
   };
-
-  try {
-    const result = await assignProductToShoppingListItem(payload);
-    setApiError("");       // Clear any previous error
-    setModalVisible(false); // Close modal on success
-    return result;          // Return the backend response
-  } catch (err) {
-    // Show friendly UI message only
-    setApiError(
-      err.message.includes("already assigned")
-        ? "This product is already assigned to this market."
-        : "Failed to assign product to market."
-    );
-
-    // Auto-hide after 3 seconds
-    setTimeout(() => setApiError(""), 3000);
-  }
-};
-
-
-
-
-
 
   return (
     <View style={styles.card}>
@@ -86,36 +98,41 @@ const handleSelectMarket = async (market) => {
         </TouchableOpacity>
       )}
 
-      {/* Left side — product info */}
+      {/* Product photo */}
       <View style={styles.photoBox}>
         <Image
-          source={{
-            uri: product.Photos?.[0] || "https://via.placeholder.com/50",
-          }}
+          source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/50" }}
           style={styles.photo}
           resizeMode="cover"
         />
       </View>
 
+      {/* Product info */}
       <View style={styles.infoBox}>
         <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
         <Text style={styles.category}>{product.Category || "No category"}</Text>
-        {showPrice && product.Price != null && (
-          <Text style={styles.price}>${product.Price}</Text>
-        )}
       </View>
 
-      {/* Vertical divider */}
-      <View style={styles.divider} />
+      {/* Vertical line if market exists */}
+      {linkedMarket && <View style={styles.verticalLine} />}
 
-      {/* Right side — price or market */}
-      <View style={styles.rightSection}>
-        <TouchableOpacity style={styles.tapPriceBox} onPress={handleTap}>
-          <Text style={styles.tapPriceText}>Tap for Price</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Linked market */}
+<View style={styles.rightSection}>
+  {loadingLinkedMarket ? (
+    <ActivityIndicator size="small" color="#6c63ff" />
+  ) : linkedMarket ? (
+    <View style={styles.marketBox}>
+      <Image source={{ uri: linkedMarket.photoURL }} style={styles.marketLogo} resizeMode="cover" />
+      <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
+    </View>
+  ) : (
+    <TouchableOpacity style={styles.tapPriceBox} onPress={handleTap}>
+      <Text style={styles.tapPriceText}>Tap for Price</Text>
+    </TouchableOpacity>
+  )}
+</View>
 
-      {/* Modal for selecting market */}
+      {/* Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modal}>
@@ -145,11 +162,13 @@ const handleSelectMarket = async (market) => {
                 {marketMessage}
               </Text>
             )}
-{apiError ? (
-  <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>
-    {apiError}
-  </Text>
-) : null}
+
+            {apiError && (
+              <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>
+                {apiError}
+              </Text>
+            )}
+
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
@@ -169,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0ff",
     borderRadius: 12,
-    padding: 10,
+    padding: 12,
     marginVertical: 6,
   },
   checkbox: {
@@ -195,58 +214,36 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   photo: { width: "100%", height: "100%", borderRadius: 12 },
-  infoBox: { flex: 1, justifyContent: "center" },
+  infoBox: { flex: 1 },
   name: { fontSize: 15, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
-  category: { fontSize: 12, color: "#888", marginBottom: 2 },
-  price: { fontSize: 13, fontWeight: "600", color: "#444" },
-  divider: {
-    width: 1,
-    height: "80%",
-    backgroundColor: "#d0d0ff",
-    marginHorizontal: 8,
-  },
-  rightSection: {
-    alignItems: "flex-end",
+  category: { fontSize: 12, color: "#888" },
+  verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 8, alignSelf: "stretch" },
+  marketBox: {
+    alignItems: "center",
     justifyContent: "center",
-  },
-  tapPriceBox: {
-    paddingHorizontal: 10,
+    marginLeft: 10,
     paddingVertical: 6,
-    backgroundColor: "#6c63ff20",
+    paddingHorizontal: 8,
+    backgroundColor: "#6c63ff10",
     borderRadius: 8,
   },
-  tapPriceText: { fontSize: 12, fontWeight: "600", color: "#6c63ff" },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modal: {
-    width: "90%",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 20,
-    maxHeight: "80%",
-  },
-  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 15 },
-  row: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  logo: {
+  marketLogo: {
     width: 28,
     height: 18,
     borderRadius: 3,
+    marginBottom: 2,
     borderWidth: 1,
     borderColor: "#6c63ff",
-    marginRight: 8,
   },
+  marketPrice: { fontSize: 12, fontWeight: "600", color: "#444", fontStyle: "italic" },
+  tapPriceBox: { paddingHorizontal: 10, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 8 },
+  tapPriceText: { fontSize: 12, fontWeight: "600", color: "#6c63ff" },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+  modal: { width: "90%", backgroundColor: "#fff", borderRadius: 12, padding: 20, maxHeight: "80%" },
+  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 15 },
+  row: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  logo: { width: 28, height: 18, borderRadius: 3, borderWidth: 1, borderColor: "#6c63ff", marginRight: 8 },
   marketName: { flex: 1, fontSize: 14, color: "#333" },
-  marketPrice: { fontSize: 14, fontWeight: "600" },
-  closeButton: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#6c63ff",
-    borderRadius: 8,
-    alignItems: "center",
-  },
+  closeButton: { marginTop: 10, padding: 10, backgroundColor: "#6c63ff", borderRadius: 8, alignItems: "center" },
   closeText: { color: "#fff", fontWeight: "700" },
 });

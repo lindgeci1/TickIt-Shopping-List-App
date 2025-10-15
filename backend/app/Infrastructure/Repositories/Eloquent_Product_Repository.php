@@ -8,6 +8,31 @@ use App\Infrastructure\Models\Product as ProductModel;
 
 class Eloquent_Product_Repository implements I_Product_Repository
 {
+
+
+    public function getMarketPhotoAndSelectedPrice(int $productID, int $shoppingListItemID): ?array
+{
+    $record = \App\Infrastructure\Models\Shopping_List_Item_Product_Market::with('market.photo')
+        ->where('product_id', $productID)
+        ->where('shopping_list_item_id', $shoppingListItemID)
+        ->first();
+
+    if (!$record) {
+        return null;
+    }
+
+    $market = $record->market;
+    $photo = $market && $market->photo ? $market->photo : null;
+
+    return [
+        'MarketID' => $market?->market_id,
+        'MarketName' => $market?->name,
+        'PhotoURL' => $photo?->url,
+        'PhotoPublicID' => $photo?->public_id,
+        'SelectedPrice' => $record->selected_price,
+    ];
+}
+
     public function findAll(): array
     {
          $models = ProductModel::with('photo')->get();
