@@ -28,15 +28,15 @@ export const updateProductsStatusesFromShoppingList = async (productIds, shoppin
 
     if (!response.ok) {
       console.error("Failed to update products:", text);
-      Alert.alert("❌ Error", "Failed to update products: " + text);
+      // Alert.alert("❌ Error", "Failed to update products: " + text);
       return;
     }
 
     console.log("Products updated successfully!");
-    Alert.alert(
-      "Success",
-      "The selected products have been successfully updated."
-    );
+    // Alert.alert(
+    //   "Success",
+    //   "The selected products have been successfully updated."
+    // );
   } catch (error) {
     console.error("Update product status error:", error);
     Alert.alert("❌ Error", "Failed to update products: " + error.message);

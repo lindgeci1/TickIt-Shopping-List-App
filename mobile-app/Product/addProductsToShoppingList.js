@@ -23,12 +23,12 @@ export const addProductsToShoppingList = async (productIds, shoppingListIds) => 
     }
 
     // console.log("Products added successfully!");
-    Alert.alert(
-      "Success",
-      "The selected products have been successfully added to the shopping list."
-    );
+    // Alert.alert(
+    //   "Success",
+    //   "The selected products have been successfully added to the shopping list."
+    // );
   } catch (error) {
     console.error("Add to shopping list error:", error);
-    Alert.alert("❌ Error", "Failed to add product: " + error.message);
+    // Alert.alert("❌ Error", "Failed to add product: " + error.message);
   }
 };

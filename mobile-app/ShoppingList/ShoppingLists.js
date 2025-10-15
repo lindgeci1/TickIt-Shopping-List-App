@@ -14,10 +14,19 @@ export default function ShoppingLists({ item, index, onDelete }) {
   const [products, setProducts] = useState([]);
   const [showToBuy, setShowToBuy] = useState(false);
   const [showBought, setShowBought] = useState(false);
+  const [totalBoughtPrice, setTotalBoughtPrice] = useState(0);
 
   useEffect(() => {
     if (item.Products) setProducts(item.Products.map(p => ({ ...p, Status: p.Status ?? "ToBuy" })));
   }, [item.Products]);
+
+  // recalc total price whenever products change
+  useEffect(() => {
+    const boughtProducts = products.filter(p => p.Status === "Bought");
+    const total = boughtProducts.reduce((sum, p) => sum + Number(p.Price || 0), 0);
+    console.log("LOG Total Bought Price:", total); // debug
+    setTotalBoughtPrice(total);
+  }, [products]);
 
   const toggleSelection = (product) =>
     setSelectedProducts(prev => prev.includes(product) ? prev.filter(p => p !== product) : [...prev, product]);
@@ -56,7 +65,6 @@ export default function ShoppingLists({ item, index, onDelete }) {
 
   const toBuyProducts = products.filter(p => p.Status === "ToBuy");
   const boughtProducts = products.filter(p => p.Status === "Bought");
-  const boughtTotal = (boughtProducts ?? []).reduce((sum, p) => sum + Number(p.Price || 0), 0);
 
   return (
     <View style={styles.card}>
@@ -74,10 +82,10 @@ export default function ShoppingLists({ item, index, onDelete }) {
       <Text style={styles.count}>{products.length} Products</Text>
 
       {expanded && <>
-        {/* Total Bought Price Bar */}
-        {/* <Text style={{ fontWeight: "600", color: "#333", marginVertical: 4 }}>
-          Total Bought Price: ${boughtTotal.toFixed(2)}
-        </Text> */}
+        {/* Total Bought Price */}
+        <Text style={{ fontWeight: "700", color: "#fff", fontSize: 14, marginVertical: 6 }}>
+          Total Bought Price: €{totalBoughtPrice.toFixed(2)}
+        </Text>
 
         <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}>
           <Text style={styles.sectionTitle}>To Buy ({toBuyProducts.length})</Text>
@@ -87,14 +95,19 @@ export default function ShoppingLists({ item, index, onDelete }) {
           data={toBuyProducts}
           keyExtractor={p => p.ProductID.toString()}
           renderItem={({ item: product }) => (
-<ProductCardSL
-  product={product}
-  shoppingListItemId={item.Shopping_List_ItemID} // <-- pass the list ID
-  showPrice={true}
-  selectionMode={selectionMode}
-  selected={selectedProducts.includes(product)}
-  onSelect={() => toggleSelection(product)}
-/>
+            <ProductCardSL
+              product={product}
+              shoppingListItemId={item.Shopping_List_ItemID}
+              showPrice={true}
+              selectionMode={selectionMode}
+              selected={selectedProducts.includes(product)}
+              onSelect={() => toggleSelection(product)}
+              onPriceChange={(price) => {
+                setProducts(prev =>
+                  prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p)
+                );
+              }}
+            />
           )}
           scrollEnabled={false}
           style={styles.productList}
@@ -108,29 +121,52 @@ export default function ShoppingLists({ item, index, onDelete }) {
           data={boughtProducts}
           keyExtractor={p => p.ProductID.toString()}
           renderItem={({ item: product }) => (
-<ProductCardSL
-  product={product}
-  shoppingListItemId={item.Shopping_List_ItemID} // <-- pass the list ID
-  showPrice={true}
-  selectionMode={selectionMode}
-  selected={selectedProducts.includes(product)}
-  onSelect={() => toggleSelection(product)}
-/>
+            <ProductCardSL
+              product={product}
+              shoppingListItemId={item.Shopping_List_ItemID}
+              showPrice={true}
+              selectionMode={selectionMode}
+              selected={selectedProducts.includes(product)}
+              onSelect={() => toggleSelection(product)}
+              onPriceChange={(price) => {
+                setProducts(prev =>
+                  prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p)
+                );
+              }}
+            />
           )}
           scrollEnabled={false}
           style={styles.productList}
         />}
 
-        {!selectionMode ? 
-          <View style={styles.actionsRow}>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#6c63ff" }]} onPress={() => { setSelectionMode(true); setEditMode(false); }}><Text style={styles.actionText}>Remove</Text></TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#ffa500" }]} onPress={() => { setSelectionMode(true); setEditMode(true); }}><Text style={styles.actionText}>Edit</Text></TouchableOpacity>
-          </View> :
-          <View style={styles.actionsRow}>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: editMode ? "#6c63ff" : "#ff6b6b" }]} onPress={editMode ? handleUpdateSelected : handleRemoveSelected}><Text style={styles.actionText}>Confirm</Text></TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#aaa" }]} onPress={() => { setSelectionMode(false); setEditMode(false); setSelectedProducts([]); }}><Text style={styles.actionText}>Cancel</Text></TouchableOpacity>
-          </View>
-        }
+{(showToBuy || showBought) && (
+  !selectionMode ? 
+  <View style={styles.actionsRow}>
+    <TouchableOpacity 
+      style={[styles.actionButton, { backgroundColor: "#6c63ff" }]} 
+      onPress={() => { setSelectionMode(true); setEditMode(false); }}>
+      <Text style={styles.actionText}>Remove</Text>
+    </TouchableOpacity>
+    <TouchableOpacity 
+      style={[styles.actionButton, { backgroundColor: "#ffa500" }]} 
+      onPress={() => { setSelectionMode(true); setEditMode(true); }}>
+      <Text style={styles.actionText}>Edit</Text>
+    </TouchableOpacity>
+  </View> :
+  <View style={styles.actionsRow}>
+    <TouchableOpacity 
+      style={[styles.actionButton, { backgroundColor: editMode ? "#6c63ff" : "#ff6b6b" }]} 
+      onPress={editMode ? handleUpdateSelected : handleRemoveSelected}>
+      <Text style={styles.actionText}>Confirm</Text>
+    </TouchableOpacity>
+    <TouchableOpacity 
+      style={[styles.actionButton, { backgroundColor: "#aaa" }]} 
+      onPress={() => { setSelectionMode(false); setEditMode(false); setSelectedProducts([]); }}>
+      <Text style={styles.actionText}>Cancel</Text>
+    </TouchableOpacity>
+  </View>
+)}
+
       </>}
     </View>
   );

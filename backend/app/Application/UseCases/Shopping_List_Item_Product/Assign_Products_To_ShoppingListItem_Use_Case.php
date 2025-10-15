@@ -5,7 +5,7 @@ namespace App\Application\UseCases\Shopping_List_Item_Product;
 use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_ShoppingListItem_Use_Case;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
-use App\Application\DTOs\Assign_Products_To_ShoppingListItem_DTO;
+use App\Application\DTOs\Assign_Products_To_Shopping_List_Item_DTO;
 use InvalidArgumentException;
 
 class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_To_ShoppingListItem_Use_Case
@@ -21,7 +21,7 @@ class Assign_Products_To_ShoppingListItem_Use_Case implements I_Assign_Products_
         $this->shoppingListItemRepository = $shoppingListItemRepository;
     }
 
-    public function assign(Assign_Products_To_ShoppingListItem_DTO $dto): void
+    public function assign(Assign_Products_To_Shopping_List_Item_DTO $dto): void
     {
         // Check if all products exist
         foreach ($dto->ProductIDs as $productID) {

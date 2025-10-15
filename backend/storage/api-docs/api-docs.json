@@ -598,6 +598,53 @@
                 }
             }
         },
+        "/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove": {
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove a product from a shopping list",
+                "operationId": "af76ce5a861f4360cdea84c7556d0718",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "ShoppingListItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product removed from shopping list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to remove product"
+                    }
+                }
+            }
+        },
         "/api/product-market/assign/{ProductID}": {
             "post": {
                 "tags": [
@@ -811,7 +858,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_ShoppingListItem_DTO"
+                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
                             }
                         }
                     }
@@ -838,7 +885,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_ShoppingListItem_DTO"
+                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
                             }
                         }
                     }
@@ -865,7 +912,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_ShoppingListItem_DTO"
+                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
                             }
                         }
                     }
@@ -1146,7 +1193,7 @@
                 },
                 "type": "object"
             },
-            "Assign_Products_To_ShoppingListItem_DTO": {
+            "Assign_Products_To_Shopping_List_Item_DTO": {
                 "required": [
                     "ProductIDs",
                     "ShoppingListItemIDs"
@@ -1383,6 +1430,23 @@
                         "items": {
                             "type": "integer"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "Remove_Product_From_Shopping_List_DTO": {
+                "required": [
+                    "ProductID",
+                    "ShoppingListItemID"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "ShoppingListItemID": {
+                        "type": "integer",
+                        "example": 5
                     }
                 },
                 "type": "object"
