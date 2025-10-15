@@ -5,14 +5,21 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Entities\Product;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Infrastructure\Models\Product as ProductModel;
-
+use App\Infrastructure\Models\Shopping_List_Item_Product_Market;
+use InvalidArgumentException;
 class Eloquent_Product_Repository implements I_Product_Repository
 {
+    public function removeFromShoppingList(int $productID, int $shoppingListItemID): void
+    {
+        Shopping_List_Item_Product_Market::where('product_id', $productID)
+        ->where('shopping_list_item_id', $shoppingListItemID)
+        ->delete();
+}
 
 
     public function getMarketPhotoAndSelectedPrice(int $productID, int $shoppingListItemID): ?array
 {
-    $record = \App\Infrastructure\Models\Shopping_List_Item_Product_Market::with('market.photo')
+    $record = Shopping_List_Item_Product_Market::with('market.photo')
         ->where('product_id', $productID)
         ->where('shopping_list_item_id', $shoppingListItemID)
         ->first();

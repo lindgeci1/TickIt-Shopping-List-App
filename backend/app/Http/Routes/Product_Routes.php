@@ -13,4 +13,6 @@ Route::prefix('product')->group(function () {
     Route::post('/create', [Product_Controller::class, 'store']);
     Route::put('/update/{ProductID}', [Product_Controller::class, 'update']);
     Route::delete('/delete/{ProductID}', [Product_Controller::class, 'destroy']);
+    Route::delete('/{ProductID}/shopping-list/{ShoppingListItemID}/remove', [Product_Controller::class, 'removeFromShoppingList']);
+
 });

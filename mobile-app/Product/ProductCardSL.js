@@ -12,6 +12,7 @@ import {
 import { useProductMarkets } from "./useProductMarkets";
 import { assignProductToShoppingListItem } from "./assignProductToShoppingListItem";
 import { useMarketPhotoPrice } from "./useMarketPhotoPrice";
+import { removeProductFromShoppingList } from "./removeProductFromShoppingList";
 
 export default function ProductCardSL({
   product,
@@ -20,6 +21,7 @@ export default function ProductCardSL({
   selected = false,
   onSelect,
   showPrice = true,
+  onPriceChange
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [loadingMarkets, setLoadingMarkets] = useState(false);
@@ -29,7 +31,11 @@ export default function ProductCardSL({
   const [linkedMarket, setLinkedMarket] = useState(null);
   const [loadingLinkedMarket, setLoadingLinkedMarket] = useState(true);
   const productArray = useMemo(() => [product], [product.ProductID]);
-
+useEffect(() => {
+  if (linkedMarket?.price) {
+    onPriceChange?.(linkedMarket.price);
+  }
+}, [linkedMarket?.price]);
 useEffect(() => {
   const fetchLinkedMarket = async () => {
     setLoadingLinkedMarket(true);
@@ -117,20 +123,53 @@ useEffect(() => {
       {linkedMarket && <View style={styles.verticalLine} />}
 
       {/* Linked market */}
+{/* Linked market */}
 <View style={styles.rightSection}>
-  {loadingLinkedMarket ? (
-    <ActivityIndicator size="small" color="#6c63ff" />
-  ) : linkedMarket ? (
-    <View style={styles.marketBox}>
-      <Image source={{ uri: linkedMarket.photoURL }} style={styles.marketLogo} resizeMode="cover" />
-      <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
+  {linkedMarket ? (
+    <View style={{ position: "relative", marginLeft: 4 }}>
+      {/* Market info box */}
+      <View
+        style={[
+          styles.marketBox,
+          product.Status === "Bought" && { opacity: 0.6 } // visually show it's disabled
+        ]}
+      >
+        <Image
+          source={{ uri: linkedMarket.photoURL }}
+          style={styles.marketLogo}
+          resizeMode="cover"
+        />
+        <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
+      </View>
+
+      {/* X button */}
+      {product.Status !== "Bought" && (
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={async () => {
+            try {
+              await removeProductFromShoppingList(product.ProductID, shoppingListItemId);
+              const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
+              setLinkedMarket(data); // null => shows "Tap for Price"
+            } catch (err) {
+              console.error("Failed to remove linked market:", err);
+            }
+          }}
+        >
+          <Text style={styles.removeText}>✕</Text>
+        </TouchableOpacity>
+      )}
     </View>
   ) : (
-    <TouchableOpacity style={styles.tapPriceBox} onPress={handleTap}>
+    <TouchableOpacity
+      style={styles.tapPriceBox}
+      onPress={product.Status !== "Bought" ? handleTap : undefined} // disable tap if bought
+    >
       <Text style={styles.tapPriceText}>Tap for Price</Text>
     </TouchableOpacity>
   )}
 </View>
+
 
       {/* Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
@@ -217,26 +256,42 @@ const styles = StyleSheet.create({
   infoBox: { flex: 1 },
   name: { fontSize: 15, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
   category: { fontSize: 12, color: "#888" },
-  verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 8, alignSelf: "stretch" },
+  verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 1, alignSelf: "stretch" },
   marketBox: {
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 10,
+    marginLeft: 1,
     paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: "#6c63ff10",
     borderRadius: 8,
   },
   marketLogo: {
-    width: 28,
-    height: 18,
+    width: 33,
+    height: 23,
     borderRadius: 3,
     marginBottom: 2,
     borderWidth: 1,
     borderColor: "#6c63ff",
   },
   marketPrice: { fontSize: 12, fontWeight: "600", color: "#444", fontStyle: "italic" },
-  tapPriceBox: { paddingHorizontal: 10, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 8 },
+  tapPriceBox: {
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  backgroundColor: "#6c63ff20",
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: "#6c63ff",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: 90,
+},
+tapPriceText: {
+  fontSize: 13,
+  fontWeight: "600",
+  color: "#6c63ff",
+  textAlign: "center",
+},
   tapPriceText: { fontSize: 12, fontWeight: "600", color: "#6c63ff" },
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
   modal: { width: "90%", backgroundColor: "#fff", borderRadius: 12, padding: 20, maxHeight: "80%" },
@@ -246,4 +301,22 @@ const styles = StyleSheet.create({
   marketName: { flex: 1, fontSize: 14, color: "#333" },
   closeButton: { marginTop: 10, padding: 10, backgroundColor: "#6c63ff", borderRadius: 8, alignItems: "center" },
   closeText: { color: "#fff", fontWeight: "700" },
+  removeButton: {
+  position: "absolute",
+  top: -6,
+  right: -6,
+  backgroundColor: "#ff6b6b",
+  width: 20,
+  height: 20,
+  borderRadius: 10,
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 10, // make sure it's above the market box
+},
+removeText: {
+  color: "#fff",
+  fontSize: 12,
+  fontWeight: "bold",
+},
+
 });

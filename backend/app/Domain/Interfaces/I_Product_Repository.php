@@ -25,4 +25,5 @@ interface I_Product_Repository
     public function findFavorites(): array;
     public function getMarketsWithPriceAndPhoto(int $productID): array;
     public function getMarketPhotoAndSelectedPrice(int $productID, int $shoppingListItemID): ?array;
+    public function removeFromShoppingList(int $productID, int $shoppingListItemID): void;
 }

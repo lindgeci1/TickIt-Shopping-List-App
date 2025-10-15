@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_ShoppingListItem_Use_Case;
 use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_ShoppingListItems_From_Product_Use_Case;
 use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_ShoppingListItems_For_Product_Use_Case;
-use App\Application\DTOs\Assign_Products_To_ShoppingListItem_DTO;
+use App\Application\DTOs\Assign_Products_To_Shopping_List_Item_DTO;
 use InvalidArgumentException;
 
 /**
@@ -36,7 +36,7 @@ class Product_Shopping_List_Item_Controller extends Controller
      *     path="/api/product-shopping-list-item/assign",
      *     summary="Attach multiple products to selected shopping list items dynamically",
      *     tags={"Product_Shopping_List_Item"},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_ShoppingListItem_DTO")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
      *     @OA\Response(response=201, description="Products successfully assigned to shopping list items"),
      *     @OA\Response(response=400, description="Validation error")
      * )
@@ -50,7 +50,7 @@ class Product_Shopping_List_Item_Controller extends Controller
             return response()->json(['message' => 'ProductIDs and ShoppingListItemIDs are required'], 400);
         }
 
-        $dto = new Assign_Products_To_ShoppingListItem_DTO($productIds, $shoppingListItemIds);
+        $dto = new Assign_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
 
         try {
             $this->assignUseCase->assign($dto);
@@ -65,7 +65,7 @@ class Product_Shopping_List_Item_Controller extends Controller
      *     path="/api/product-shopping-list-item/remove",
      *     summary="Detach multiple products from selected shopping list items dynamically",
      *     tags={"Product_Shopping_List_Item"},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_ShoppingListItem_DTO")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
      *     @OA\Response(response=200, description="Products successfully removed from shopping list items"),
      *     @OA\Response(response=400, description="Validation error")
      * )
@@ -79,7 +79,7 @@ class Product_Shopping_List_Item_Controller extends Controller
             return response()->json(['message' => 'ProductIDs and ShoppingListItemIDs are required'], 400);
         }
 
-        $dto = new Assign_Products_To_ShoppingListItem_DTO($productIds, $shoppingListItemIds);
+        $dto = new Assign_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
 
         try {
             $this->removeUseCase->remove($dto);
@@ -94,7 +94,7 @@ class Product_Shopping_List_Item_Controller extends Controller
      *     path="/api/product-shopping-list-item/update",
      *     summary="Replace all shopping list items for multiple products with a new selection",
      *     tags={"Product_Shopping_List_Item"},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_ShoppingListItem_DTO")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
      *     @OA\Response(response=200, description="Product shopping list items successfully updated"),
      *     @OA\Response(response=400, description="Validation error")
      * )
@@ -108,7 +108,7 @@ class Product_Shopping_List_Item_Controller extends Controller
             return response()->json(['message' => 'ProductIDs and ShoppingListItemIDs are required'], 400);
         }
 
-        $dto = new Assign_Products_To_ShoppingListItem_DTO($productIds, $shoppingListItemIds);
+        $dto = new Assign_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
 
         try {
             $this->updateUseCase->update($dto);

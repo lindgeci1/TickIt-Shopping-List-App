@@ -30,15 +30,15 @@ export const removeProductsFromShoppingList = async (productIds, shoppingListIds
 
     if (!response.ok) {
       console.error("Failed to remove products:", text);
-      Alert.alert("❌ Error", "Failed to remove products: " + text);
+      // Alert.alert("❌ Error", "Failed to remove products: " + text);
       return;
     }
 
     console.log("Products removed successfully!");
-   Alert.alert(
-  "Success",
-  "The selected products have been successfully removed from the shopping list."
-);
+//    Alert.alert(
+//   "Success",
+//   "The selected products have been successfully removed from the shopping list."
+// );
 
   } catch (error) {
     console.error("Remove from shopping list error:", error);

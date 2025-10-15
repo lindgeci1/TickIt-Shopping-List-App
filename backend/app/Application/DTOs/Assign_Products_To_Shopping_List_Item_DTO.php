@@ -6,7 +6,7 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
- *     schema="Assign_Products_To_ShoppingListItem_DTO",
+ *     schema="Assign_Products_To_Shopping_List_Item_DTO",
  *     type="object",
  *     required={"ProductIDs","ShoppingListItemIDs"},
  *     @OA\Property(
@@ -23,7 +23,7 @@ use OpenApi\Annotations as OA;
  *     )
  * )
  */
-class Assign_Products_To_ShoppingListItem_DTO
+class Assign_Products_To_Shopping_List_Item_DTO
 {
     public array $ProductIDs;
     public array $ShoppingListItemIDs;
