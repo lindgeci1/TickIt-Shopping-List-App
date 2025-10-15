@@ -32,7 +32,7 @@ export default function MarketScreen({ navigation, topPadding }) {
   };
 
   // Determine markets to show (collapse if needed)
-  const marketsToShow = showAllMarkets ? markets : markets.slice(0, 1);
+  const marketsToShow = showAllMarkets ? markets : markets.slice(0, 2);
 
   return (
     <View style={[styles.container, { paddingTop: topPadding + 15 }]}>

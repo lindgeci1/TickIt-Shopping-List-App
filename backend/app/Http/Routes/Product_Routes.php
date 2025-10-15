@@ -8,7 +8,8 @@ Route::prefix('product')->group(function () {
     Route::get('/search', [Product_Controller::class, 'search']);
     Route::get('/favorites', [Product_Controller::class, 'getFavorites']);
     Route::get('/{ProductID}', [Product_Controller::class, 'show']);
-    Route::get('/{ProductID}/markets', [Product_Controller::class, 'getMarkets']); // <-- new route
+    Route::get('/{ProductID}/markets', [Product_Controller::class, 'getMarkets']);
+    Route::get('/{ProductID}/shopping-list/{ShoppingListItemID}/market-photo-price', [Product_Controller::class, 'getMarketPhotoAndSelectedPrice']);
     Route::post('/create', [Product_Controller::class, 'store']);
     Route::put('/update/{ProductID}', [Product_Controller::class, 'update']);
     Route::delete('/delete/{ProductID}', [Product_Controller::class, 'destroy']);
