@@ -37,12 +37,12 @@ class Update_ShoppingListItems_For_Product_Use_Case implements I_Update_Shopping
             }
         }
 
-        // Attach products to the lists WITHOUT removing existing associations
-        $this->productRepository->attachMultipleProductsToShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
+        // Sync products to the lists — removes old associations, avoids duplicates
+        $this->productRepository->syncMultipleProductsToShoppingLists($dto->ProductIDs, $dto->ShoppingListItemIDs);
 
-        // Update product status globally — now all lists see the change
+        // Update product status globally
         foreach ($dto->ProductIDs as $productID) {
-            $this->productRepository->updateStatus($productID, 'Bought'); // or 'ToBuy' for adding
+            $this->productRepository->updateStatus($productID, 'Bought'); // or 'ToBuy'
         }
     }
 }

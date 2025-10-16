@@ -75,7 +75,7 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
       )}
 
       {/* Shopping lists */}
-      <FlatList
+<FlatList
   data={lists}
   keyExtractor={(item) => item.Shopping_List_ItemID.toString()}
   renderItem={({ item, index }) => (
@@ -89,6 +89,27 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
         );
         showToast(`Deleted list "${item.Name}"`);
       }}
+onUpdateProducts={(listId, updatedProducts) => {
+  setLists(prev =>
+    prev.map(list => {
+      // Update the list that triggered the change
+      if (list.Shopping_List_ItemID === listId) {
+        return { ...list, Products: updatedProducts };
+      }
+
+      // Also check if any products in this list exist in the updatedProducts
+      const updatedProductIds = updatedProducts.map(p => p.ProductID);
+      const listProductsUpdated = list.Products.map(p =>
+        updatedProductIds.includes(p.ProductID)
+          ? updatedProducts.find(up => up.ProductID === p.ProductID)
+          : p
+      );
+
+      return { ...list, Products: listProductsUpdated };
+    })
+  );
+}}
+
     />
   )}
   contentContainerStyle={{ paddingBottom: 120 }}
@@ -99,6 +120,7 @@ export default function ShoppingListScreen({ navigation, topPadding }) {
     </Text>
   )}
 />
+
 
 
       {/* Footer */}
