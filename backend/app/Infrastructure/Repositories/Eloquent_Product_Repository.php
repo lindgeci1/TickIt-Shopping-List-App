@@ -162,6 +162,10 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 Shopping_List_Item_Product_Market::where('product_id', $productID)
                     ->where('shopping_list_item_id', $shoppingListItemID)
                     ->delete();
+
+                Shopping_List_Item_Product_Market::where('product_id', $productID)
+                    ->where('shopping_list_item_id', '!=', $shoppingListItemID)
+                    ->delete();
             }
 
             // Attach the product to the shopping list(s)
