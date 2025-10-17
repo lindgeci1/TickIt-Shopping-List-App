@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Modal, FlatList, TouchableOpacity, TextInput, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
-import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { VITE_BASE_API_URL } from "@env";
 
 export default function ShoppingListScreen({ visible, onClose, shoppingLists, onSelect }) {
