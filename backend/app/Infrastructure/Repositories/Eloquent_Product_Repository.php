@@ -172,7 +172,25 @@ class Eloquent_Product_Repository implements I_Product_Repository
             $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
         }
     }
+        public function propagateBoughtProductToAllLists(int $productId, int $marketId, ?float $selectedPrice = null): void
+        {
+            // 1️⃣ Fetch all shopping list items containing this product
+            $listItems = \App\Infrastructure\Models\Shopping_List_Item_Product::where('product_id', $productId)->get();
 
+            foreach ($listItems as $item) {
+                // 2️⃣ Update existing record or create new one in super join table
+               Shopping_List_Item_Product_Market::updateOrCreate(
+                    [
+                        'shopping_list_item_id' => $item->shopping_list_item_id,
+                        'product_id' => $productId,
+                    ],
+                    [
+                        'market_id' => $marketId,
+                        'selected_price' => $selectedPrice,
+                    ]
+                );
+            }
+        }
 
         public function detachMultipleProductsFromShoppingLists(array $productIDs, array $shoppingListItemIDs): void
         {
