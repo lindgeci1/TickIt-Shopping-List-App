@@ -33,6 +33,7 @@ use App\Application\Interfaces\Product\I_Get_Favorite_Products_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Product_Markets_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Market_Photo_Price_Use_Case;
 use App\Application\Interfaces\Product\I_Remove_Product_From_Shopping_List_Use_Case;
+use App\Application\Interfaces\Product\I_Import_Products_From_Api_Use_Case;
 
 use App\Application\Interfaces\Market\I_GetAll_Markets_Use_Case;
 use App\Application\Interfaces\Market\I_Get_Market_UseCase;
@@ -74,6 +75,7 @@ use App\Application\UseCases\Product\Get_Favorite_Products_Use_Case;
 use App\Application\UseCases\Product\Get_Product_Markets_Use_Case;
 use App\Application\UseCases\Product\Get_Market_Photo_Price_Use_Case;
 use App\Application\UseCases\Product\Remove_Product_From_Shopping_List_Use_Case;
+use App\Application\UseCases\Product\Import_Products_From_Api_Use_Case;
 
 
 
@@ -131,6 +133,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Get_Product_Markets_Use_Case::class, Get_Product_Markets_Use_Case::class);
         $this->app->bind(I_Get_Market_Photo_Price_Use_Case::class, Get_Market_Photo_Price_Use_Case::class);
         $this->app->bind(I_Remove_Product_From_Shopping_List_Use_Case::class, Remove_Product_From_Shopping_List_Use_Case::class);
+        $this->app->bind(I_Import_Products_From_Api_Use_Case::class, Import_Products_From_Api_Use_Case::class);
         // Market Services
         $this->app->bind(I_GetAll_Markets_Use_Case::class, GetAll_Markets_Use_Case::class);
         $this->app->bind(I_Get_Market_UseCase::class, Get_Market_Use_Case::class);

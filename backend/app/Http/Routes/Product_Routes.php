@@ -15,4 +15,5 @@ Route::prefix('product')->group(function () {
     Route::delete('/delete/{ProductID}', [Product_Controller::class, 'destroy']);
     Route::delete('/{ProductID}/shopping-list/{ShoppingListItemID}/remove', [Product_Controller::class, 'removeFromShoppingList']);
 
+    Route::post('/import', [Product_Controller::class, 'importFromApi']);
 });

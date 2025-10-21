@@ -27,4 +27,5 @@ interface I_Product_Repository
     public function getMarketPhotoAndSelectedPrice(int $productID, int $shoppingListItemID): ?array;
     public function removeFromShoppingList(int $productID, int $shoppingListItemID): void;
     public function propagateBoughtProductToAllLists(int $productId, int $marketId, ?float $selectedPrice = null): void;
+    public function importProductsFromApi(int $perPage = 11): array;
 }

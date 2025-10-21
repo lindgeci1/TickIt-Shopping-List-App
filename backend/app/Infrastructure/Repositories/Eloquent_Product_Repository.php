@@ -7,6 +7,7 @@ use App\Domain\Interfaces\I_Product_Repository;
 use App\Infrastructure\Models\Product as ProductModel;
 use App\Infrastructure\Models\Shopping_List_Item_Product_Market;
 use InvalidArgumentException;
+use App\Infrastructure\Models\Product_Market;
 class Eloquent_Product_Repository implements I_Product_Repository
 {
     public function removeFromShoppingList(int $productID, int $shoppingListItemID): void
@@ -218,6 +219,70 @@ class Eloquent_Product_Repository implements I_Product_Repository
                     $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
                 }
         }
+public function importProductsFromApi(int $perPage = 11): array
+{
+    $apiUrl = env('PRODUCT_API_URL');
+    if (!$apiUrl) {
+        throw new InvalidArgumentException('PRODUCT_API_URL not defined in .env');
+    }
+
+    $response = file_get_contents($apiUrl . "?organization_id=9&per_page={$perPage}");
+    $json = json_decode($response, true);
+
+    if (empty($json['data'])) {
+        return [];
+    }
+
+    $createdProducts = [];
+    $photoRepo = new Eloquent_Product_Photo_Repository();
+
+    foreach ($json['data'] as $item) {
+        $name = $item['name'] ?? null;
+        $category = $item['category_name'] ?? 'Uncategorized';
+        $images = $item['images'] ?? null;
+        $price = $item['base_price'] ?? null; // <— take base_price from API
+
+        if (!$name) continue;
+        if ($this->existsByName($name)) continue;
+
+        // Create product
+        $product = new Product(null, $name, false, $category);
+        $savedProduct = $this->create($product);
+
+        // Save product images
+        if (!empty($images) && is_array($images)) {
+            foreach ($images as $imageUrl) {
+                if (!is_string($imageUrl)) continue;
+                if (!str_starts_with($imageUrl, 'http')) {
+                    $imageUrl = '//' . ltrim($imageUrl, '/');
+                }
+
+                $photoEntity = new \App\Domain\Entities\Product_Photo(
+                    null,
+                    $imageUrl,
+                    '',
+                    $savedProduct->ProductID
+                );
+                $photoRepo->add($photoEntity);
+            }
+        }
+
+        // ✅ Insert into product_market table
+
+        if ($price !== null) {
+            Product_Market::create([
+                'product_id' => $savedProduct->ProductID,
+                'market_id'  => 1,
+                'price'      => $price,
+            ]);
+        }
+
+        $createdProducts[] = $savedProduct;
+    }
+
+    return $createdProducts;
+}
+
 
 
     public function findById(int $productID): ?Product
