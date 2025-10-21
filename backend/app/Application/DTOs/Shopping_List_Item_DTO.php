@@ -39,7 +39,7 @@ use App\Domain\Entities\Product as ProductEntity;
 class Shopping_List_Item_DTO
 {
     public ?int $Shopping_List_ItemID = null;
-    public string $Name;
+    public ?string $Name = null;
     public ?string $AddedAt = null;
     public ?string $BoughtAt = null;
 

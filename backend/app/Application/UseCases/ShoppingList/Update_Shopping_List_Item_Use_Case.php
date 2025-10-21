@@ -22,7 +22,9 @@ class Update_Shopping_List_Item_Use_Case implements I_Update_Shopping_List_Item_
         if (!$dto->Shopping_List_ItemID) {
             throw new InvalidArgumentException("ShoppingListItemID is required for update.");
         }
-
+        if (empty(trim($dto->Name ?? ''))) {
+            throw new InvalidArgumentException("Shopping list item name is required and cannot be empty.");
+        }
         $existing = $this->shoppingListRepository->findById($dto->Shopping_List_ItemID);
         if (!$existing) {
             throw new InvalidArgumentException("Shopping list item not found.");

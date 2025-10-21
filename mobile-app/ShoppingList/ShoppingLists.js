@@ -6,7 +6,9 @@ import { removeProductsFromShoppingList } from "../Product/removeProductsFromSho
 import { updateProductsStatusesFromShoppingList } from "../Product/updateProductsStatusesFromShoppingList";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { deleteShoppingList } from "../ShoppingList/deleteShoppingList";
-
+import { TextInput } from "react-native";
+import { updateShoppingList } from "../ShoppingList/updateShoppingList"; // the file we made before
+import Toast from "../utils/Toast";
 export default function ShoppingLists({ item, index, onDelete, onUpdateProducts }) {
   const [expanded, setExpanded] = useState(false), [products, setProducts] = useState([]),
     [showToBuy, setShowToBuy] = useState(false), [showBought, setShowBought] = useState(false),
@@ -14,7 +16,9 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
     [modalVisible, setModalVisible] = useState(false), [toBuySelectionMode, setToBuySelectionMode] = useState(false),
     [toBuyEditMode, setToBuyEditMode] = useState(false), [toBuySelectedProducts, setToBuySelectedProducts] = useState([]),
     [boughtSelectionMode, setBoughtSelectionMode] = useState(false), [boughtSelectedProducts, setBoughtSelectedProducts] = useState([]);
-
+    const [editMode, setEditMode] = useState(false);
+    const [editedName, setEditedName] = useState(item.Name);
+    const [toastMessage, setToastMessage] = useState(null);
   useEffect(() => { if (item.Products) setProducts(item.Products.map(p => ({ ...p, Status: p.Status ?? "ToBuy" }))); }, [item.Products]);
   useEffect(() => { setTotalBoughtPrice(products.filter(p => p.Status === "Bought").reduce((sum, p) => sum + Number(p.Price || 0), 0)); }, [products]);
 
@@ -72,7 +76,51 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
       <Modal animationType="slide" transparent visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+        {editMode ? 
+          <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+            <TextInput value={editedName} onChangeText={setEditedName} style={{ flex: 1, borderBottomWidth: 1, borderColor: "#ccc", fontSize: 18, color: "#333", paddingVertical: 4 }} />
+            <TouchableOpacity onPress={() => { setEditedName(item.Name); setEditMode(false); }} style={{ marginLeft: 10, backgroundColor: "#ff4d4d", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}><Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text></TouchableOpacity>
+<TouchableOpacity
+  onPress={async () => {
+    try {
+      const message = await updateShoppingList({
+        shopping_list_id: item.Shopping_List_ItemID,
+        name: editedName
+      });
+      item.Name = editedName;
+      setEditMode(false);
+      setToastMessage(message); // success toast
+    } catch (err) {
+      // Show backend validation message
+      setToastMessage(err.message || "Failed to update list name.");
+    }
+  }}
+  style={{
+    marginLeft: 10,
+    backgroundColor: "#6c63ff",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2
+  }}
+>
+  <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
+</TouchableOpacity>
+
+
+          </View>
+        : 
+          <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
             <Text style={styles.modalTitle}>{item.Name}</Text>
+            <TouchableOpacity onPress={() => setEditMode(true)} style={{ marginLeft: 10 }}><Feather name="edit-3" size={20} color="#6c63ff" /></TouchableOpacity>
+          </View>
+        }
+      </View>
             <View style={styles.totalPriceContainer}><View style={styles.totalPriceLeft}><Feather name="shopping-cart" size={20} color="#6c63ff" /><Text style={styles.totalPriceLabel}>Total Bought</Text></View><Text style={styles.totalPriceValue}>€{totalBoughtPrice.toFixed(2)}</Text></View>
 
             <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}><Text style={styles.sectionTitle}>To Buy ({toBuyProducts.length})</Text><Text style={styles.toggleIcon}>{showToBuy ? "−" : "+"}</Text></TouchableOpacity>
@@ -109,10 +157,16 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
               </View>}
             </>}
 
-            <TouchableOpacity style={{ backgroundColor:"#c00", paddingVertical:10, paddingHorizontal:25, borderRadius:8, alignSelf:"center", marginTop:15, shadowColor:"#000", shadowOffset:{width:0,height:2}, shadowOpacity:0.2, shadowRadius:3, elevation:3 }} onPress={() => setModalVisible(false)}>
+            <TouchableOpacity style={{ backgroundColor:"#c00", paddingVertical:10, paddingHorizontal:25, borderRadius:8, alignSelf:"center", marginTop:15, shadowColor:"#000", shadowOffset:{width:0,height:2}, shadowOpacity:0.2, shadowRadius:3, elevation:3 }} onPress={() => {
+  setModalVisible(false);
+  setEditMode(false);          // exit edit mode
+  setEditedName(item.Name);    // reset to original name
+  setToastMessage(null);       // optional: hide toast
+}}
+>
               <Text style={{ color:"#fff", fontSize:16, fontWeight:"600" }}>Close</Text>
             </TouchableOpacity>
-
+            {toastMessage && <Toast message={toastMessage} onHide={() => setToastMessage(null)} />}
           </View>
         </View>
       </Modal>

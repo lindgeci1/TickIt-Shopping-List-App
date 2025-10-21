@@ -34,16 +34,18 @@ export default function MarketScreen({ navigation, topPadding }) {
   // Determine markets to show (collapse if needed)
   const marketsToShow = showAllMarkets ? markets : markets.slice(0, 2);
 
-  return (
-    <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
-      <Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Markets</Text>
+return (
+  <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
+    <Text style={[styles.headerTitle, { marginBottom: 20 }]}>Browse Markets</Text>
 
-      {!activeMarket && markets.length > 0 && (
-        <Text style={styles.helperText}>Tap a market to view products with their prices</Text>
-      )}
+    {!activeMarket && markets.length > 0 && (
+      <Text style={styles.helperText}>Tap a market to view products with their prices</Text>
+    )}
 
-      <View style={styles.separator} />
+    <View style={styles.separator} />
 
+    {/* Fixed-height container for market chips */}
+    <View style={{ height: 90 }}>  
       <FlatList
         horizontal
         data={marketsToShow}
@@ -52,7 +54,6 @@ export default function MarketScreen({ navigation, topPadding }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 10 }}
         ListFooterComponent={() => {
-          // Show +X chip if collapsed
           if (!showAllMarkets && markets.length > 2) {
             return (
               <TouchableOpacity
@@ -66,27 +67,31 @@ export default function MarketScreen({ navigation, topPadding }) {
           return null;
         }}
       />
-
-      {activeMarket && (
-        <>
-          <Text style={[styles.sectionLabel, { color: "#6c63ff" }]}>{activeMarket.Name} Products</Text>
-
-          <FlatList
-            data={marketProducts} // each item: { Product: {...}, Price: number }
-            keyExtractor={(item, index) =>
-              item?.Product?.ProductID?.toString() || index.toString()
-            }
-            renderItem={({ item }) => <ProductCardBM productWrapper={item} />}
-            contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={() => (
-              <Text style={styles.emptyText}>No products found</Text>
-            )}
-          />
-        </>
-      )}
     </View>
-  );
+
+    {activeMarket && (
+      <>
+        <Text style={[styles.sectionLabel, { color: "#6c63ff" }]}>{activeMarket.Name} Products</Text>
+
+        {/* Make products list take the rest of the space */}
+        <FlatList
+          data={marketProducts}
+          keyExtractor={(item, index) =>
+            item?.Product?.ProductID?.toString() || index.toString()
+          }
+          renderItem={({ item }) => <ProductCardBM productWrapper={item} />}
+          contentContainerStyle={{ paddingVertical: 10, paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>No products found</Text>
+          )}
+          style={{ flexGrow: 1 }}
+        />
+      </>
+    )}
+  </View>
+);
+
 }
 
 const styles = StyleSheet.create({

@@ -645,6 +645,30 @@
                 }
             }
         },
+        "/api/product/import": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Import products from external API",
+                "operationId": "1e1725e2a30d275fd54117a591f2d187",
+                "responses": {
+                    "200": {
+                        "description": "List of imported products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/product-market/assign/{ProductID}": {
             "post": {
                 "tags": [
