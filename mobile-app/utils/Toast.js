@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Animated, Text, StyleSheet, Dimensions } from "react-native";
 
+const windowWidth = Dimensions.get("window").width;
+
 export default function Toast({ message, duration = 3000, onHide }) {
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -30,8 +32,8 @@ export default function Toast({ message, duration = 3000, onHide }) {
         styles.toast,
         {
           opacity: fadeAnim,
-          bottom: -200, // adjust vertical position
-          left: 20,   // adjust horizontal position
+          bottom: -50, // vertical position from bottom
+          alignSelf: "center"
         },
       ]}
     >
@@ -43,7 +45,7 @@ export default function Toast({ message, duration = 3000, onHide }) {
 const styles = StyleSheet.create({
   toast: {
     position: "absolute",
-    backgroundColor: "rgba(100,100,255,0.9)", // light blue
+    backgroundColor: "rgba(100,100,255,0.9)",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
@@ -53,6 +55,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     maxWidth: Dimensions.get("window").width * 0.8,
+    alignSelf: "center", // ensures horizontal centering
   },
-  text: { color: "#fff", fontWeight: "600" },
+  text: { color: "#fff", fontWeight: "600", textAlign: "center" },
 });
