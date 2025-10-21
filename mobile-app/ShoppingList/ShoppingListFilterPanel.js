@@ -1,305 +1,218 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  LayoutAnimation,
-  Modal,
-  FlatList,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, Modal, FlatList, StyleSheet, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { filterLists } from "./filterLists";
 import { filterListsByDate } from "./filterListsByDate";
 import { filterListsByCustomDate } from "./filterListsByCustomDate";
-
-export default function ShoppingListFilterPanel({
-  allLists,
-  setFilteredLists,
-  search,
-  setSearch,
-  activeQuickDate,
-  setActiveQuickDate,
-  customDate,
-  setCustomDate,
-}) {
-  const [filterExpanded, setFilterExpanded] = useState(false);
-  const [showQuickDateModal, setShowQuickDateModal] = useState(false);
-  const [showCustomDateModal, setShowCustomDateModal] = useState(false);
-
-  const toggleFilterExpand = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setFilterExpanded(!filterExpanded);
-  };
-
-const handleSearchChange = (text) => {
-  setSearch(text);
-
-  // intersection: search + custom date (if active)
-  if (customDate) {
-    filterListsByCustomDate(
-      allLists.filter(item =>
-        item.Name.toLowerCase().includes(text.toLowerCase())
-      ),
-      setFilteredLists,
-      customDate
-    );
-  } else {
-    filterLists(allLists, setFilteredLists, text, activeQuickDate);
-  }
-};
-
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform } from "react-native";
+const screenHeight = Dimensions.get("window").height;
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+export default function ShoppingListFilterPanel({ allLists, setFilteredLists, search, setSearch, activeQuickDate, setActiveQuickDate, customDate, setCustomDate }) {
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [tempQuickDate, setTempQuickDate] = useState(activeQuickDate);
+  const [tempCustomDate, setTempCustomDate] = useState(customDate);
   const quickDateOptions = ["Today", "Yesterday", "Last 7 Days", "This Month"];
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  // Keep modal temporary selections synced when modal opens
+  useEffect(() => {
+    setTempQuickDate(activeQuickDate);
+    setTempCustomDate(customDate);
+  }, [showFilterModal]);
 
-const handleQuickDateSelect = (date) => {
-  setActiveQuickDate(date);
-  filterListsByDate(allLists, setFilteredLists, search, date);
-  setShowQuickDateModal(false);
-};
-  const clearQuickDate = () => {
-    setActiveQuickDate(null);
-    filterListsByDate(allLists, setFilteredLists, search, null);
+  const handleSearchChange = (text) => {
+    setSearch(text);
+    if (customDate) {
+      filterListsByCustomDate(allLists.filter(item => item.Name.toLowerCase().includes(text.toLowerCase())), setFilteredLists, customDate);
+    } else {
+      filterLists(allLists, setFilteredLists, text, activeQuickDate);
+    }
   };
 
-const handleCustomDateSelect = (date) => {
-  setCustomDate(date);
-  setActiveQuickDate(null);
+  const handleTempQuickDateSelect = (date) => {
+    setTempQuickDate(date);
+    setTempCustomDate(null); // disable custom date while quick date is selected
+  };
 
-  // intersection: custom date + search
-  filterListsByCustomDate(
-    allLists.filter(item =>
-      item.Name.toLowerCase().includes(search.toLowerCase())
-    ),
-    setFilteredLists,
-    date
-  );
-};
-
-const clearCustomDate = () => {
-  setCustomDate(null);
-
-  if (activeQuickDate) {
-    filterLists(allLists, setFilteredLists, search, activeQuickDate);
-  } else {
-    // just search (no date)
-    filterLists(allLists, setFilteredLists, search);
-  }
-};
-
+  const handleTempCustomDateSelect = (date) => {
+    setTempCustomDate(date);
+    setTempQuickDate(null); // disable quick date while custom date is selected
+  };
 
   return (
-    <View
-      style={{
-        marginBottom: 10,
-        padding: 12,
-        backgroundColor: "#f5f5ff",
-        borderRadius: 12,
-      }}
-    >
+    <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
       {/* Search */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          borderWidth: 1.5,
-          borderColor: "#d1d1f0",
-          borderRadius: 12,
-          backgroundColor: "#fff",
-          paddingHorizontal: 10,
-          marginBottom: 12,
-          shadowColor: "#000",
-          shadowOpacity: 0.05,
-          shadowRadius: 4,
-          shadowOffset: { width: 0, height: 2 },
-        }}
-      >
-        <Ionicons
-          name="search-outline"
-          size={20}
-          color="#6c63ff"
-          style={{ marginRight: 6 }}
-        />
-        <TextInput
-          style={{ flex: 1, height: 40, fontSize: 15 }}
-          placeholder="Search for a list..."
-          placeholderTextColor="#777"
-          value={search}
-          onChangeText={handleSearchChange}
-        />
-      </View>
-
-      {/* Filters button */}
-      <TouchableOpacity
-        onPress={toggleFilterExpand}
-        style={{
-          alignSelf: "flex-start",
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: "#6c63ff",
-          paddingHorizontal: 14,
-          paddingVertical: 6,
-          borderRadius: 20,
-        }}
-      >
-        <Ionicons
-          name="options-outline"
-          size={18}
-          color="#fff"
-          style={{ marginRight: 6 }}
-        />
-        <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>
-          Filters
-        </Text>
-      </TouchableOpacity>
-
-      {/* Filter Dropdowns */}
-{filterExpanded && (
-  <View
-    style={{
-      marginTop: 12,
-      padding: 10,
-      backgroundColor: "#fff",
-      borderRadius: 3,
-      gap: 10,
-      shadowColor: "#000",
-      shadowOpacity: 0.03,
-      shadowRadius: 3,
-      shadowOffset: { width: 0, height: 1 },
-      elevation: 2,
-    }}
-  >
-    <View style={{ flexDirection: "row", gap: 10 }}>
-      {/* Quick Date */}
-      <TouchableOpacity
-        onPress={() => { if(!customDate) setShowQuickDateModal(true) }}
-        activeOpacity={customDate ? 1 : 0.7} // no visual press if disabled
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: !!customDate ? "#f0f0f0" : "#f0f4ff",
-          paddingVertical: 7,
-          paddingHorizontal: 15,
-          borderWidth: 1,
-          borderColor: "#d1d1f0",
-          borderRadius: 3,
-        }}
-      >
-        <Text style={{ color: !!customDate ? "#aaa" : "#1a3cff", fontWeight: "600", fontSize: 14 }}>
-          {activeQuickDate || "Quick Date"}
-        </Text>
-        {activeQuickDate && (
-          <TouchableOpacity onPress={clearQuickDate}>
-            <Ionicons name="close" size={16} color="#888" />
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
-
-      {/* Custom Date */}
-      <TouchableOpacity
-        onPress={() => { if(!activeQuickDate) setShowCustomDateModal(true) }}
-        activeOpacity={activeQuickDate ? 1 : 0.7} // no visual press if disabled
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: !!activeQuickDate ? "#f0f0f0" : "#f0f4ff",
-          paddingVertical: 7,
-          paddingHorizontal: 15,
-          borderWidth: 1,
-          borderColor: "#d1d1f0",
-          borderRadius: 3,
-        }}
-      >
-        <Text style={{ color: !!activeQuickDate ? "#aaa" : "#1a3cff", fontWeight: "600", fontSize: 14 }}>
-          {customDate
-            ? `${customDate.getDate()} ${customDate.toLocaleString("default",{ month:"short" })} ${customDate.getFullYear()}`
-            : "Custom Date"}
-        </Text>
-        {customDate && (
-          <TouchableOpacity onPress={clearCustomDate}>
-            <Ionicons name="close" size={16} color="#888" />
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
-    </View>
-  </View>
-)}
-
-
-
-      {/* Quick Date Modal */}
-      <Modal visible={showQuickDateModal} transparent animationType="slide">
-        <View
-          style={{ flex: 1, justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)" }}
-        >
-          <View style={{ margin: 20, backgroundColor: "#fff", borderRadius: 12, padding: 16 }}>
-            <Text style={{ fontWeight: "700", fontSize: 16, marginBottom: 12 }}>
-              Select Quick Date
-            </Text>
-            <FlatList
-              data={quickDateOptions}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => handleQuickDateSelect(item)}
-                  style={{ paddingVertical: 10 }}
-                >
-                  <Text style={{ fontSize: 15, color: "#333" }}>{item}</Text>
-                </TouchableOpacity>
-              )}
+      <View style={styles.searchContainer}>
+            <Ionicons name="search-outline" size={20} color="#6c63ff" style={{ marginRight: 6 }} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search for a list..."
+              placeholderTextColor="#777"
+              value={search}
+              onChangeText={handleSearchChange}
             />
-            <TouchableOpacity onPress={() => setShowQuickDateModal(false)}>
-              <Text style={{ color: "red", marginTop: 12, textAlign: "center" }}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+            {search.length > 0 && (
+            <TouchableOpacity
+            onPress={() => {
+              setSearch(""); // clear the input
+              filterLists(allLists, setFilteredLists, "", activeQuickDate); // reset filtered list
+            }}
+            style={{ marginLeft: 6 }}
+          >
+            <Ionicons name="close-circle" size={18} color="#6c63ff" />
+          </TouchableOpacity>
+          )}
+      </View>
+      {/* Filter Button */}
+        <TouchableOpacity
+          onPress={() => setShowFilterModal(true)}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#6c63ff",
+            paddingVertical: 4,       // smaller vertical padding
+            paddingHorizontal: 8,     // smaller horizontal padding
+            borderRadius: 6,          // subtle rounded corners
+            shadowColor: "#000",
+            shadowOpacity: 0.05,
+            shadowOffset: { width: 0, height: 1 },
+            shadowRadius: 2,
+            elevation: 1,
+            alignSelf: "flex-start",  // make width wrap content
+          }}
+        >
+          <Ionicons name="options-outline" size={16} color="#fff" style={{ marginRight: 4 }} />
+          <Text style={{ color: "#fff", fontWeight: "600", fontSize: 13 }}>Filters</Text>
+        </TouchableOpacity>
+
+
+
+      {/* Bottom Sheet Modal */}
+      <Modal visible={showFilterModal} transparent animationType="slide">
+        <View style={styles.modalBackground}>
+          <SafeAreaView style={styles.bottomSheet}>
+            <View style={{ flexShrink: 1 }}>
+              <Text style={styles.modalTitle}>Filters</Text>
+
+              {/* Quick Date */}
+            <View style={[styles.filterSection, tempCustomDate ? { opacity: 0.5 } : {}]} pointerEvents={tempCustomDate ? "none" : "auto"}>
+              <Text style={styles.sectionTitle}>Quick Date</Text>
+              <Text style={styles.sectionHint}>Select a date range to filter lists created within those dates.</Text>
+
+              <FlatList
+                data={quickDateOptions}
+                keyExtractor={(item) => item}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                renderItem={({ item }) => (
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => handleTempQuickDateSelect(item)} style={[styles.option, { flex: 1 }]}>
+                      <Text style={{ color: tempQuickDate === item ? "#6c63ff" : "#333", fontWeight: tempQuickDate === item ? "600" : "400" }}>
+                        {item}
+                      </Text>
+                      {tempQuickDate === item && <Ionicons name="checkmark" size={16} color="#6c63ff" style={{ marginLeft: 6 }} />}
+                    </TouchableOpacity>
+
+                    {tempQuickDate === item && (
+                      <TouchableOpacity onPress={() => setTempQuickDate(null)} style={{ marginLeft: 12 }}>
+                        <Text style={{ color: "red", fontSize: 12 }}>Clear</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+                scrollEnabled={false}
+              />
+            </View>
+
+
+             {/* Custom Date */}
+            <View style={[styles.filterSection, tempQuickDate ? { opacity: 0.5 } : {}]} pointerEvents={tempQuickDate ? "none" : "auto"}>
+              <Text style={styles.sectionTitle}>Custom Date</Text>
+              <Text style={styles.sectionHint}>Select a specific date to filter lists created on that day.</Text>
+
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                  <Text style={{ fontSize: 16, color: tempCustomDate ? "#6c63ff" : "#333" }}>
+                    {tempCustomDate ? tempCustomDate.toDateString() : "Select Date"}
+                  </Text>
+                </TouchableOpacity>
+
+                {tempCustomDate && (
+                  <TouchableOpacity onPress={() => setTempCustomDate(null)}>
+                    <Text style={{ color: "red" }}>Clear</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
+              <DateTimePickerModal
+              isVisible={showDatePicker}
+              mode="date"
+              date={tempCustomDate || new Date()}
+              onConfirm={(date) => {
+                setShowDatePicker(false);
+                handleTempCustomDateSelect(date);
+              }}
+              onCancel={() => setShowDatePicker(false)}
+              headerTextIOS="Pick a date"
+              confirmTextIOS="Select"
+              cancelTextIOS="Cancel"
+              pickerContainerStyleIOS={{ backgroundColor: "#fff", borderRadius: 12, paddingVertical: 10 }}
+              themeVariant="light" // forces dark text for readability
+            />
+
+            </View>
+
+            </View>
+
+            {/* Buttons */}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 24, marginBottom: 12 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setTempQuickDate(activeQuickDate);
+                  setTempCustomDate(customDate);
+                  setShowFilterModal(false);
+                }}
+                style={styles.cancelButton}
+              >
+                <Text style={{ color: "#6c63ff", fontWeight: "600" }}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveQuickDate(tempQuickDate);
+                  setCustomDate(tempCustomDate);
+
+                  if (tempQuickDate) filterListsByDate(allLists, setFilteredLists, search, tempQuickDate);
+                  else if (tempCustomDate) filterListsByCustomDate(allLists.filter(item => item.Name.toLowerCase().includes(search.toLowerCase())), setFilteredLists, tempCustomDate);
+                  else filterLists(allLists, setFilteredLists, search);
+
+                  setShowFilterModal(false);
+                }}
+                style={styles.applyButton}
+              >
+                <Text style={{ color: "#fff", fontWeight: "600" }}>Apply</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
         </View>
       </Modal>
-
-      {/* Custom Date Modal */}
-<Modal visible={showCustomDateModal} transparent animationType="slide">
-  <View
-    style={{ flex: 1, justifyContent: "center", backgroundColor: "rgba(0,0,0,0.4)" }}
-  >
-    <View style={{ margin: 20, backgroundColor: "#fff", borderRadius: 12, padding: 16 }}>
-      <Text style={{ fontWeight: "700", fontSize: 16, marginBottom: 12 }}>
-        Select Date
-      </Text>
-
-      {/* Show the picker only if no date has been picked yet */}
-      {!customDate && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) setCustomDate(selectedDate); // store selected date
-          }}
-        />
-      )}
-
-      {/* Show selected date immediately after picking */}
-      {customDate && (
-        <Text style={{ fontSize: 16, fontWeight: "600", color: "#6c63ff", marginBottom: 12 }}>
-          {`${customDate.getDate()} ${customDate.toLocaleString("default", { month: "short" })} ${customDate.getFullYear()}`}
-        </Text>
-      )}
-
-      <TouchableOpacity
-        onPress={() => {
-          handleCustomDateSelect(customDate); // apply filter
-          setShowCustomDateModal(false);      // close modal
-        }}
-      >
-        <Text style={{ color: "red", marginTop: 12, textAlign: "center" }}>Done</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  searchContainer: { flexDirection: "row", alignItems: "center", borderWidth: 1.5, borderColor: "#d1d1f0", borderRadius: 12, backgroundColor: "#fff", paddingHorizontal: 10, marginBottom: 12, shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } },
+  searchInput: { flex: 1, height: 40, fontSize: 15 },
+  filterButton: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", backgroundColor: "#6c63ff", paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20 },
+  modalBackground: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.4)" },
+  bottomSheet: { maxHeight: screenHeight * 0.85, backgroundColor: "#fff", borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 16 },
+  modalTitle: { fontWeight: "700", fontSize: 18, marginBottom: 12, textAlign: "center" },
+  sectionTitle: { fontWeight: "600", fontSize: 16, marginVertical: 8 },
+  sectionHint: { fontStyle: "italic", fontSize: 13, color: "#555", marginBottom: 8 },
+  separator: { height: 1, backgroundColor: "#ddd" },
+  option: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 12, paddingHorizontal: 8 },
+  clearButton: { alignSelf: "flex-end", marginVertical: 4 },
+  cancelButton: { flex: 1, borderWidth: 1, borderColor: "#6c63ff", borderRadius: 10, paddingVertical: 10, alignItems: "center", marginRight: 8 },
+  applyButton: { flex: 1, backgroundColor: "#6c63ff", borderRadius: 10, paddingVertical: 10, alignItems: "center", marginLeft: 8 },
+  filterSection: { borderWidth: 1, borderColor: "#e0e0e0", borderRadius: 12, padding: 12, marginVertical: 8, backgroundColor: "#fafafa" },
+});

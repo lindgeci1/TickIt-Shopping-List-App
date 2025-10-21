@@ -9,6 +9,7 @@ import { deleteShoppingList } from "../ShoppingList/deleteShoppingList";
 import { TextInput } from "react-native";
 import { updateShoppingList } from "../ShoppingList/updateShoppingList"; // the file we made before
 import Toast from "../utils/Toast";
+import { useMarketPhotoPrice } from "../Product/useMarketPhotoPrice";
 export default function ShoppingLists({ item, index, onDelete, onUpdateProducts }) {
   const [expanded, setExpanded] = useState(false), [products, setProducts] = useState([]),
     [showToBuy, setShowToBuy] = useState(false), [showBought, setShowBought] = useState(false),
@@ -30,35 +31,98 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
   const toggleSelection = (product, selectedProducts, setSelected) =>
     setSelected(prev => prev.includes(product) ? prev.filter(p => p !== product) : [...prev, product]);
 
-  const handleRemoveSelected = async (selectedProducts, statusCheck) => {
-    if (!selectedProducts.length) return;
-    await removeProductsFromShoppingList(selectedProducts.map(p => p.ProductID), [item.Shopping_List_ItemID]);
-    const updated = products.filter(p => !selectedProducts.includes(p));
-    setProducts(updated); statusCheck === "ToBuy" ? setToBuySelectionMode(false) : setBoughtSelectionMode(false);
-    statusCheck === "ToBuy" ? setToBuySelectedProducts([]) : setBoughtSelectedProducts([]);
-    if (updated.filter(p => p.Status === statusCheck).length === 0) statusCheck === "ToBuy" ? setShowToBuy(false) : setShowBought(false);
-    if(onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updated);
-  };
+const handleRemoveSelected = async (selectedProducts, statusCheck) => {
+  if (!selectedProducts.length) return;
 
-  const handleUpdateSelectedToBuy = async () => {
-    if (!toBuySelectedProducts.length) return;
-    await updateProductsStatusesFromShoppingList(toBuySelectedProducts.map(p => p.ProductID), [item.Shopping_List_ItemID]);
-    const updated = products.map(p => toBuySelectedProducts.includes(p) ? { ...p, Status: "Bought" } : p);
-    setProducts(updated); setToBuySelectionMode(false); setToBuyEditMode(false); setToBuySelectedProducts([]);
+  await removeProductsFromShoppingList(
+    selectedProducts.map(p => p.ProductID),
+    [item.Shopping_List_ItemID]
+  );
+
+  const updated = products.filter(p => !selectedProducts.includes(p));
+  setProducts(updated);
+
+  if (statusCheck === "ToBuy") {
+    setToBuySelectionMode(false);
+    setToBuySelectedProducts([]);
     if (updated.filter(p => p.Status === "ToBuy").length === 0) setShowToBuy(false);
-    if(onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updated);
-  };
+  } else {
+    setBoughtSelectionMode(false);
+    setBoughtSelectedProducts([]);
+    if (updated.filter(p => p.Status === "Bought").length === 0) setShowBought(false);
+  }
 
-  const handleRetrieveSelectedBought = async () => {
-    if (!boughtSelectedProducts.length) return;
-    try {
-      await addProductsToShoppingList(boughtSelectedProducts.map(p => p.ProductID), [item.Shopping_List_ItemID]);
-      const updated = products.map(p => boughtSelectedProducts.includes(p) ? { ...p, Status: "ToBuy" } : p);
-      setProducts(updated); setBoughtSelectionMode(false); setBoughtSelectedProducts([]); setRetrieveMode(false);
-      if (updated.filter(p => p.Status === "Bought").length === 0) setShowBought(false);
-      if(onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updated);
-    } catch { Alert.alert("Error", "Failed to retrieve products."); }
-  };
+  if (onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updated);
+
+  // Show toast message
+  setToastMessage(`${selectedProducts.length} product(s) removed successfully!`);
+};
+
+const handleUpdateSelectedToBuy = async () => {
+  if (!toBuySelectedProducts.length) return;
+
+  const productsWithoutMarket = [];
+  const updatedProducts = [...products];
+
+  for (const product of toBuySelectedProducts) {
+    const marketData = await useMarketPhotoPrice(product.ProductID, item.Shopping_List_ItemID);
+
+    if (!marketData) {
+      productsWithoutMarket.push(product.Name);
+      continue; // skip this product
+    }
+
+    // Update product in DB
+    await updateProductsStatusesFromShoppingList([product.ProductID], [item.Shopping_List_ItemID]);
+
+    // Update product in UI immediately
+    const index = updatedProducts.findIndex(p => p.ProductID === product.ProductID);
+    if (index !== -1) updatedProducts[index].Status = "Bought";
+  }
+
+  setProducts(updatedProducts);
+  setToBuySelectionMode(false);
+  setToBuyEditMode(false);
+  setToBuySelectedProducts([]);
+
+  if (updatedProducts.filter(p => p.Status === "ToBuy").length === 0) setShowToBuy(false);
+  if (onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updatedProducts);
+
+  if (productsWithoutMarket.length > 0) {
+    setToastMessage(
+      `Attach a market before buying: ${productsWithoutMarket.join(", ")}`
+    );
+  } else {
+    setToastMessage("Products moved to Bought successfully!");
+  }
+};
+
+const handleRetrieveSelectedBought = async () => {
+  if (!boughtSelectedProducts.length) return;
+  try {
+    await addProductsToShoppingList(
+      boughtSelectedProducts.map(p => p.ProductID),
+      [item.Shopping_List_ItemID]
+    );
+
+    const updated = products.map(p =>
+      boughtSelectedProducts.includes(p) ? { ...p, Status: "ToBuy" } : p
+    );
+
+    setProducts(updated);
+    setBoughtSelectionMode(false);
+    setBoughtSelectedProducts([]);
+    setRetrieveMode(false);
+
+    if (updated.filter(p => p.Status === "Bought").length === 0) setShowBought(false);
+    if (onUpdateProducts) onUpdateProducts(item.Shopping_List_ItemID, updated);
+
+    // Show toast message
+    setToastMessage(`${boughtSelectedProducts.length} product(s) moved back to ToBuy!`);
+  } catch {
+    setToastMessage("Failed to retrieve selected products.");
+  }
+};
 
   const toBuyProducts = products.filter(p => p.Status === "ToBuy"), boughtProducts = products.filter(p => p.Status === "Bought");
 
@@ -78,42 +142,80 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
           <View style={styles.modalContent}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         {editMode ? 
-          <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-            <TextInput value={editedName} onChangeText={setEditedName} style={{ flex: 1, borderBottomWidth: 1, borderColor: "#ccc", fontSize: 18, color: "#333", paddingVertical: 4 }} />
-            <TouchableOpacity onPress={() => { setEditedName(item.Name); setEditMode(false); }} style={{ marginLeft: 10, backgroundColor: "#ff4d4d", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}><Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text></TouchableOpacity>
-<TouchableOpacity
-  onPress={async () => {
-    try {
-      const message = await updateShoppingList({
-        shopping_list_id: item.Shopping_List_ItemID,
-        name: editedName
-      });
-      item.Name = editedName;
-      setEditMode(false);
-      setToastMessage(message); // success toast
-    } catch (err) {
-      // Show backend validation message
-      setToastMessage(err.message || "Failed to update list name.");
-    }
-  }}
-  style={{
-    marginLeft: 10,
-    backgroundColor: "#6c63ff",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 2
-  }}
->
-  <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
-</TouchableOpacity>
+<View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+  <TextInput
+    value={editedName}
+    onChangeText={setEditedName}
+    style={{
+      flex: 1,
+      borderBottomWidth: 1,
+      borderColor: "#ccc",
+      fontSize: 18,
+      color: "#333",
+      paddingVertical: 4,
+    }}
+    placeholder="List Name"
+    placeholderTextColor="#999"
+  />
+  {/* Clear X button */}
+  {editedName.length > 0 && (
+    <TouchableOpacity
+      onPress={() => setEditedName("")}
+      style={{ marginLeft: 6 }}
+    >
+      <Feather name="x-circle" size={18} color="#6c63ff" />
+    </TouchableOpacity>
+  )}
 
+  <TouchableOpacity
+    onPress={() => { setEditedName(item.Name); setEditMode(false); }}
+    style={{
+      marginLeft: 10,
+      backgroundColor: "#ff4d4d",
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 2,
+    }}
+  >
+    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text>
+  </TouchableOpacity>
 
-          </View>
+  <TouchableOpacity
+    onPress={async () => {
+      try {
+        const message = await updateShoppingList({
+          shopping_list_id: item.Shopping_List_ItemID,
+          name: editedName,
+        });
+        item.Name = editedName;
+        setEditMode(false);
+        setToastMessage(message);
+      } catch (err) {
+        setToastMessage(err.message || "Failed to update list name.");
+      }
+    }}
+    style={{
+      marginLeft: 10,
+      backgroundColor: "#6c63ff",
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 2,
+    }}
+  >
+    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
+  </TouchableOpacity>
+</View>
+
         : 
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
             <Text style={styles.modalTitle}>{item.Name}</Text>
@@ -162,6 +264,14 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
   setEditMode(false);          // exit edit mode
   setEditedName(item.Name);    // reset to original name
   setToastMessage(null);       // optional: hide toast
+  setToBuySelectionMode(false);
+setToBuyEditMode(false);
+setToBuySelectedProducts([]);
+setBoughtSelectionMode(false);
+setRetrieveMode(false);
+setBoughtSelectedProducts([]);
+setShowToBuy(false);
+setShowBought(false);
 }}
 >
               <Text style={{ color:"#fff", fontSize:16, fontWeight:"600" }}>Close</Text>
