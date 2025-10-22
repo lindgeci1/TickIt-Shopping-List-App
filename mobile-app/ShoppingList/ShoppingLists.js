@@ -142,79 +142,16 @@ const handleRetrieveSelectedBought = async () => {
           <View style={styles.modalContent}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         {editMode ? 
-<View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-  <TextInput
-    value={editedName}
-    onChangeText={setEditedName}
-    style={{
-      flex: 1,
-      borderBottomWidth: 1,
-      borderColor: "#ccc",
-      fontSize: 18,
-      color: "#333",
-      paddingVertical: 4,
-    }}
-    placeholder="List Name"
-    placeholderTextColor="#999"
-  />
-  {/* Clear X button */}
-  {editedName.length > 0 && (
-    <TouchableOpacity
-      onPress={() => setEditedName("")}
-      style={{ marginLeft: 6 }}
-    >
-      <Feather name="x-circle" size={18} color="#6c63ff" />
-    </TouchableOpacity>
-  )}
-
-  <TouchableOpacity
-    onPress={() => { setEditedName(item.Name); setEditMode(false); }}
-    style={{
-      marginLeft: 10,
-      backgroundColor: "#ff4d4d",
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 2,
-    }}
-  >
-    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text>
-  </TouchableOpacity>
-
-  <TouchableOpacity
-    onPress={async () => {
-      try {
-        const message = await updateShoppingList({
-          shopping_list_id: item.Shopping_List_ItemID,
-          name: editedName,
-        });
-        item.Name = editedName;
-        setEditMode(false);
-        setToastMessage(message);
-      } catch (err) {
-        setToastMessage(err.message || "Failed to update list name.");
-      }
-    }}
-    style={{
-      marginLeft: 10,
-      backgroundColor: "#6c63ff",
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 2,
-    }}
-  >
-    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
-  </TouchableOpacity>
-</View>
+      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+        <TextInput value={editedName} onChangeText={setEditedName} style={{ flex: 1, borderBottomWidth: 1, borderColor: "#ccc", fontSize: 18, color: "#333", paddingVertical: 4 }} placeholder="List Name" placeholderTextColor="#999" />
+        {editedName.length > 0 && (<TouchableOpacity onPress={() => setEditedName("")} style={{ marginLeft: 6 }}><Feather name="x-circle" size={18} color="#6c63ff" /></TouchableOpacity>)}
+        <TouchableOpacity onPress={() => { setEditedName(item.Name); setEditMode(false); }} style={{ marginLeft: 10, backgroundColor: "#ff4d4d", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}>
+          <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={async () => { try { const message = await updateShoppingList({ shopping_list_id: item.Shopping_List_ItemID, name: editedName }); item.Name = editedName; setEditMode(false); setToastMessage(message); } catch (err) { setToastMessage(err.message || "Failed to update list name."); } }} style={{ marginLeft: 10, backgroundColor: "#6c63ff", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}>
+          <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
+        </TouchableOpacity>
+      </View>
 
         : 
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -258,22 +195,8 @@ const handleRetrieveSelectedBought = async () => {
                 <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#aaa" }]} onPress={() => { setBoughtSelectionMode(false); setBoughtSelectedProducts([]); setRetrieveMode(false); }}><Text style={styles.actionText}>Cancel</Text></TouchableOpacity>
               </View>}
             </>}
-
-            <TouchableOpacity style={{ backgroundColor:"#c00", paddingVertical:10, paddingHorizontal:25, borderRadius:8, alignSelf:"center", marginTop:15, shadowColor:"#000", shadowOffset:{width:0,height:2}, shadowOpacity:0.2, shadowRadius:3, elevation:3 }} onPress={() => {
-  setModalVisible(false);
-  setEditMode(false);          // exit edit mode
-  setEditedName(item.Name);    // reset to original name
-  setToastMessage(null);       // optional: hide toast
-  setToBuySelectionMode(false);
-setToBuyEditMode(false);
-setToBuySelectedProducts([]);
-setBoughtSelectionMode(false);
-setRetrieveMode(false);
-setBoughtSelectedProducts([]);
-setShowToBuy(false);
-setShowBought(false);
-}}
->
+            <TouchableOpacity style={{ backgroundColor: "#c00", paddingVertical: 10, paddingHorizontal: 25, borderRadius: 8, alignSelf: "center", marginTop: 15, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 3 }} 
+              onPress={() => { setModalVisible(false); setEditMode(false); setEditedName(item.Name); setToastMessage(null); setToBuySelectionMode(false); setToBuyEditMode(false); setToBuySelectedProducts([]); setBoughtSelectionMode(false); setRetrieveMode(false); setBoughtSelectedProducts([]); setShowToBuy(false); setShowBought(false); }}>
               <Text style={{ color:"#fff", fontSize:16, fontWeight:"600" }}>Close</Text>
             </TouchableOpacity>
             {toastMessage && <Toast message={toastMessage} onHide={() => setToastMessage(null)} />}

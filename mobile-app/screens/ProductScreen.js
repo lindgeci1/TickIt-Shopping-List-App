@@ -29,6 +29,9 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [filterExpanded,setFilterExpanded] = useState(false);
 
   useEffect(()=>{ fetchProducts(setAllProducts,setProducts); },[]);
+useEffect(() => {
+  fetchMarkets(setMarkets);
+}, []);
 
   const handleSearchChange = text => { setSearch(text); filterProducts(allProducts,setProducts,text,activeCategory); };
   const handleCategoryPress = category => { const newCat = category===activeCategory?null:category; setActiveCategory(newCat); filterProducts(allProducts,setProducts,search,newCat); };
