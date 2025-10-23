@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Interfaces\Product\I_GetAll_Products_Use_Case;
+use App\Application\Interfaces\Product\I_Get_All_Products_Use_Case;
 use App\Application\Interfaces\Product\I_Create_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Product_Use_Case;
 use App\Application\Interfaces\Product\I_Update_Product_Use_Case;
@@ -29,12 +29,11 @@ use InvalidArgumentException;
  */
 class Product_Controller extends Controller
 {
-    private I_GetAll_Products_Use_Case $getAllProductsService;
+    private I_Get_All_Products_Use_Case $getAllProductsService;
     private I_Create_Product_Use_Case $createProductService;
     private I_Get_Product_Use_Case $getProductService;
     private I_Update_Product_Use_Case $updateProductService;
     private I_Delete_Product_Use_Case $deleteProductService;
-    private I_Search_Product_Use_Case $searchProductService;
     private I_Get_Favorite_Products_Use_Case $getFavoriteProductsService;
     private I_Get_Product_Markets_Use_Case $getProductMarketsService;
     private I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService;
@@ -44,12 +43,11 @@ class Product_Controller extends Controller
     private I_Get_All_Categories_Use_Case $getAllCategoriesService;
 
     public function __construct(
-        I_GetAll_Products_Use_Case $getAllProductsService,
+        I_Get_All_Products_Use_Case $getAllProductsService,
         I_Create_Product_Use_Case $createProductService,
         I_Get_Product_Use_Case $getProductService,
         I_Update_Product_Use_Case $updateProductService,
         I_Delete_Product_Use_Case $deleteProductService,
-        I_Search_Product_Use_Case $searchProductService,
         I_Get_Favorite_Products_Use_Case $getFavoriteProductsService,
         I_Get_Product_Markets_Use_Case $getProductMarketsService,
         I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService,
@@ -63,7 +61,6 @@ class Product_Controller extends Controller
         $this->getProductService = $getProductService;
         $this->updateProductService = $updateProductService;
         $this->deleteProductService = $deleteProductService;
-        $this->searchProductService = $searchProductService;
         $this->getFavoriteProductsService = $getFavoriteProductsService;
         $this->getProductMarketsService = $getProductMarketsService;
         $this->getMarketPhotoPriceService = $getMarketPhotoPriceService;
@@ -187,36 +184,6 @@ class Product_Controller extends Controller
             return response()->json(['message' => $ex->getMessage()], 400);
         }
     }
-
-    //  /**
-    //  * @OA\Get(
-    //  *     path="/api/product/search",
-    //  *     summary="Search products by name",
-    //  *     tags={"Product"},
-    //  *     @OA\Parameter(
-    //  *         name="name",
-    //  *         in="query",
-    //  *         required=true,
-    //  *         @OA\Schema(type="string")
-    //  *     ),
-    //  *     @OA\Response(
-    //  *         response=200,
-    //  *         description="List of matching products",
-    //  *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
-    //  *     )
-    //  * )
-    //  */
-    // public function search(Request $request)
-    // {
-    //     $name = $request->query('name', '');
-
-    //     if (empty(trim($name))) {
-    //         return response()->json([], 200);
-    //     }
-
-    //     $results = $this->searchProductService->searchByName($name);
-    //     return response()->json($results, 200);
-    // }
 
     /**
      * @OA\Get(
@@ -393,7 +360,10 @@ public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingList
      *     @OA\Response(
      *         response=200,
      *         description="List of all categories",
-     *         @OA\JsonContent(type="array", @OA\Items(type="string"))
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Product_Category_DTO")
+     *         )
      *     ),
      *     @OA\Response(response=404, description="No categories found")
      * )
@@ -407,11 +377,13 @@ public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingList
                 return response()->json(['message' => 'No categories found'], 404);
             }
 
-            return response()->json($categories, 200);
+            // Return plain array of category strings
+            return response()->json(array_map(fn($dto) => $dto->category, $categories), 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => 'Failed to fetch categories: ' . $ex->getMessage()], 400);
         }
     }
+
 
         /**
      * @OA\Post(

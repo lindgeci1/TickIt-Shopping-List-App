@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Application\UseCases\ProductMarket;
+namespace App\Application\UseCases\Market;
 
 use App\Application\DTOs\Preferred_Market_DTO;
-use App\Application\Interfaces\ProductMarket\I_Get_Preferred_Market_Use_Case;
+use App\Application\Interfaces\Market\I_Get_Preferred_Market_Use_Case;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Market_Repository;
 use InvalidArgumentException;

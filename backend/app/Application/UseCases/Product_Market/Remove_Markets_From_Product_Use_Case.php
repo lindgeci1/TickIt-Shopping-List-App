@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Application\UseCases\ProductMarket;
+namespace App\Application\UseCases\Product_Market;
 
-use App\Application\Interfaces\ProductMarket\I_Remove_Markets_From_Product_Use_Case;
+use App\Application\Interfaces\Product_Market\I_Remove_Markets_From_Product_Use_Case;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Domain\Interfaces\I_Market_Repository;
 use App\Application\DTOs\Remove_Markets_From_Product_DTO;

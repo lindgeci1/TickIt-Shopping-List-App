@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Interfaces\ProductMarket;
+namespace App\Application\Interfaces\Product_Market;
 
 use App\Application\DTOs\Remove_Markets_From_Product_DTO;
 
