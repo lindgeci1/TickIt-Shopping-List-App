@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Interfaces\ShoppingList;
+namespace App\Application\Interfaces\Shopping_List;
 
 use App\Application\DTOs\Shopping_List_Item_DTO;
 

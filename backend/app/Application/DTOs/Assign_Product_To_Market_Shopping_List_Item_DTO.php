@@ -6,7 +6,7 @@ use App\Domain\Entities\Shopping_List_Item_Product_Market;
 
 /**
  * @OA\Schema(
- *     schema="Shopping_List_Item_Product_Market_DTO",
+ *     schema="Assign_Product_To_Market_Shopping_List_Item_DTO",
  *     type="object",
  *     required={"Shopping_List_Item_ID", "Product_ID", "Market_ID"},
  *     @OA\Property(property="Shopping_List_Item_Product_MarketID", type="integer", nullable=true),
@@ -16,7 +16,7 @@ use App\Domain\Entities\Shopping_List_Item_Product_Market;
  *     @OA\Property(property="SelectedPrice", type="number", format="float", nullable=true)
  * )
  */
-class Shopping_List_Item_Product_Market_DTO
+class Assign_Product_To_Market_Shopping_List_Item_DTO
 {
     public ?int $Shopping_List_Item_Product_MarketID = null;
     public int $Shopping_List_Item_ID;

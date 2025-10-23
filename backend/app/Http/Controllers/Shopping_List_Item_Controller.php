@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Interfaces\ShoppingList\I_Get_All_Shopping_List_Items_Use_Case;
-use App\Application\Interfaces\ShoppingList\I_Create_Shopping_List_Item_Use_Case;
-use App\Application\Interfaces\ShoppingList\I_Get_Shopping_List_Item_Use_Case;
-use App\Application\Interfaces\ShoppingList\I_Update_Shopping_List_Item_Use_Case;
-use App\Application\Interfaces\ShoppingList\I_Delete_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Get_All_Shopping_List_Items_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Create_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Get_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Update_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Delete_Shopping_List_Item_Use_Case;
 use App\Application\DTOs\Shopping_List_Item_DTO;
 use InvalidArgumentException;
 

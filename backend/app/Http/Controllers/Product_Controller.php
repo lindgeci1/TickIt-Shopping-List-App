@@ -37,7 +37,6 @@ class Product_Controller extends Controller
     private I_Get_Favorite_Products_Use_Case $getFavoriteProductsService;
     private I_Get_Product_Markets_Use_Case $getProductMarketsService;
     private I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService;
-    private I_Remove_Product_From_Shopping_List_Use_Case $removeFromShoppingListService;
     private I_Import_Products_From_Api_Use_Case $importProductsService;
     private I_Get_Products_By_Category_Use_Case $getProductsByCategoryService;
     private I_Get_All_Categories_Use_Case $getAllCategoriesService;
@@ -51,7 +50,6 @@ class Product_Controller extends Controller
         I_Get_Favorite_Products_Use_Case $getFavoriteProductsService,
         I_Get_Product_Markets_Use_Case $getProductMarketsService,
         I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService,
-        I_Remove_Product_From_Shopping_List_Use_Case $removeFromShoppingListService,
         I_Import_Products_From_Api_Use_Case $importProductsService,
         I_Get_Products_By_Category_Use_Case $getProductsByCategoryService,
         I_Get_All_Categories_Use_Case $getAllCategoriesService
@@ -64,7 +62,6 @@ class Product_Controller extends Controller
         $this->getFavoriteProductsService = $getFavoriteProductsService;
         $this->getProductMarketsService = $getProductMarketsService;
         $this->getMarketPhotoPriceService = $getMarketPhotoPriceService;
-        $this->removeFromShoppingListService = $removeFromShoppingListService;
         $this->importProductsService = $importProductsService;
         $this->getProductsByCategoryService = $getProductsByCategoryService;
         $this->getAllCategoriesService = $getAllCategoriesService;
@@ -277,46 +274,6 @@ public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingList
         return response()->json(['message' => 'Unexpected error: ' . $ex->getMessage()], 500);
     }
 }
-    /**
-     * @OA\Delete(
-     *     path="/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove",
-     *     summary="Remove a product from a shopping list",
-     *     tags={"Product"},
-     *     @OA\Parameter(
-     *         name="ProductID",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="ShoppingListItemID",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Product removed from shopping list",
-     *         @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))
-     *     ),
-     *     @OA\Response(response=400, description="Failed to remove product")
-     * )
-     */
-    public function removeFromShoppingList(int $ProductID, int $ShoppingListItemID)
-    {
-        try {
-            $dto = new Remove_Product_From_Shopping_List_DTO([
-                'ProductID' => $ProductID,
-                'ShoppingListItemID' => $ShoppingListItemID,
-            ]);
-
-            $this->removeFromShoppingListService->execute($dto);
-
-            return response()->json(['message' => 'Product removed from shopping list'], 200);
-        } catch (\Exception $ex) {
-            return response()->json(['message' => 'Failed to remove product: ' . $ex->getMessage()], 400);
-        }
-    }
 
         /**
      * @OA\Get(

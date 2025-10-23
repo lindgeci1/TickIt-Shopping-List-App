@@ -669,53 +669,6 @@
                 }
             }
         },
-        "/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove": {
-            "delete": {
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Remove a product from a shopping list",
-                "operationId": "af76ce5a861f4360cdea84c7556d0718",
-                "parameters": [
-                    {
-                        "name": "ProductID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "ShoppingListItemID",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Product removed from shopping list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Failed to remove product"
-                    }
-                }
-            }
-        },
         "/api/product/category/{category}": {
             "get": {
                 "tags": [
@@ -1226,7 +1179,7 @@
                     "Shopping_List_Item_Product_Market"
                 ],
                 "summary": "Assign a market for a product in a shopping list",
-                "operationId": "dabe65e52600911049d5240507dc8215",
+                "operationId": "cc2903fa85946d6033242f343a61131c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1259,13 +1212,60 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Shopping_List_Item_Product_Market_DTO"
+                                    "$ref": "#/components/schemas/Assign_Product_To_Market_Shopping_List_Item_DTO"
                                 }
                             }
                         }
                     },
                     "400": {
                         "description": "Invalid input or assignment failed"
+                    }
+                }
+            }
+        },
+        "/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove": {
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove a product from a shopping list",
+                "operationId": "ca8ab30dd589c6e0576db912c6dda94e",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "ShoppingListItemID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product removed from shopping list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to remove product"
                     }
                 }
             }
@@ -1301,6 +1301,34 @@
                             },
                             "type": "object"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "Assign_Product_To_Market_Shopping_List_Item_DTO": {
+                "required": [
+                    "Shopping_List_Item_ID",
+                    "Product_ID",
+                    "Market_ID"
+                ],
+                "properties": {
+                    "Shopping_List_Item_Product_MarketID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Shopping_List_Item_ID": {
+                        "type": "integer"
+                    },
+                    "Product_ID": {
+                        "type": "integer"
+                    },
+                    "Market_ID": {
+                        "type": "integer"
+                    },
+                    "SelectedPrice": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -1583,7 +1611,7 @@
                 },
                 "type": "object"
             },
-            "Remove_Product_From_Shopping_List_DTO": {
+            "Remove_Product_From_Market_Shopping_List_Item_DTO": {
                 "required": [
                     "ProductID",
                     "ShoppingListItemID"
@@ -1684,34 +1712,6 @@
                             },
                             "type": "object"
                         }
-                    }
-                },
-                "type": "object"
-            },
-            "Shopping_List_Item_Product_Market_DTO": {
-                "required": [
-                    "Shopping_List_Item_ID",
-                    "Product_ID",
-                    "Market_ID"
-                ],
-                "properties": {
-                    "Shopping_List_Item_Product_MarketID": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "Shopping_List_Item_ID": {
-                        "type": "integer"
-                    },
-                    "Product_ID": {
-                        "type": "integer"
-                    },
-                    "Market_ID": {
-                        "type": "integer"
-                    },
-                    "SelectedPrice": {
-                        "type": "number",
-                        "format": "float",
-                        "nullable": true
                     }
                 },
                 "type": "object"
