@@ -14,4 +14,5 @@ interface I_Market_Repository
     public function delete(int $MarketID): bool;
     public function existsByName(string $name): bool;
     public function getCheapestMarketForProduct(int $productId): ?array;
+    public function findAllMarketsOnly(): array;
 }

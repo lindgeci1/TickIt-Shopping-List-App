@@ -241,6 +241,30 @@
                 }
             }
         },
+        "/api/market/all-only": {
+            "get": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Get all markets (without linked products)",
+                "operationId": "36797306c0c87f9c596f9c64bb7be0cd",
+                "responses": {
+                    "200": {
+                        "description": "List of markets only",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Market_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/market-photo/add": {
             "post": {
                 "tags": [
@@ -641,6 +665,70 @@
                     },
                     "400": {
                         "description": "Failed to remove product"
+                    }
+                }
+            }
+        },
+        "/api/product/category/{category}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get products by category",
+                "operationId": "6eb8f9c3c04c1adcd9cbbebfe553de06",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of products by category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product_DTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No products found for this category"
+                    }
+                }
+            }
+        },
+        "/api/product/categories": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get all unique product categories",
+                "operationId": "c1bb07a6dc8dae8c56dca627f69b4172",
+                "responses": {
+                    "200": {
+                        "description": "List of all categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories found"
                     }
                 }
             }

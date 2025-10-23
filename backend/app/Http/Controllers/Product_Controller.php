@@ -17,6 +17,8 @@ use App\Application\Interfaces\Product\I_Get_Market_Photo_Price_Use_Case;
 use App\Application\DTOs\Remove_Product_From_Shopping_List_DTO;
 use App\Application\Interfaces\Product\I_Remove_Product_From_Shopping_List_Use_Case;
 use App\Application\Interfaces\Product\I_Import_Products_From_Api_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Products_By_Category_Use_Case;
+use App\Application\Interfaces\Product\I_Get_All_Categories_Use_Case;
 use InvalidArgumentException;
 
 /**
@@ -38,6 +40,8 @@ class Product_Controller extends Controller
     private I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService;
     private I_Remove_Product_From_Shopping_List_Use_Case $removeFromShoppingListService;
     private I_Import_Products_From_Api_Use_Case $importProductsService;
+    private I_Get_Products_By_Category_Use_Case $getProductsByCategoryService;
+    private I_Get_All_Categories_Use_Case $getAllCategoriesService;
 
     public function __construct(
         I_GetAll_Products_Use_Case $getAllProductsService,
@@ -50,7 +54,9 @@ class Product_Controller extends Controller
         I_Get_Product_Markets_Use_Case $getProductMarketsService,
         I_Get_Market_Photo_Price_Use_Case $getMarketPhotoPriceService,
         I_Remove_Product_From_Shopping_List_Use_Case $removeFromShoppingListService,
-        I_Import_Products_From_Api_Use_Case $importProductsService
+        I_Import_Products_From_Api_Use_Case $importProductsService,
+        I_Get_Products_By_Category_Use_Case $getProductsByCategoryService,
+        I_Get_All_Categories_Use_Case $getAllCategoriesService
     ) {
         $this->getAllProductsService = $getAllProductsService;
         $this->createProductService = $createProductService;
@@ -63,6 +69,8 @@ class Product_Controller extends Controller
         $this->getMarketPhotoPriceService = $getMarketPhotoPriceService;
         $this->removeFromShoppingListService = $removeFromShoppingListService;
         $this->importProductsService = $importProductsService;
+        $this->getProductsByCategoryService = $getProductsByCategoryService;
+        $this->getAllCategoriesService = $getAllCategoriesService;
     }
 
     /**
@@ -340,6 +348,68 @@ public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingList
             return response()->json(['message' => 'Product removed from shopping list'], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => 'Failed to remove product: ' . $ex->getMessage()], 400);
+        }
+    }
+
+        /**
+     * @OA\Get(
+     *     path="/api/product/category/{category}",
+     *     summary="Get products by category",
+     *     tags={"Product"},
+     *     @OA\Parameter(
+     *         name="category",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of products by category",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
+     *     ),
+     *     @OA\Response(response=404, description="No products found for this category")
+     * )
+     */
+    public function getByCategory(string $category)
+    {
+        try {
+            $products = $this->getProductsByCategoryService->getByCategory($category);
+
+            if (empty($products)) {
+                return response()->json(['message' => 'No products found for this category'], 404);
+            }
+
+            return response()->json($products, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => 'Failed to fetch products: ' . $ex->getMessage()], 400);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/product/categories",
+     *     summary="Get all unique product categories",
+     *     tags={"Product"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of all categories",
+     *         @OA\JsonContent(type="array", @OA\Items(type="string"))
+     *     ),
+     *     @OA\Response(response=404, description="No categories found")
+     * )
+     */
+    public function getAllCategories()
+    {
+        try {
+            $categories = $this->getAllCategoriesService->getAll();
+
+            if (empty($categories)) {
+                return response()->json(['message' => 'No categories found'], 404);
+            }
+
+            return response()->json($categories, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => 'Failed to fetch categories: ' . $ex->getMessage()], 400);
         }
     }
 

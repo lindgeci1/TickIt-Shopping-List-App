@@ -56,6 +56,25 @@ public function findAll(): array
     })->all();
 }
 
+public function findAllMarketsOnly(): array
+{
+    // Fetch all markets without products
+    $models = MarketModel::with('photo')->get(); // eager load photo
+
+    return $models->map(function ($m) {
+        $market = new Market(
+            $m->market_id,
+            $m->name,
+            $m->location
+        );
+
+        // Add market photo if exists
+        $market->Photos = $m->photo ? [$m->photo->url] : [];
+
+        return $market;
+    })->all();
+}
+
 
 public function getCheapestMarketForProduct(int $productId): ?array
 {

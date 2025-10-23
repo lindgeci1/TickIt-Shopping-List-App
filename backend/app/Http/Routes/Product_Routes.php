@@ -7,6 +7,8 @@ Route::prefix('product')->group(function () {
     Route::get('/all', [Product_Controller::class, 'index']);
     Route::get('/search', [Product_Controller::class, 'search']);
     Route::get('/favorites', [Product_Controller::class, 'getFavorites']);
+    Route::get('/categories', [Product_Controller::class, 'getAllCategories']);
+    Route::get('/category/{category}', [Product_Controller::class, 'getByCategory']);
     Route::get('/{ProductID}', [Product_Controller::class, 'show']);
     Route::get('/{ProductID}/markets', [Product_Controller::class, 'getMarkets']);
     Route::get('/{ProductID}/shopping-list/{ShoppingListItemID}/market-photo-price', [Product_Controller::class, 'getMarketPhotoAndSelectedPrice']);
