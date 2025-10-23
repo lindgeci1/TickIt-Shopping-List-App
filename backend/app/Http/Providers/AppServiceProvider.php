@@ -11,6 +11,7 @@ use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
 use App\Domain\Interfaces\I_Product_Photo_Repository;
 use App\Domain\Interfaces\I_Market_Photo_Repository;
 use App\Domain\Interfaces\I_Shopping_List_Item_Product_Market_Repository;
+use App\Domain\Interfaces\I_Shopping_List_Item_Product_Repository;
 
 
 // Repository Implementations
@@ -20,6 +21,7 @@ use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Repository;
 use App\Infrastructure\Repositories\Eloquent_Product_Photo_Repository;
 use App\Infrastructure\Repositories\Eloquent_Market_Photo_Repository;
 use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Product_Market_Repository;
+use App\Infrastructure\Repositories\Eloquent_Shopping_List_Item_Product_Repository;
 
 
 
@@ -66,9 +68,9 @@ use App\Application\Interfaces\Market_Photo\I_Add_Market_Photo_Use_Case;
 use App\Application\Interfaces\Market_Photo\I_Delete_Market_Photo_Use_Case;
 
 
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_ShoppingListItem_Use_Case;
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_ShoppingListItems_From_Product_Use_Case;
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_ShoppingListItems_For_Product_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_Shopping_List_Items_From_Product_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_Shopping_List_Items_For_Product_Use_Case;
 
 
 use App\Application\Interfaces\Shopping_List_Item_Product_Market\I_Add_Product_To_Market_In_Shopping_List_Use_Case;
@@ -87,7 +89,6 @@ use App\Application\UseCases\Product\Remove_Product_From_Shopping_List_Use_Case;
 use App\Application\UseCases\Product\Import_Products_From_Api_Use_Case;
 use App\Application\UseCases\Product\Get_Products_By_Category_Use_Case;
 use App\Application\UseCases\Product\Get_All_Categories_Use_Case;
-
 
 use App\Application\UseCases\Market\Get_All_Markets_Use_Case;
 use App\Application\UseCases\Market\Get_Market_Use_Case;
@@ -116,9 +117,9 @@ use App\Application\UseCases\Market_Photo\Add_Market_Photo_Use_Case;
 use App\Application\UseCases\Market_Photo\Delete_Market_Photo_Use_Case;
 
 
-use App\Application\UseCases\Shopping_List_Item_Product\Assign_Products_To_ShoppingListItem_Use_Case;
-use App\Application\UseCases\Shopping_List_Item_Product\Remove_ShoppingListItems_From_Product_Use_Case;
-use App\Application\UseCases\Shopping_List_Item_Product\Update_ShoppingListItems_For_Product_Use_Case;
+use App\Application\UseCases\Shopping_List_Item_Product\Assign_Products_To_Shopping_List_Item_Use_Case;
+use App\Application\UseCases\Shopping_List_Item_Product\Remove_ShoppingList_Items_From_Product_Use_Case;
+use App\Application\UseCases\Shopping_List_Item_Product\Update_Shopping_List_Items_For_Product_Use_Case;
 
 
 use App\Application\UseCases\Shopping_List_Item_Product_Market\Add_Product_To_Market_In_Shopping_List_Use_Case;
@@ -137,6 +138,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Product_Photo_Repository::class, Eloquent_Product_Photo_Repository::class);
         $this->app->bind(I_Market_Photo_Repository::class, Eloquent_Market_Photo_Repository::class);
         $this->app->bind(I_Shopping_List_Item_Product_Market_Repository::class, Eloquent_Shopping_List_Item_Product_Market_Repository::class);
+        $this->app->bind(I_Shopping_List_Item_Product_Repository::class, Eloquent_Shopping_List_Item_Product_Repository::class);
 
         // Product Services
         $this->app->bind(I_Get_All_Products_Use_Case::class, concrete: Get_All_Products_Use_Case::class);
@@ -175,9 +177,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Add_Market_Photo_Use_Case::class, Add_Market_Photo_Use_Case::class);
         $this->app->bind(I_Delete_Market_Photo_Use_Case::class, Delete_Market_Photo_Use_Case::class);
         // ShoppingListItem-Product Service
-        $this->app->bind(I_Assign_Products_To_ShoppingListItem_Use_Case::class, Assign_Products_To_ShoppingListItem_Use_Case::class);
-        $this->app->bind(I_Remove_ShoppingListItems_From_Product_Use_Case::class, Remove_ShoppingListItems_From_Product_Use_Case::class);
-        $this->app->bind(I_Update_ShoppingListItems_For_Product_Use_Case::class, Update_ShoppingListItems_For_Product_Use_Case::class);
+        $this->app->bind(I_Assign_Products_To_Shopping_List_Item_Use_Case::class, Assign_Products_To_Shopping_List_Item_Use_Case::class);
+        $this->app->bind(I_Remove_Shopping_List_Items_From_Product_Use_Case::class, Remove_ShoppingList_Items_From_Product_Use_Case::class);
+        $this->app->bind(I_Update_Shopping_List_Items_For_Product_Use_Case::class, Update_Shopping_List_Items_For_Product_Use_Case::class);
         // ShoppingListItem-Product-Market Service
         $this->app->bind(I_Add_Product_To_Market_In_Shopping_List_Use_Case::class, Add_Product_To_Market_In_Shopping_List_Use_Case::class);
     }

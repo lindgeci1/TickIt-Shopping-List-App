@@ -958,87 +958,6 @@
                 }
             }
         },
-        "/api/product-shopping-list-item/assign": {
-            "post": {
-                "tags": [
-                    "Product_Shopping_List_Item"
-                ],
-                "summary": "Attach multiple products to selected shopping list items dynamically",
-                "operationId": "ee87758125d395254b2541331f9ce6ce",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Products successfully assigned to shopping list items"
-                    },
-                    "400": {
-                        "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/product-shopping-list-item/remove": {
-            "delete": {
-                "tags": [
-                    "Product_Shopping_List_Item"
-                ],
-                "summary": "Detach multiple products from selected shopping list items dynamically",
-                "operationId": "aeacb91ad6b429855ed6e5a001936718",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Products successfully removed from shopping list items"
-                    },
-                    "400": {
-                        "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/product-shopping-list-item/update": {
-            "put": {
-                "tags": [
-                    "Product_Shopping_List_Item"
-                ],
-                "summary": "Replace all shopping list items for multiple products with a new selection",
-                "operationId": "d35b839d26158f3b05c5839d790e48ab",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Product shopping list items successfully updated"
-                    },
-                    "400": {
-                        "description": "Validation error"
-                    }
-                }
-            }
-        },
         "/api/shopping-list/all": {
             "get": {
                 "tags": [
@@ -1216,6 +1135,87 @@
                     },
                     "400": {
                         "description": "Deletion failed"
+                    }
+                }
+            }
+        },
+        "/api/product-shopping-list-item/assign": {
+            "post": {
+                "tags": [
+                    "Shopping_List_Item_Product"
+                ],
+                "summary": "Attach multiple products to selected shopping list items dynamically",
+                "operationId": "f0855e4a1f16f062e8c2312ae37f5a6a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Products successfully assigned to shopping list items"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/product-shopping-list-item/remove": {
+            "delete": {
+                "tags": [
+                    "Shopping_List_Item_Product"
+                ],
+                "summary": "Detach multiple products from selected shopping list items dynamically",
+                "operationId": "c64e2af7b277d7d776ba5d3e81422213",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Remove_Products_From_Shopping_List_Item_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Products successfully removed from shopping list items"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/product-shopping-list-item/update": {
+            "put": {
+                "tags": [
+                    "Shopping_List_Item_Product"
+                ],
+                "summary": "Replace all shopping list items for multiple products with a new selection",
+                "operationId": "79cf2120807cfea752e162c7a4b16d41",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Update_Products_To_Shopping_List_Item_DTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product shopping list items successfully updated"
+                    },
+                    "400": {
+                        "description": "Validation error"
                     }
                 }
             }
@@ -1600,6 +1600,29 @@
                 },
                 "type": "object"
             },
+            "Remove_Products_From_Shopping_List_Item_DTO": {
+                "required": [
+                    "ProductIDs",
+                    "ShoppingListItemIDs"
+                ],
+                "properties": {
+                    "ProductIDs": {
+                        "description": "Array of product IDs to assign to shopping list items",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "ShoppingListItemIDs": {
+                        "description": "Array of shopping list item IDs to assign products to",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Shopping_List_Item_DTO": {
                 "required": [
                     "Name"
@@ -1692,6 +1715,29 @@
                     }
                 },
                 "type": "object"
+            },
+            "Update_Products_To_Shopping_List_Item_DTO": {
+                "required": [
+                    "ProductIDs",
+                    "ShoppingListItemIDs"
+                ],
+                "properties": {
+                    "ProductIDs": {
+                        "description": "Array of product IDs to assign to shopping list items",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "ShoppingListItemIDs": {
+                        "description": "Array of shopping list item IDs to assign products to",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "type": "object"
             }
         }
     },
@@ -1717,12 +1763,12 @@
             "description": "API Endpoints for Product Photos"
         },
         {
-            "name": "Product_Shopping_List_Item",
-            "description": "API Endpoints for linking Products and Shopping List Items dynamically"
-        },
-        {
             "name": "Shopping_List",
             "description": "API Endpoints for Shopping List Items"
+        },
+        {
+            "name": "Shopping_List_Item_Product",
+            "description": "API Endpoints for linking Products and Shopping List Items dynamically"
         },
         {
             "name": "Shopping_List_Item_Product_Market",

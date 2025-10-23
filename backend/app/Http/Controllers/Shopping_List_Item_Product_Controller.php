@@ -3,28 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_ShoppingListItem_Use_Case;
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_ShoppingListItems_From_Product_Use_Case;
-use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_ShoppingListItems_For_Product_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Assign_Products_To_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Remove_Shopping_List_Items_From_Product_Use_Case;
+use App\Application\Interfaces\Shopping_List_Item_Product\I_Update_Shopping_List_Items_For_Product_Use_Case;
 use App\Application\DTOs\Assign_Products_To_Shopping_List_Item_DTO;
+use App\Application\DTOs\Remove_Products_From_Shopping_List_Item_DTO;
+use App\Application\DTOs\Update_Products_To_Shopping_List_Item_DTO;
 use InvalidArgumentException;
 
 /**
  * @OA\Tag(
- *     name="Product_Shopping_List_Item",
+ *     name="Shopping_List_Item_Product",
  *     description="API Endpoints for linking Products and Shopping List Items dynamically"
  * )
  */
-class Product_Shopping_List_Item_Controller extends Controller
+class Shopping_List_Item_Product_Controller extends Controller
 {
-    private I_Assign_Products_To_ShoppingListItem_Use_Case $assignUseCase;
-    private I_Remove_ShoppingListItems_From_Product_Use_Case $removeUseCase;
-    private I_Update_ShoppingListItems_For_Product_Use_Case $updateUseCase;
+    private I_Assign_Products_To_Shopping_List_Item_Use_Case $assignUseCase;
+    private I_Remove_Shopping_List_Items_From_Product_Use_Case $removeUseCase;
+    private I_Update_Shopping_List_Items_For_Product_Use_Case $updateUseCase;
 
     public function __construct(
-        I_Assign_Products_To_ShoppingListItem_Use_Case $assignUseCase,
-        I_Remove_ShoppingListItems_From_Product_Use_Case $removeUseCase,
-        I_Update_ShoppingListItems_For_Product_Use_Case $updateUseCase
+        I_Assign_Products_To_Shopping_List_Item_Use_Case $assignUseCase,
+        I_Remove_Shopping_List_Items_From_Product_Use_Case $removeUseCase,
+        I_Update_Shopping_List_Items_For_Product_Use_Case $updateUseCase
     ) {
         $this->assignUseCase = $assignUseCase;
         $this->removeUseCase = $removeUseCase;
@@ -35,7 +37,7 @@ class Product_Shopping_List_Item_Controller extends Controller
      * @OA\Post(
      *     path="/api/product-shopping-list-item/assign",
      *     summary="Attach multiple products to selected shopping list items dynamically",
-     *     tags={"Product_Shopping_List_Item"},
+     *     tags={"Shopping_List_Item_Product"},
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
      *     @OA\Response(response=201, description="Products successfully assigned to shopping list items"),
      *     @OA\Response(response=400, description="Validation error")
@@ -64,8 +66,8 @@ class Product_Shopping_List_Item_Controller extends Controller
      * @OA\Delete(
      *     path="/api/product-shopping-list-item/remove",
      *     summary="Detach multiple products from selected shopping list items dynamically",
-     *     tags={"Product_Shopping_List_Item"},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
+     *     tags={"Shopping_List_Item_Product"},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Remove_Products_From_Shopping_List_Item_DTO")),
      *     @OA\Response(response=200, description="Products successfully removed from shopping list items"),
      *     @OA\Response(response=400, description="Validation error")
      * )
@@ -79,7 +81,7 @@ class Product_Shopping_List_Item_Controller extends Controller
             return response()->json(['message' => 'ProductIDs and ShoppingListItemIDs are required'], 400);
         }
 
-        $dto = new Assign_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
+        $dto = new Remove_Products_From_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
 
         try {
             $this->removeUseCase->remove($dto);
@@ -93,8 +95,8 @@ class Product_Shopping_List_Item_Controller extends Controller
      * @OA\Put(
      *     path="/api/product-shopping-list-item/update",
      *     summary="Replace all shopping list items for multiple products with a new selection",
-     *     tags={"Product_Shopping_List_Item"},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Assign_Products_To_Shopping_List_Item_DTO")),
+     *     tags={"Shopping_List_Item_Product"},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/Update_Products_To_Shopping_List_Item_DTO")),
      *     @OA\Response(response=200, description="Product shopping list items successfully updated"),
      *     @OA\Response(response=400, description="Validation error")
      * )
@@ -108,7 +110,7 @@ class Product_Shopping_List_Item_Controller extends Controller
             return response()->json(['message' => 'ProductIDs and ShoppingListItemIDs are required'], 400);
         }
 
-        $dto = new Assign_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
+        $dto = new Update_Products_To_Shopping_List_Item_DTO($productIds, $shoppingListItemIds);
 
         try {
             $this->updateUseCase->update($dto);
