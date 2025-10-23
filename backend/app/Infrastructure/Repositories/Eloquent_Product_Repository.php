@@ -331,27 +331,6 @@ public function importProductsFromApi(int $perPage = 11): array
     return $product;
 }
 
-public function searchByName(string $query): array
-{
-    $models = ProductModel::with('photo')
-        ->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($query) . '%'])
-        ->get();
-
-    return $models->map(function($m) {
-        $product = new Product(
-            $m->product_id,
-            $m->name,
-            $m->is_favorite,
-            $m->category
-        );
-
-        $product->Photos = $m->photo ? [$m->photo->url] : [];
-
-        return $product;
-    })->all();
-}
-
-
 
     public function create(Product $product): Product
     {

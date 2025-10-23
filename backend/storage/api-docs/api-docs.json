@@ -265,6 +265,53 @@
                 }
             }
         },
+        "/api/market/preferred/{ProductID}": {
+            "get": {
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Get the market with the cheapest price for a product",
+                "operationId": "f957622c426ccf00d16f3e4beddd750b",
+                "parameters": [
+                    {
+                        "name": "ProductID",
+                        "in": "path",
+                        "description": "ID of the product to check",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cheapest market found for the product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Preferred_Market_DTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found or no markets assigned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/market-photo/add": {
             "post": {
                 "tags": [
@@ -721,7 +768,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "string"
+                                        "$ref": "#/components/schemas/Product_Category_DTO"
                                     }
                                 }
                             }
@@ -834,53 +881,6 @@
                     },
                     "400": {
                         "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/product-market/preferred/{ProductID}": {
-            "get": {
-                "tags": [
-                    "Product_Market"
-                ],
-                "summary": "Get the market with the cheapest price for a product",
-                "operationId": "0d071257773804c2a822e2d9d170252f",
-                "parameters": [
-                    {
-                        "name": "ProductID",
-                        "in": "path",
-                        "description": "ID of the product to check",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Cheapest market found for the product",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Preferred_Market_DTO"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Product not found or no markets assigned",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -1328,6 +1328,39 @@
                 },
                 "type": "object"
             },
+            "Imported_Product_DTO": {
+                "required": [
+                    "Name",
+                    "Category"
+                ],
+                "properties": {
+                    "ProductID": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "Price": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "IsFavorite": {
+                        "type": "boolean"
+                    },
+                    "Category": {
+                        "type": "string"
+                    },
+                    "Photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Market_DTO": {
                 "required": [
                     "Name"
@@ -1437,6 +1470,10 @@
                     }
                 },
                 "type": "object"
+            },
+            "Product_Category_DTO": {
+                "description": "Product category as a plain string",
+                "type": "string"
             },
             "Product_DTO": {
                 "required": [

@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Interfaces\Market\I_GetAll_Markets_Use_Case;
+use App\Application\Interfaces\Market\I_Get_All_Markets_Use_Case;
 use App\Application\Interfaces\Market\I_Create_Market_Use_Case;
-use App\Application\Interfaces\Market\I_Get_Market_UseCase;
+use App\Application\Interfaces\Market\I_Get_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Update_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Delete_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Get_All_Markets_Only_Use_Case;
+use App\Application\Interfaces\Market\I_Get_Preferred_Market_Use_Case;
 use App\Application\DTOs\Market_DTO;
+use App\Application\DTOs\Preferred_Market_DTO;
 use InvalidArgumentException;
 
 /**
@@ -20,20 +22,22 @@ use InvalidArgumentException;
  */
 class Market_Controller extends Controller
 {
-    private I_GetAll_Markets_Use_Case $getAllMarketsService;
+    private I_Get_All_Markets_Use_Case $getAllMarketsService;
     private I_Create_Market_Use_Case $createMarketService;
-    private I_Get_Market_UseCase $getMarketService;
+    private I_Get_Market_Use_Case $getMarketService;
     private I_Update_Market_Use_Case $updateMarketService;
     private I_Delete_Market_Use_Case $deleteMarketService;
     private I_Get_All_Markets_Only_Use_Case $getAllMarketsOnlyService;
+    private I_Get_Preferred_Market_Use_Case $getPreferredMarketUseCase;
 
     public function __construct(
-        I_GetAll_Markets_Use_Case $getAllMarketsService,
+        I_Get_All_Markets_Use_Case $getAllMarketsService,
         I_Create_Market_Use_Case $createMarketService,
-        I_Get_Market_UseCase $getMarketService,
+        I_Get_Market_Use_Case $getMarketService,
         I_Update_Market_Use_Case $updateMarketService,
         I_Delete_Market_Use_Case $deleteMarketService,
-        I_Get_All_Markets_Only_Use_Case $getAllMarketsOnlyService
+        I_Get_All_Markets_Only_Use_Case $getAllMarketsOnlyService,
+        I_Get_Preferred_Market_Use_Case $getPreferredMarketUseCase
     ) {
         $this->getAllMarketsService = $getAllMarketsService;
         $this->createMarketService = $createMarketService;
@@ -41,6 +45,7 @@ class Market_Controller extends Controller
         $this->updateMarketService = $updateMarketService;
         $this->deleteMarketService = $deleteMarketService;
         $this->getAllMarketsOnlyService = $getAllMarketsOnlyService;
+        $this->getPreferredMarketUseCase = $getPreferredMarketUseCase;
     }
 
     /**
@@ -179,4 +184,42 @@ class Market_Controller extends Controller
             return response()->json(['message' => 'Failed to fetch markets: ' . $ex->getMessage()], 400);
         }
     }
+
+
+
+/**
+ * @OA\Get(
+ *     path="/api/market/preferred/{ProductID}",
+ *     summary="Get the market with the cheapest price for a product",
+ *     tags={"Market"},
+ *     @OA\Parameter(
+ *         name="ProductID",
+ *         in="path",
+ *         required=true,
+ *         description="ID of the product to check",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Cheapest market found for the product",
+ *         @OA\JsonContent(ref="#/components/schemas/Preferred_Market_DTO")
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Product not found or no markets assigned",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string")
+ *         )
+ *     )
+ * )
+ */
+public function preferredMarket(int $ProductID)
+{
+    try {
+        $dto = $this->getPreferredMarketUseCase->getPreferredMarket($ProductID);
+        return response()->json($dto);
+    } catch (\Exception $ex) {
+        return response()->json(['message' => $ex->getMessage()], 404);
+    }
+}
 }

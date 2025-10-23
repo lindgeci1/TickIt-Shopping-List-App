@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Interfaces\ShoppingList\I_GetAll_Shopping_List_Items_Use_Case;
+use App\Application\Interfaces\ShoppingList\I_Get_All_Shopping_List_Items_Use_Case;
 use App\Application\Interfaces\ShoppingList\I_Create_Shopping_List_Item_Use_Case;
 use App\Application\Interfaces\ShoppingList\I_Get_Shopping_List_Item_Use_Case;
 use App\Application\Interfaces\ShoppingList\I_Update_Shopping_List_Item_Use_Case;
@@ -19,14 +19,14 @@ use InvalidArgumentException;
  */
 class Shopping_List_Item_Controller extends Controller
 {
-    private I_GetAll_Shopping_List_Items_Use_Case $getAllService;
+    private I_Get_All_Shopping_List_Items_Use_Case $getAllService;
     private I_Create_Shopping_List_Item_Use_Case $createService;
     private I_Get_Shopping_List_Item_Use_Case $getService;
     private I_Update_Shopping_List_Item_Use_Case $updateService;
     private I_Delete_Shopping_List_Item_Use_Case $deleteService;
 
     public function __construct(
-        I_GetAll_Shopping_List_Items_Use_Case $getAllService,
+        I_Get_All_Shopping_List_Items_Use_Case $getAllService,
         I_Create_Shopping_List_Item_Use_Case $createService,
         I_Get_Shopping_List_Item_Use_Case $getService,
         I_Update_Shopping_List_Item_Use_Case $updateService,

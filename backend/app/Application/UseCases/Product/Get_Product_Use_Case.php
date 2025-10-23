@@ -3,7 +3,6 @@
 namespace App\Application\UseCases\Product;
 
 use App\Application\Interfaces\Product\I_Get_Product_Use_Case;
-use App\Domain\Entities\Product;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Application\DTOs\Product_DTO;
 use InvalidArgumentException;

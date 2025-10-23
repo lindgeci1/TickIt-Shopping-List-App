@@ -2,12 +2,12 @@
 
 namespace App\Application\UseCases\Product;
 
-use App\Application\Interfaces\Product\I_GetAll_Products_Use_Case;
+use App\Application\Interfaces\Product\I_Get_All_Products_Use_Case;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Application\DTOs\Product_DTO;
 use App\Domain\Entities\Product;
 
-class GetAll_Products_Use_Case implements I_GetAll_Products_Use_Case
+class Get_All_Products_Use_Case implements I_Get_All_Products_Use_Case
 {
     private I_Product_Repository $productRepository;
 
