@@ -7,9 +7,6 @@ import { fetchProducts } from "../Product/fetchProducts";
 import { fetchShoppingLists } from "../ShoppingList/fetchShoppingLists";
 import { addProductsToShoppingList } from "../Product/addProductsToShoppingList";
 import { filterProducts } from "../Product/filterProducts";
-import { fetchMarkets } from "../Market/fetchMarkets";
-
-const categoriesList = [{name:"Food"},{name:"Hygiene"},{name:"Drinks"},{name:"Electronics"},{name:"Clothing"},{name:"Cleaning"}];
 
 export default function ProductScreen({ navigation, topPadding }) {
   const [allProducts,setAllProducts] = useState([]),
@@ -29,14 +26,9 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [filterExpanded,setFilterExpanded] = useState(false);
 
   useEffect(()=>{ fetchProducts(setAllProducts,setProducts); },[]);
-useEffect(() => {
-  fetchMarkets(setMarkets);
-}, []);
 
   const handleSearchChange = text => { setSearch(text); filterProducts(allProducts,setProducts,text,activeCategory); };
   const handleCategoryPress = category => { const newCat = category===activeCategory?null:category; setActiveCategory(newCat); filterProducts(allProducts,setProducts,search,newCat); };
-  const fetchMarketsLazy = async ()=>{ if(!markets.length) await fetchMarkets(setMarkets); };
-  const handleMarketClick = async ()=>{ await fetchMarketsLazy(); };
   const toggleSelection = product => setSelectedProducts(prev=>prev.includes(product)?prev.filter(p=>p!==product):[...prev,product]);
   const toggleFilterExpand = ()=>{ LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setFilterExpanded(!filterExpanded); };
   const handleAddToBuyingList = async ()=>{
@@ -58,11 +50,11 @@ useEffect(() => {
     <View style={[styles.container,{paddingTop:topPadding+15}]}>
       <Text style={[styles.headerTitle,{marginBottom:15}]}>Browse Products</Text>
       <ProductFilterPanel
-        categoriesList={categoriesList} search={search} onSearchChange={handleSearchChange}
+        search={search} onSearchChange={handleSearchChange}
         activeCategory={activeCategory} onCategoryPress={handleCategoryPress}
         markets={markets} activeMarket={activeMarket} setActiveMarket={setActiveMarket} setMarketProducts={setMarketProducts}
         setProducts={setProducts} allProducts={allProducts} setFavoriteProducts={setFavoriteProducts}
-        favoritesMode={favoritesMode} setFavoritesMode={setFavoritesMode} setSearch={setSearch} onMarketClick={handleMarketClick}
+        favoritesMode={favoritesMode} setFavoritesMode={setFavoritesMode} setSearch={setSearch}
       />
       <TouchableOpacity style={styles.globalAddButton} onPress={handleAddToBuyingList}>
         <Text style={styles.globalAddButtonText}>{selectionMode?`Add ${selectedProducts.length} selected`:"+ Add to Buying List"}</Text>

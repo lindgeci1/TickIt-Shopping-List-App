@@ -160,9 +160,9 @@ const handleRetrieveSelectedBought = async () => {
           </View>
         }
       </View>
-            <View style={styles.totalPriceContainer}><View style={styles.totalPriceLeft}><Feather name="shopping-cart" size={20} color="#6c63ff" /><Text style={styles.totalPriceLabel}>Total Bought</Text></View><Text style={styles.totalPriceValue}>€{totalBoughtPrice.toFixed(2)}</Text></View>
+            <View style={styles.totalPriceContainer}><View style={styles.totalPriceLeft}><Feather name="shopping-cart" size={20} color="#6c63ff" /><Text style={styles.totalPriceLabel}>Total Cost</Text></View><Text style={styles.totalPriceValue}>€{totalBoughtPrice.toFixed(2)}</Text></View>
 
-            <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}><Text style={styles.sectionTitle}>To Buy ({toBuyProducts.length})</Text><Text style={styles.toggleIcon}>{showToBuy ? "−" : "+"}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}><Text style={styles.sectionTitle}>Product(s) To Buy ({toBuyProducts.length})</Text><Text style={styles.toggleIcon}>{showToBuy ? "−" : "+"}</Text></TouchableOpacity>
             {showToBuy && <>
               <FlatList data={toBuyProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={false} style={styles.productList} renderItem={({ item: product }) => (
                 <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={toBuySelectionMode} selected={toBuySelectedProducts.includes(product)}
@@ -179,7 +179,7 @@ const handleRetrieveSelectedBought = async () => {
               </View>}
             </>}
 
-            <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowBought(!showBought)}><Text style={styles.sectionTitle}>Bought ({boughtProducts.length})</Text><Text style={styles.toggleIcon}>{showBought ? "−" : "+"}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowBought(!showBought)}><Text style={styles.sectionTitle}>Product(s) Bought ({boughtProducts.length})</Text><Text style={styles.toggleIcon}>{showBought ? "−" : "+"}</Text></TouchableOpacity>
             {showBought && <>
               <FlatList data={boughtProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={false} style={styles.productList} renderItem={({ item: product }) => (
                 <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={boughtSelectionMode} selected={boughtSelectedProducts.includes(product)}

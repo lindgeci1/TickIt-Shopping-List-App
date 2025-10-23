@@ -8,6 +8,7 @@ use App\Application\Interfaces\Market\I_Create_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Get_Market_UseCase;
 use App\Application\Interfaces\Market\I_Update_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Delete_Market_Use_Case;
+use App\Application\Interfaces\Market\I_Get_All_Markets_Only_Use_Case;
 use App\Application\DTOs\Market_DTO;
 use InvalidArgumentException;
 
@@ -24,19 +25,22 @@ class Market_Controller extends Controller
     private I_Get_Market_UseCase $getMarketService;
     private I_Update_Market_Use_Case $updateMarketService;
     private I_Delete_Market_Use_Case $deleteMarketService;
+    private I_Get_All_Markets_Only_Use_Case $getAllMarketsOnlyService;
 
     public function __construct(
         I_GetAll_Markets_Use_Case $getAllMarketsService,
         I_Create_Market_Use_Case $createMarketService,
         I_Get_Market_UseCase $getMarketService,
         I_Update_Market_Use_Case $updateMarketService,
-        I_Delete_Market_Use_Case $deleteMarketService
+        I_Delete_Market_Use_Case $deleteMarketService,
+        I_Get_All_Markets_Only_Use_Case $getAllMarketsOnlyService
     ) {
         $this->getAllMarketsService = $getAllMarketsService;
         $this->createMarketService = $createMarketService;
         $this->getMarketService = $getMarketService;
         $this->updateMarketService = $updateMarketService;
         $this->deleteMarketService = $deleteMarketService;
+        $this->getAllMarketsOnlyService = $getAllMarketsOnlyService;
     }
 
     /**
@@ -152,6 +156,27 @@ class Market_Controller extends Controller
             return response()->json(['message' => $message], 200);
         } catch (\Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 400);
+        }
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/market/all-only",
+     *     summary="Get all markets (without linked products)",
+     *     tags={"Market"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of markets only",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Market_DTO"))
+     *     )
+     * )
+     */
+    public function getAllOnly()
+    {
+        try {
+            $markets = $this->getAllMarketsOnlyService->execute();
+            return response()->json($markets, 200);
+        } catch (\Exception $ex) {
+            return response()->json(['message' => 'Failed to fetch markets: ' . $ex->getMessage()], 400);
         }
     }
 }

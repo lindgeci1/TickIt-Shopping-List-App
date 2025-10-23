@@ -34,12 +34,15 @@ use App\Application\Interfaces\Product\I_Get_Product_Markets_Use_Case;
 use App\Application\Interfaces\Product\I_Get_Market_Photo_Price_Use_Case;
 use App\Application\Interfaces\Product\I_Remove_Product_From_Shopping_List_Use_Case;
 use App\Application\Interfaces\Product\I_Import_Products_From_Api_Use_Case;
+use App\Application\Interfaces\Product\I_Get_Products_By_Category_Use_Case;
+use App\Application\Interfaces\Product\I_Get_All_Categories_Use_Case;
 
 use App\Application\Interfaces\Market\I_GetAll_Markets_Use_Case;
 use App\Application\Interfaces\Market\I_Get_Market_UseCase;
 use App\Application\Interfaces\Market\I_Create_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Update_Market_Use_Case;
 use App\Application\Interfaces\Market\I_Delete_Market_Use_Case;
+use App\Application\Interfaces\Market\I_Get_All_Markets_Only_Use_Case;
 
 use App\Application\Interfaces\ShoppingList\I_GetAll_Shopping_List_Items_Use_Case;
 use App\Application\Interfaces\ShoppingList\I_Get_Shopping_List_Item_Use_Case;
@@ -76,6 +79,8 @@ use App\Application\UseCases\Product\Get_Product_Markets_Use_Case;
 use App\Application\UseCases\Product\Get_Market_Photo_Price_Use_Case;
 use App\Application\UseCases\Product\Remove_Product_From_Shopping_List_Use_Case;
 use App\Application\UseCases\Product\Import_Products_From_Api_Use_Case;
+use App\Application\UseCases\Product\Get_Products_By_Category_Use_Case;
+use App\Application\UseCases\Product\Get_All_Categories_Use_Case;
 
 
 
@@ -84,6 +89,7 @@ use App\Application\UseCases\Market\Get_Market_Use_Case;
 use App\Application\UseCases\Market\Create_Market_Use_Case;
 use App\Application\UseCases\Market\Update_Market_Use_Case;
 use App\Application\UseCases\Market\Delete_Market_Use_Case;
+use App\Application\UseCases\Market\Get_All_Markets_Only_Use_Case;
 
 use App\Application\UseCases\ShoppingList\GetAll_Shopping_List_Items_Use_Case;
 use App\Application\UseCases\ShoppingList\Get_Shopping_List_Item_Use_Case;
@@ -134,12 +140,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(I_Get_Market_Photo_Price_Use_Case::class, Get_Market_Photo_Price_Use_Case::class);
         $this->app->bind(I_Remove_Product_From_Shopping_List_Use_Case::class, Remove_Product_From_Shopping_List_Use_Case::class);
         $this->app->bind(I_Import_Products_From_Api_Use_Case::class, Import_Products_From_Api_Use_Case::class);
+        $this->app->bind(I_Get_Products_By_Category_Use_Case::class, Get_Products_By_Category_Use_Case::class);
+        $this->app->bind(I_Get_All_Categories_Use_Case::class, Get_All_Categories_Use_Case::class);
         // Market Services
         $this->app->bind(I_GetAll_Markets_Use_Case::class, GetAll_Markets_Use_Case::class);
         $this->app->bind(I_Get_Market_UseCase::class, Get_Market_Use_Case::class);
         $this->app->bind(I_Create_Market_Use_Case::class, Create_Market_Use_Case::class);
         $this->app->bind(I_Update_Market_Use_Case::class, Update_Market_Use_Case::class);
         $this->app->bind(I_Delete_Market_Use_Case::class, Delete_Market_Use_Case::class);
+        $this->app->bind(I_Get_All_Markets_Only_Use_Case::class, Get_All_Markets_Only_Use_Case::class);
         // ShoppingListItem Services
         $this->app->bind(I_GetAll_Shopping_List_Items_Use_Case::class, GetAll_Shopping_List_Items_Use_Case::class);
         $this->app->bind(I_Get_Shopping_List_Item_Use_Case::class, Get_Shopping_List_Item_Use_Case::class);
