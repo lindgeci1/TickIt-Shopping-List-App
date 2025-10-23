@@ -59,16 +59,7 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 return $product;
             })->all();
         }
-        public function countShoppingListsForProduct(int $productID): int
-        {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) {
-                return 0;
-            }
 
-            // Count how many shopping list items this product is attached to
-            return $productModel->shoppingListItems()->count();
-        }
         public function findAllCategories(): array
         {
             return ProductModel::query()
@@ -135,18 +126,6 @@ class Eloquent_Product_Repository implements I_Product_Repository
             })->all();
         }
 
-
-        public function updateIsFavorite(int $productID, bool $isFavorite): bool
-        {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) {
-                return false;
-            }
-
-            $productModel->is_favorite = $isFavorite;
-            return $productModel->save();
-        }
-
         public function attachToMarkets(int $productID, array $marketsWithPrices): void
         {
             $productModel = ProductModel::find($productID);
@@ -173,81 +152,6 @@ class Eloquent_Product_Repository implements I_Product_Repository
         $productModel->markets()->detach($marketIDs);
     }
 
-    public function syncMarkets(int $productID, array $marketIDs): void
-    {
-        $productModel = ProductModel::find($productID);
-        if (!$productModel) return;
-
-        // Replace existing markets with the new list
-        $productModel->markets()->sync($marketIDs);
-    }
-    public function attachMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void
-    {
-        foreach ($productIDs as $productID) {
-            $productModel = ProductModel::find($productID);
-            if (!$productModel) continue;
-
-            foreach ($shoppingListItemIDs as $shoppingListItemID) {
-                // Delete existing record in the super main table for this combination
-                Shopping_List_Item_Product_Market::where('product_id', $productID)
-                    ->where('shopping_list_item_id', $shoppingListItemID)
-                    ->delete();
-
-                Shopping_List_Item_Product_Market::where('product_id', $productID)
-                    ->where('shopping_list_item_id', '!=', $shoppingListItemID)
-                    ->delete();
-            }
-
-            // Attach the product to the shopping list(s)
-            $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
-        }
-    }
-        public function propagateBoughtProductToAllLists(int $productId, int $marketId, ?float $selectedPrice = null): void
-        {
-            // 1️⃣ Fetch all shopping list items containing this product
-            $listItems = \App\Infrastructure\Models\Shopping_List_Item_Product::where('product_id', $productId)->get();
-
-            foreach ($listItems as $item) {
-                // 2️⃣ Update existing record or create new one in super join table
-               Shopping_List_Item_Product_Market::updateOrCreate(
-                    [
-                        'shopping_list_item_id' => $item->shopping_list_item_id,
-                        'product_id' => $productId,
-                    ],
-                    [
-                        'market_id' => $marketId,
-                        'selected_price' => $selectedPrice,
-                    ]
-                );
-            }
-        }
-
-        public function detachMultipleProductsFromShoppingLists(array $productIDs, array $shoppingListItemIDs): void
-        {
-            foreach ($productIDs as $productID) {
-                $productModel = ProductModel::find($productID);
-                if (!$productModel) continue;
-
-                // 1. Delete records from shopping_list_item_product_market
-                Shopping_List_Item_Product_Market::where('product_id', $productID)
-                    ->whereIn('shopping_list_item_id', $shoppingListItemIDs)
-                    ->delete();
-
-                // 2. Detach from shopping_list_items pivot
-                $productModel->shoppingListItems()->detach($shoppingListItemIDs);
-            }
-        }
-
-
-        public function syncMultipleProductsToShoppingLists(array $productIDs, array $shoppingListItemIDs): void
-        {
-                foreach ($productIDs as $productID) {
-                    $productModel = ProductModel::find($productID);
-                    if (!$productModel) continue;
-
-                    $productModel->shoppingListItems()->syncWithoutDetaching($shoppingListItemIDs);
-                }
-        }
 public function importProductsFromApi(int $perPage = 11): array
 {
     $apiUrl = env('PRODUCT_API_URL');
@@ -376,15 +280,5 @@ public function importProductsFromApi(int $perPage = 11): array
     {
         return ProductModel::where('name', $name)->exists();
     }
-
-public function updateStatus(int $productID, ?string $status): bool
-{
-    $m = ProductModel::find($productID);
-    if (!$m) return false;
-
-    $m->status = $status; // null is allowed now
-    return $m->save();
-}
-
 
 }

@@ -12,7 +12,7 @@ import {
 import { useProductMarkets } from "./useProductMarkets";
 import { assignProductToShoppingListItem } from "./assignProductToShoppingListItem";
 import { useMarketPhotoPrice } from "./useMarketPhotoPrice";
-import { removeProductFromShoppingList } from "./removeProductFromShoppingList";
+import { removeProductFromMarketShoppingList } from "./removeProductFromMarketShoppingList";
 
 export default function ProductCardSL({
   product,
@@ -131,7 +131,7 @@ return (
               style={styles.removeButton}
               onPress={async () => {
                 try {
-                  await removeProductFromShoppingList(product.ProductID, shoppingListItemId);
+                  await removeProductFromMarketShoppingList(product.ProductID, shoppingListItemId);
                   const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
                   setLinkedMarket(data);
                 } catch (err) {

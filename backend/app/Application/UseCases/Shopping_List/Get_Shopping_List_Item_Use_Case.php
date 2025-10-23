@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Application\UseCases\ShoppingList;
+namespace App\Application\UseCases\Shopping_List;
 
 use App\Application\DTOs\Shopping_List_Item_DTO;
-use App\Application\Interfaces\ShoppingList\I_Get_Shopping_List_Item_Use_Case;
+use App\Application\Interfaces\Shopping_List\I_Get_Shopping_List_Item_Use_Case;
 use App\Domain\Interfaces\I_Shopping_List_Item_Repository;
 use InvalidArgumentException;
 
