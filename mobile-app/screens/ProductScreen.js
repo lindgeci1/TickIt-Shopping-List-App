@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, LayoutAnimation } from "react-native";
-import ShoppingListScreen from "../ShoppingList/ShoppingListScreen";
+import ShoppingListScreens from "../ShoppingList/ShoppingListScreens";
 import ProductCardBP from "../Product/ProductCardBP";
 import ProductFilterPanel from "../Product/ProductFilterPanel";
 import { fetchProducts } from "../Product/fetchProducts";
@@ -56,20 +56,39 @@ export default function ProductScreen({ navigation, topPadding }) {
         setProducts={setProducts} allProducts={allProducts} setFavoriteProducts={setFavoriteProducts}
         favoritesMode={favoritesMode} setFavoritesMode={setFavoritesMode} setSearch={setSearch}
       />
-      <TouchableOpacity style={styles.globalAddButton} onPress={handleAddToBuyingList}>
-        <Text style={styles.globalAddButtonText}>{selectionMode?`Add ${selectedProducts.length} selected`:"+ Add to Buying List"}</Text>
-      </TouchableOpacity>
-      {selectionMode && <TouchableOpacity style={[styles.globalAddButton,{backgroundColor:"#ff6b6b",marginBottom:12}]} onPress={()=>{setSelectionMode(false); setSelectedProducts([]);}}>
-        <Text style={styles.globalAddButtonText}>Cancel</Text>
-      </TouchableOpacity>}
+     <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 12 }}>
+  <TouchableOpacity
+    style={[styles.globalActionButton, { flex: 1, marginRight: selectionMode ? 6 : 0 }]}
+    onPress={handleAddToBuyingList}
+  >
+    <Text style={styles.globalActionButtonText}>
+      {selectionMode ? `Add ${selectedProducts.length} selected` : "+ Add to Shopping List"}
+    </Text>
+  </TouchableOpacity>
+
+  {selectionMode && (
+    <TouchableOpacity
+      style={[styles.globalActionButton, { flex: 1, marginLeft: 6, backgroundColor: "#ff6b6b" }]}
+      onPress={() => { setSelectionMode(false); setSelectedProducts([]); }}
+    >
+      <Text style={styles.globalActionButtonText}>Cancel</Text>
+    </TouchableOpacity>
+  )}
+</View>
+
       <FlatList
-        data={favoritesMode?favoriteProducts.filter(p=>p.Name.toLowerCase().includes(search.toLowerCase())):activeMarket?marketProducts:products}
-        keyExtractor={item=>item.ProductID.toString()}
-        renderItem={renderProduct} numColumns={2} columnWrapperStyle={{justifyContent:"space-between"}}
-        contentContainerStyle={{paddingBottom:120}} showsVerticalScrollIndicator={false}
-        ListEmptyComponent={()=> <Text style={styles.emptyText}>No products found</Text>}
+        data={favoritesMode ? favoriteProducts.filter(p => p.Name.toLowerCase().includes(search.toLowerCase())) 
+                            : activeMarket ? marketProducts : products}
+        keyExtractor={item => item.ProductID.toString()}
+        renderItem={renderProduct}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => <Text style={styles.emptyText}>No products found</Text>}
+        extraData={[selectedProducts, selectionMode]} // ← ADD THIS
       />
-      <ShoppingListScreen
+      <ShoppingListScreens
         visible={modalVisible} onClose={()=>setModalVisible(false)}
         shoppingLists={shoppingLists}
         onSelect={async list=>{
@@ -89,5 +108,23 @@ const styles = StyleSheet.create({
   headerTitle:{fontSize:24,fontWeight:"700",color:"#6c63ff"},
   globalAddButton:{backgroundColor:"#6c63ff",paddingVertical:10,borderRadius:12,alignItems:"center",marginBottom:12},
   globalAddButtonText:{color:"#fff",fontWeight:"700"},
-  emptyText:{textAlign:"center",marginTop:40,color:"#6c63ff",fontSize:16,fontWeight:"500",fontStyle:"italic"}
+  emptyText:{textAlign:"center",marginTop:40,color:"#6c63ff",fontSize:16,fontWeight:"500",fontStyle:"italic"},
+  globalActionButton: {
+  paddingVertical: 8,           // smaller, compact
+  borderRadius: 10,             // rounded edges
+  alignItems: "center",
+  justifyContent: "center",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.1,
+  shadowRadius: 2,
+  elevation: 2,
+  backgroundColor: "#6c63ff",
+},
+globalActionButtonText: {
+  color: "#fff",
+  fontWeight: "700",
+  fontSize: 13,                // slightly smaller
+},
+
 });
