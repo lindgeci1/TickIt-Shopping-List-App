@@ -164,7 +164,7 @@ const handleRetrieveSelectedBought = async () => {
 
             <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}><Text style={styles.sectionTitle}>Product(s) To Buy ({toBuyProducts.length})</Text><Text style={styles.toggleIcon}>{showToBuy ? "−" : "+"}</Text></TouchableOpacity>
             {showToBuy && <>
-              <FlatList data={toBuyProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={false} style={styles.productList} renderItem={({ item: product }) => (
+              <FlatList data={toBuyProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={true} style={styles.productList} renderItem={({ item: product }) => (
                 <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={toBuySelectionMode} selected={toBuySelectedProducts.includes(product)}
                   onSelect={() => toggleSelection(product, toBuySelectedProducts, setToBuySelectedProducts)}
                   onPriceChange={price => setProducts(prev => prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p))}
@@ -181,7 +181,7 @@ const handleRetrieveSelectedBought = async () => {
 
             <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowBought(!showBought)}><Text style={styles.sectionTitle}>Product(s) Bought ({boughtProducts.length})</Text><Text style={styles.toggleIcon}>{showBought ? "−" : "+"}</Text></TouchableOpacity>
             {showBought && <>
-              <FlatList data={boughtProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={false} style={styles.productList} renderItem={({ item: product }) => (
+              <FlatList data={boughtProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={true} style={styles.productList} renderItem={({ item: product }) => (
                 <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={boughtSelectionMode} selected={boughtSelectedProducts.includes(product)}
                   onSelect={() => toggleSelection(product, boughtSelectedProducts, setBoughtSelectedProducts)}
                   onPriceChange={price => setProducts(prev => prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p))}

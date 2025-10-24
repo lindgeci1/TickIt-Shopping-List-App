@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
-    maxWidth: Dimensions.get("window").width * 0.8,
+    maxWidth: Dimensions.get("window").width * 0.95,
     alignSelf: "center", // ensures horizontal centering
   },
   text: { color: "#fff", fontWeight: "600", textAlign: "center" },

@@ -24,7 +24,7 @@ export const updateProductsStatusesFromShoppingList = async (productIds, shoppin
     );
 
     const text = await response.text();
-    console.log("Raw response:", text);
+    // console.log("Raw response:", text);
 
     if (!response.ok) {
       console.error("Failed to update products:", text);
