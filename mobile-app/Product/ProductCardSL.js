@@ -113,7 +113,7 @@ return (
     </View>
 
     {/* Vertical line if market exists */}
-    {linkedMarket && <View style={styles.verticalLine} />}
+    <View style={styles.verticalLine} />
 
     {/* Linked market */}
     <View style={styles.rightSection}>
@@ -145,7 +145,7 @@ return (
         </View>
       ) : (
         <TouchableOpacity style={styles.tapPriceBox} onPress={product.Status !== "Bought" ? handleTap : undefined}>
-          <Text style={styles.tapPriceText}>Tap for Price</Text>
+          <Text style={styles.tapPriceText}>Price</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -187,19 +187,19 @@ return (
 }
 const styles = StyleSheet.create({
   card: { flexDirection: "row", alignItems: "center", backgroundColor: "#f0f0ff", borderRadius: 12, padding: 12, marginVertical: 6 },
-  checkbox: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", marginRight: 10 },
+  checkbox: { width: 20, height: 20, borderRadius: 12, borderWidth: 2, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", marginRight: 10 },
   checked: { backgroundColor: "#6c63ff" },
   checkMark: { color: "#fff", fontWeight: "bold" },
   photoBox: { width: 55, height: 55, borderRadius: 12, backgroundColor: "#6c63ff20", alignItems: "center", justifyContent: "center", marginRight: 12, overflow: "hidden" },
   photo: { width: "100%", height: "100%", borderRadius: 12 },
   infoBox: { flex: 1 },
-  name: { fontSize: 15, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
+  name: { fontSize: 13, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
   category: { fontSize: 12, color: "#888" },
   verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 1, alignSelf: "stretch" },
   marketBox: { alignItems: "center", justifyContent: "center", marginLeft: 1, paddingVertical: 6, paddingHorizontal: 8, backgroundColor: "#6c63ff10", borderRadius: 8 },
   marketLogo: { width: 33, height: 23, borderRadius: 3, marginBottom: 2, borderWidth: 1, borderColor: "#6c63ff" },
   marketPrice: { fontSize: 12, fontWeight: "600", color: "#444", fontStyle: "italic" },
-  tapPriceBox: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 12, borderWidth: 1, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", minWidth: 90 },
+  tapPriceBox: { paddingHorizontal: 2, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 6, borderWidth: 1, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", minWidth: 50, marginLeft: 4 },
   tapPriceText: { fontSize: 12, fontWeight: "600", color: "#6c63ff", textAlign: "center" },
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
   modal: { width: "90%", backgroundColor: "#fff", borderRadius: 12, padding: 20, maxHeight: "80%" },

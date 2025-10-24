@@ -9,9 +9,9 @@ import { Alert } from "react-native";
  */
 export const removeProductsFromShoppingList = async (productIds, shoppingListIds) => {
   try {
-    console.log("Calling removeProductsFromShoppingList...");
-    console.log("Products to remove:", productIds);
-    console.log("Shopping lists:", shoppingListIds);
+    // console.log("Calling removeProductsFromShoppingList...");
+    // console.log("Products to remove:", productIds);
+    // console.log("Shopping lists:", shoppingListIds);
 
     const response = await fetch(
       `${VITE_BASE_API_URL}/api/product-shopping-list-item/remove`,
@@ -26,7 +26,7 @@ export const removeProductsFromShoppingList = async (productIds, shoppingListIds
     );
 
     const text = await response.text();
-    console.log("Raw response:", text);
+    // console.log("Raw response:", text);
 
     if (!response.ok) {
       console.error("Failed to remove products:", text);
@@ -34,7 +34,7 @@ export const removeProductsFromShoppingList = async (productIds, shoppingListIds
       return;
     }
 
-    console.log("Products removed successfully!");
+    // console.log("Products removed successfully!");
 //    Alert.alert(
 //   "Success",
 //   "The selected products have been successfully removed from the shopping list."
