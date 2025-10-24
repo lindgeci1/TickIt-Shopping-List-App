@@ -12,7 +12,7 @@ export async function usePreferredMarkets(products) {
 
   for (let product of products) {
     try {
-      const res = await fetch(`${VITE_BASE_API_URL}/api/product-market/preferred/${product.ProductID}`);
+      const res = await fetch(`${VITE_BASE_API_URL}/api/market/preferred/${product.ProductID}`);
       const data = await res.json();
       logos[product.ProductID] = data.PreferredMarketLogo || null;
       prices[product.ProductID] = data.Price ?? null;
