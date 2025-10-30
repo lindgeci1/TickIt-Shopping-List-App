@@ -24,6 +24,6 @@ class Import_Products_From_Api_Use_Case implements I_Import_Products_From_Api_Us
             throw new InvalidArgumentException("No products were imported from the API.");
         }
 
-        return array_map(fn($p) => new Imported_Product_DTO($p), $importedProducts);
+        return $importedProducts;
     }
 }

@@ -4,7 +4,7 @@ import { Alert } from "react-native";
 export const removeProductFromMarketShoppingList = async (productId, shoppingListItemId) => {
   try {
     const response = await fetch(
-      `${VITE_BASE_API_URL}/api/shopping-list-item-product-market/${productId}/shopping-list/${shoppingListItemId}/remove`,
+      `${VITE_BASE_API_URL}/api/shopping-list-item-product-market/product/${productId}/shopping-list/${shoppingListItemId}/remove`,
       {
         method: "DELETE",
         headers: {
