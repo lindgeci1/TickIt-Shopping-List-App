@@ -21,7 +21,7 @@ class Product extends Model
             'product_market',
             'product_id',
             'market_id'
-        )->withPivot('price'); // <- make sure price is included
+        )->withPivot('price', 'discount', 'final_price');
     }
 
     public function shoppingListItems()

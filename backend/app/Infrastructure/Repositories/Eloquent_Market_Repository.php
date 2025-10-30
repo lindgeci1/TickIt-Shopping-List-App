@@ -91,13 +91,13 @@ public function getCheapestMarketForProduct(int $productId): ?array
     });
 
     // Find the market with the cheapest price
-    $cheapestMarket = $product->markets->sortBy(fn($m) => $m->pivot->price)->first();
+    $cheapestMarket = $product->markets->sortBy(fn($m) => $m->pivot->final_price)->first();
 
     return [
         'MarketID' => $cheapestMarket->market_id,
         'Name'     => $cheapestMarket->name,
         'Logo'     => optional($cheapestMarket->photo)->url,
-        'Price'    => $cheapestMarket->pivot->price,  // <-- included here
+        'FinalPrice'    => (float)$cheapestMarket->pivot->final_price,  // <-- included here
     ];
 }
 

@@ -8,7 +8,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     schema="Preferred_Market_DTO",
  *     type="object",
- *     required={"ProductID","PreferredMarketLogo","Price"},
+ *     required={"ProductID","PreferredMarketLogo","FinalPrice"},
  *     @OA\Property(
  *         property="ProductID",
  *         type="integer",
@@ -20,7 +20,7 @@ use OpenApi\Annotations as OA;
  *         description="URL of the market logo with the cheapest price for this product"
  *     ),
  *     @OA\Property(
- *         property="Price",
+ *         property="FinalPrice",
  *         type="number",
  *         format="float",
  *         description="The cheapest price of the product in that market"
@@ -31,12 +31,12 @@ class Preferred_Market_DTO
 {
     public int $ProductID;
     public string $PreferredMarketLogo;
-    public float $Price;
+    public ?float $FinalPrice;
 
-    public function __construct(int $ProductID, string $PreferredMarketLogo, float $Price)
+    public function __construct(int $ProductID, string $PreferredMarketLogo, ?float $FinalPrice)
     {
         $this->ProductID = $ProductID;
         $this->PreferredMarketLogo = $PreferredMarketLogo;
-        $this->Price = $Price;
+        $this->FinalPrice = $FinalPrice;
     }
 }
