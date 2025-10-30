@@ -61,9 +61,9 @@ class Shopping_List_Item_Product_Market_Controller extends Controller
 
         /**
      * @OA\Delete(
-     *     path="/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove",
+     *     path="/api/shopping-list-item-product-market/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove",
      *     summary="Remove a product from a shopping list",
-     *     tags={"Product"},
+     *     tags={"Shopping_List_Item_Product_Market"},
      *     @OA\Parameter(
      *         name="ProductID",
      *         in="path",
@@ -78,7 +78,7 @@ class Shopping_List_Item_Product_Market_Controller extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Product removed from shopping list",
+     *         description="Product removed from a market in a shopping list",
      *         @OA\JsonContent(type="object", @OA\Property(property="message", type="string"))
      *     ),
      *     @OA\Response(response=400, description="Failed to remove product")

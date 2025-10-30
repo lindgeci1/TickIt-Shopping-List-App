@@ -350,7 +350,7 @@ public function getMarketPhotoAndSelectedPrice(int $ProductID, int $ShoppingList
      *     @OA\Response(
      *         response=200,
      *         description="List of imported products",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product_DTO"))
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Imported_Product_DTO"))
      *     )
      * )
      */

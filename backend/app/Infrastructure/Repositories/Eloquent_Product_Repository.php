@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Entities\Product;
+use App\Application\DTOs\Imported_Product_DTO;
 use App\Domain\Interfaces\I_Product_Repository;
 use App\Infrastructure\Models\Product as ProductModel;
 use App\Infrastructure\Models\Shopping_List_Item_Product_Market;
@@ -132,13 +133,18 @@ class Eloquent_Product_Repository implements I_Product_Repository
             if (!$productModel) return;
 
             // Prepare data for syncWithoutDetaching
-            // $marketsWithPrices should be in the form: [marketId => ['price' => 2.5], ...]
+            // $marketsWithPrices should be in the form:
+            // [ ['MarketID' => 10, 'Price' => 2.5, 'Discount' => 0.1, 'FinalPrice' => 2.4], ... ]
             $attachData = [];
             foreach ($marketsWithPrices as $market) {
-                $attachData[$market['MarketID']] = ['price' => $market['Price']];
+                $attachData[$market['MarketID']] = [
+                    'price'       => $market['Price'] ?? null,
+                    'discount'    => $market['Discount'] ?? null,
+                    'final_price' => $market['FinalPrice'] ?? null,
+                ];
             }
 
-            // Attach markets with their respective prices
+            // Attach markets with their respective prices, discount, and final price
             $productModel->markets()->syncWithoutDetaching($attachData);
         }
 
@@ -170,47 +176,69 @@ public function importProductsFromApi(int $perPage = 11): array
     $photoRepo = new Eloquent_Product_Photo_Repository();
 
     foreach ($json['data'] as $item) {
-        $name = $item['name'] ?? null;
-        $category = $item['category_name'] ?? 'Uncategorized';
-        $images = $item['images'] ?? null;
-        $price = $item['base_price'] ?? null; // <— take base_price from API
+        try {
+            $name = $item['name'] ?? null;
+            $category = $item['category_name'] ?? 'Uncategorized';
+            $images = $item['images'] ?? null;
+            $price = $item['base_price'] ?? 0;
+            $discount = $item['discounts'] ?? 0;
 
-        if (!$name) continue;
-        if ($this->existsByName($name)) continue;
+            if (!$name) continue;
+            if ($this->existsByName($name)) continue;
 
-        // Create product
-        $product = new Product(null, $name, false, $category);
-        $savedProduct = $this->create($product);
-
-        // Save product images
-        if (!empty($images) && is_array($images)) {
-            foreach ($images as $imageUrl) {
-                if (!is_string($imageUrl)) continue;
-                if (!str_starts_with($imageUrl, 'http')) {
-                    $imageUrl = '//' . ltrim($imageUrl, '/');
-                }
-
-                $photoEntity = new \App\Domain\Entities\Product_Photo(
-                    null,
-                    $imageUrl,
-                    '',
-                    $savedProduct->ProductID
-                );
-                $photoRepo->add($photoEntity);
+            // Calculate final price based on discount
+            $finalPrice = $price;
+            if ($discount > 0) {
+                $finalPrice = $price * (1 - $discount / 100);
             }
-        }
 
-        // ✅ Insert into product_market table
+            // Create product entity
+            $product = new Product(null, $name, false, $category);
+            $savedProduct = $this->create($product);
 
-        if ($price !== null) {
+            // Save first image only
+            $imageUrl = null;
+            if (!empty($images) && is_array($images)) {
+                $imageUrl = reset($images);
+                if (is_string($imageUrl)) {
+                    if (!str_starts_with($imageUrl, 'http')) {
+                        $imageUrl = '//' . ltrim($imageUrl, '/');
+                    }
+
+                    $photoEntity = new \App\Domain\Entities\Product_Photo(
+                        null,
+                        $imageUrl,
+                        '',
+                        $savedProduct->ProductID
+                    );
+                    $photoRepo->add($photoEntity);
+                } else {
+                    $imageUrl = null;
+                }
+            }
+
+            // Insert into product_market including discount and final_price
             Product_Market::create([
-                'product_id' => $savedProduct->ProductID,
-                'market_id'  => 1,
-                'price'      => $price,
+                'product_id'   => $savedProduct->ProductID,
+                'market_id'    => 10,
+                'price'        => $price,
+                'discount'     => $discount,
+                'final_price'  => $finalPrice,
             ]);
-        }
 
-        $createdProducts[] = $savedProduct;
+           // Wrap in DTO for response
+            $createdProducts[] = new Imported_Product_DTO(
+                $savedProduct,
+                $price,
+                $discount,
+                $finalPrice
+            );
+
+
+        } catch (\Throwable $e) {
+            // Optionally log $e->getMessage() here
+            break;
+        }
     }
 
     return $createdProducts;

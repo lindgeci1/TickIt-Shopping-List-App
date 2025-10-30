@@ -748,7 +748,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Product_DTO"
+                                        "$ref": "#/components/schemas/Imported_Product_DTO"
                                     }
                                 }
                             }
@@ -1223,13 +1223,13 @@
                 }
             }
         },
-        "/api/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove": {
+        "/api/shopping-list-item-product-market/product/{ProductID}/shopping-list/{ShoppingListItemID}/remove": {
             "delete": {
                 "tags": [
-                    "Product"
+                    "Shopping_List_Item_Product_Market"
                 ],
                 "summary": "Remove a product from a shopping list",
-                "operationId": "ca8ab30dd589c6e0576db912c6dda94e",
+                "operationId": "6ce5b9c2600669c8b31202179d5f17d8",
                 "parameters": [
                     {
                         "name": "ProductID",
@@ -1250,7 +1250,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Product removed from shopping list",
+                        "description": "Product removed from a market in a shopping list",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1283,18 +1283,28 @@
                         "type": "integer"
                     },
                     "Markets": {
-                        "description": "Array of market objects with ID and price",
+                        "description": "Array of market objects with ID, price, discount, and final price",
                         "type": "array",
                         "items": {
                             "required": [
                                 "MarketID",
-                                "Price"
+                                "Price",
+                                "Discount",
+                                "FinalPrice"
                             ],
                             "properties": {
                                 "MarketID": {
                                     "type": "integer"
                                 },
                                 "Price": {
+                                    "type": "number",
+                                    "format": "float"
+                                },
+                                "Discount": {
+                                    "type": "number",
+                                    "format": "float"
+                                },
+                                "FinalPrice": {
                                     "type": "number",
                                     "format": "float"
                                 }
@@ -1370,6 +1380,16 @@
                         "type": "string"
                     },
                     "Price": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "Discount": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "FinalPrice": {
                         "type": "number",
                         "format": "float",
                         "nullable": true
@@ -1558,6 +1578,16 @@
                         "type": "string"
                     },
                     "Price": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "Discount": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "FinalPrice": {
                         "type": "number",
                         "format": "float",
                         "nullable": true

@@ -31,17 +31,24 @@ class Assign_Markets_To_Product_Use_Case implements I_Assign_Markets_To_Product_
         // Validate markets and prepare array for repository
         $marketsWithPrices = [];
         foreach ($dto->Markets as $marketData) {
-            $marketId = $marketData['MarketID'];
-            $price = $marketData['Price'];
+            $marketId    = $marketData['MarketID'];
+            $price       = $marketData['Price'] ?? null;
+            $discount    = $marketData['Discount'] ?? null;
+            $finalPrice  = $marketData['FinalPrice'] ?? null;
 
             if (!$this->marketRepository->findById($marketId)) {
                 throw new InvalidArgumentException("Market with ID $marketId does not exist.");
             }
 
-            $marketsWithPrices[] = ['MarketID' => $marketId, 'Price' => $price];
+            $marketsWithPrices[] = [
+                'MarketID'   => $marketId,
+                'Price'      => $price,
+                'Discount'   => $discount,
+                'FinalPrice' => $finalPrice
+            ];
         }
 
-        // Attach product to markets with their respective prices
+        // Attach product to markets with their respective prices, discount, and final price
         $this->productRepository->attachToMarkets($dto->ProductID, $marketsWithPrices);
     }
 }
