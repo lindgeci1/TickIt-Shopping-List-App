@@ -15,7 +15,7 @@ export async function usePreferredMarkets(products) {
       const res = await fetch(`${VITE_BASE_API_URL}/api/market/preferred/${product.ProductID}`);
       const data = await res.json();
       logos[product.ProductID] = data.PreferredMarketLogo || null;
-      prices[product.ProductID] = data.Price ?? null;
+      prices[product.ProductID] = data.FinalPrice ?? null;
       messages[product.ProductID] = data.message || "Product is not assigned to any market";
     } catch (err) {
       console.error("Failed to fetch preferred market", err);

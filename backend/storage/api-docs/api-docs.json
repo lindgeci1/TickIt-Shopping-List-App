@@ -1500,7 +1500,7 @@
                 "required": [
                     "ProductID",
                     "PreferredMarketLogo",
-                    "Price"
+                    "FinalPrice"
                 ],
                 "properties": {
                     "ProductID": {
@@ -1511,7 +1511,7 @@
                         "description": "URL of the market logo with the cheapest price for this product",
                         "type": "string"
                     },
-                    "Price": {
+                    "FinalPrice": {
                         "description": "The cheapest price of the product in that market",
                         "type": "number",
                         "format": "float"

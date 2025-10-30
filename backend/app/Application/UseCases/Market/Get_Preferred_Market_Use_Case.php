@@ -34,8 +34,8 @@ class Get_Preferred_Market_Use_Case implements I_Get_Preferred_Market_Use_Case
             throw new InvalidArgumentException("Product is not assigned to any market.");
         }
 
-        // cheapestMarket is already an array: ['MarketID' => ..., 'Name' => ..., 'Logo' => ..., 'Price' => ...]
-        return new Preferred_Market_DTO($productId, $cheapestMarket['Logo'], $cheapestMarket['Price']);
+        // cheapestMarket is already an array: ['MarketID' => ..., 'Name' => ..., 'Logo' => ..., 'FinalPrice' => ...]
+        return new Preferred_Market_DTO($productId, $cheapestMarket['Logo'], $cheapestMarket['FinalPrice']);
 
     }
 }
