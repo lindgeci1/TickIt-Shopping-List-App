@@ -121,7 +121,7 @@ class Eloquent_Product_Repository implements I_Product_Repository
                 return [
                     'MarketID' => $market->market_id,
                     'Name'     => $market->name,
-                    'Price'    => $market->pivot->price ?? null,        // price from product_market pivot
+                    'FinalPrice'    => $market->pivot->final_price  ?? null,        // price from product_market pivot
                     'PhotoURL' => $market->photo ? $market->photo->url : null, // photo from market_photos table
                 ];
             })->all();
@@ -220,7 +220,7 @@ public function importProductsFromApi(int $perPage = 11): array
             // Insert into product_market including discount and final_price
             Product_Market::create([
                 'product_id'   => $savedProduct->ProductID,
-                'market_id'    => 10,
+                'market_id'    => 1,
                 'price'        => $price,
                 'discount'     => $discount,
                 'final_price'  => $finalPrice,

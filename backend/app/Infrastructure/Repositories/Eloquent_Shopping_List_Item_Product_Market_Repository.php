@@ -78,7 +78,7 @@ if ($existsOtherMarket) {
     $model->shopping_list_item_id = $shoppingListItemId;
     $model->product_id = $productId;
     $model->market_id = $marketId;
-    $model->selected_price = $productMarket->price;
+    $model->selected_price = $productMarket->final_price;
     $model->save();
 
     // Return the domain entity
