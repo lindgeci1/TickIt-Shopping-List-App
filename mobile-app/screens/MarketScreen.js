@@ -23,7 +23,7 @@ export default function MarketScreen({ navigation, topPadding }) {
       (products) => {
         const productsWithMarket = market.Products.map((p) => ({
           Product: p.Product,
-          Price: p.Price,
+          Price: p.FinalPrice,
           Market: market,
         }));
         setMarketProducts(productsWithMarket);

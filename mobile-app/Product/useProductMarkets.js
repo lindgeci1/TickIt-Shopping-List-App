@@ -14,7 +14,7 @@ export async function useProductMarkets(products) {
       allMarkets[product.ProductID] = data.map(market => ({
         id: market.MarketID,
         name: market.Name,
-        price: market.Price ?? 0,
+        price: market.FinalPrice ?? 0,
         logo: market.PhotoURL || null,
       }));
     } catch (err) {

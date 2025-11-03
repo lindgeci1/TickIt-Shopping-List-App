@@ -48,7 +48,7 @@ public function findAll(): array
             // ✅ Return a structured array with product data + price separately
             return [
                 'Product' => $product,
-                'Price' => $pivot ? (float) $pivot->price : null // ✅ cast to float
+                'FinalPrice' => $pivot ? (float) $pivot->final_price : null // ✅ cast to float
             ];
         })->all();
 
