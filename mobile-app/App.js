@@ -1,17 +1,17 @@
 import React, { useRef } from "react";
-import { StatusBar } from "react-native"; // ✅ add this
+import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context"; // ✅ import provider
 import AppNavigator from "./AppNavigator";
 
 export default function App() {
   const navigationRef = useRef();
 
   return (
-    <>
-      {/* Make status bar icons dark so they contrast on light backgrounds */}
+    <SafeAreaProvider>  {/* <-- Wrap here */}
       <StatusBar
-        barStyle="dark-content"  // dark icons
-        backgroundColor="white"   // Android only
+        barStyle="dark-content"
+        backgroundColor="white"
       />
 
       <NavigationContainer
@@ -22,8 +22,6 @@ export default function App() {
       >
         <AppNavigator navigationRef={navigationRef} />
       </NavigationContainer>
-    </>
+    </SafeAreaProvider>
   );
 }
-
-

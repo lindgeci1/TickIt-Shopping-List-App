@@ -26,7 +26,7 @@ export default function ProductScreen({ navigation, topPadding }) {
   const [filterExpanded,setFilterExpanded] = useState(false);
   const [hasSelectedFilter, setHasSelectedFilter] = useState(false);
 
-  // useEffect(()=>{ fetchProducts(setAllProducts,setProducts); },[]);
+  useEffect(()=>{ fetchProducts(setAllProducts,setProducts); },[]);
 
   const handleSearchChange = text => { setSearch(text); filterProducts(allProducts,setProducts,text,activeCategory); };
   const handleCategoryPress = category => { const newCat = category===activeCategory?null:category; setActiveCategory(newCat); filterProducts(allProducts,setProducts,search,newCat); };
@@ -57,7 +57,7 @@ export default function ProductScreen({ navigation, topPadding }) {
         setProducts={setProducts} allProducts={allProducts} setFavoriteProducts={setFavoriteProducts}
         favoritesMode={favoritesMode} setFavoritesMode={setFavoritesMode} setSearch={setSearch}
       />
-          {!activeCategory && !activeMarket && !favoritesMode ? (
+          {/* {!activeCategory && !activeMarket && !favoritesMode ? (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ fontSize: 22, fontWeight: "700", color: "#6c63ff", marginBottom: 8 }}>
           Hello there 
@@ -67,7 +67,7 @@ export default function ProductScreen({ navigation, topPadding }) {
         </Text>
       </View>
     ) : (
-      <>
+      <> */}
      <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 12 }}>
   <TouchableOpacity
     style={[styles.globalActionButton, { flex: 1, marginRight: selectionMode ? 6 : 0 }]}
@@ -100,8 +100,8 @@ export default function ProductScreen({ navigation, topPadding }) {
         ListEmptyComponent={() => <Text style={styles.emptyText}>No products found</Text>}
         extraData={[selectedProducts, selectionMode]} // ← ADD THIS
       />
-      </>
-       )}
+      {/* </>
+       )} */}
       <ShoppingListScreens
         visible={modalVisible} onClose={()=>setModalVisible(false)}
         shoppingLists={shoppingLists}
