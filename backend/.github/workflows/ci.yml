@@ -10,6 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: backend   # <- add this if Laravel is in backend folder
+
     steps:
     - uses: actions/checkout@v3
 
