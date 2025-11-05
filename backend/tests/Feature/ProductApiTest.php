@@ -12,9 +12,15 @@ class ProductApiTest extends TestCase
 
         $response->assertStatus(200);
 
-        // Match the actual API keys
         $response->assertJsonStructure([
-            '*' => ['ProductID', 'Name', 'Price', 'IsFavorite', 'Category', 'Photos']
+            '*' => [
+                'ProductID',
+                'Name',
+                'Price',
+                'IsFavorite',
+                'Category',
+                'Photos'
+            ]
         ]);
     }
 }
