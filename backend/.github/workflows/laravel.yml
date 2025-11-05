@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_DB: laravel_test
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 2015
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
@@ -45,7 +45,7 @@ jobs:
           sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=laravel_test/' .env
           sed -i 's/DB_USERNAME=.*/DB_USERNAME=postgres/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=2015/' .env
+          sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
           echo "APP_ENV=testing" >> .env
           echo "APP_DEBUG=true" >> .env
 
