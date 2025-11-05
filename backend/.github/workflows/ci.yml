@@ -12,26 +12,42 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend   # <- add this if Laravel is in backend folder
+        working-directory: backend
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
-        extensions: mbstring, bcmath
-        ini-values: post_max_size=256M, upload_max_filesize=256M
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, sqlite
 
-    - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
 
-    - name: Copy .env
-      run: cp .env.example .env
+      - name: Copy .env
+        run: cp .env.example .env
 
-    - name: Generate app key
-      run: php artisan key:generate
+      - name: Generate app key
+        run: php artisan key:generate
 
-    - name: Run Tests
-      run: php artisan test --verbose
+      - name: Debug directory and env
+        run: |
+          pwd
+          ls -al
+          php -v
+          echo $DB_CONNECTION
+          echo $DB_DATABASE
+
+      - name: Run migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan migrate --force
+
+      - name: Run Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan test --verbose
