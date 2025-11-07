@@ -94,11 +94,18 @@ useEffect(() => {
   };
 
 return (
-  <View style={styles.card}>
+<TouchableOpacity
+    onPress={selectionMode ? onSelect : undefined}
+    activeOpacity={selectionMode ? 0.8 : 1}
+    style={[
+      styles.card,
+      selectionMode && selected && { backgroundColor: "#e7e5ff" } // optional highlight when selected
+    ]}
+  >
     {selectionMode && (
-      <TouchableOpacity style={[styles.checkbox, selected && styles.checked]} onPress={onSelect}>
+      <View style={[styles.checkbox, selected && styles.checked]}>
         {selected && <Text style={styles.checkMark}>✓</Text>}
-      </TouchableOpacity>
+      </View>
     )}
 
     {/* Product photo */}
@@ -182,12 +189,12 @@ return (
         </View>
       </View>
     </Modal>
-  </View>
+    </TouchableOpacity>
 );
 }
 const styles = StyleSheet.create({
   card: { flexDirection: "row", alignItems: "center", backgroundColor: "#f0f0ff", borderRadius: 12, padding: 12, marginVertical: 6 },
-  checkbox: { width: 20, height: 20, borderRadius: 12, borderWidth: 2, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", marginRight: 10 },
+  checkbox: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", marginRight: 10 },
   checked: { backgroundColor: "#6c63ff" },
   checkMark: { color: "#fff", fontWeight: "bold" },
   photoBox: { width: 55, height: 55, borderRadius: 12, backgroundColor: "#6c63ff20", alignItems: "center", justifyContent: "center", marginRight: 12, overflow: "hidden" },
@@ -195,11 +202,11 @@ const styles = StyleSheet.create({
   infoBox: { flex: 1 },
   name: { fontSize: 13, fontWeight: "bold", color: "#2d3436", marginBottom: 2 },
   category: { fontSize: 12, color: "#888" },
-  verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 1, alignSelf: "stretch" },
-  marketBox: { alignItems: "center", justifyContent: "center", marginLeft: 1, paddingVertical: 6, paddingHorizontal: 8, backgroundColor: "#6c63ff10", borderRadius: 8 },
+  verticalLine: { width: 1, backgroundColor: "#ccc", marginHorizontal: 7, alignSelf: "stretch", marginRight: 1, marginLeft: 18},
+  marketBox: {width: 55, paddingHorizontal: 2, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 6, borderWidth: 1, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", minWidth: 56, marginLeft: 1,},
   marketLogo: { width: 33, height: 23, borderRadius: 3, marginBottom: 2, borderWidth: 1, borderColor: "#6c63ff" },
   marketPrice: { fontSize: 12, fontWeight: "600", color: "#444", fontStyle: "italic" },
-  tapPriceBox: { paddingHorizontal: 2, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 6, borderWidth: 1, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", minWidth: 50, marginLeft: 4 },
+  tapPriceBox: { width: 55, paddingHorizontal: 2, paddingVertical: 6, backgroundColor: "#6c63ff20", borderRadius: 6, borderWidth: 1, borderColor: "#6c63ff", alignItems: "center", justifyContent: "center", minWidth: 56, marginLeft: 1},
   tapPriceText: { fontSize: 12, fontWeight: "600", color: "#6c63ff", textAlign: "center" },
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
   modal: { width: "90%", backgroundColor: "#fff", borderRadius: 12, padding: 20, maxHeight: "80%" },
@@ -211,4 +218,5 @@ const styles = StyleSheet.create({
   closeText: { color: "#fff", fontWeight: "700" },
   removeButton: { position: "absolute", top: -6, right: -6, backgroundColor: "#ff6b6b", width: 20, height: 20, borderRadius: 10, alignItems: "center", justifyContent: "center", zIndex: 10 },
   removeText: { color: "#fff", fontSize: 12, fontWeight: "bold" },
+  rightSection: {width: 65, alignItems: "center", justifyContent: "center", marginLeft: 1}
 });
