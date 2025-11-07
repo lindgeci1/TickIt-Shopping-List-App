@@ -1,0 +1,50 @@
+name: Laravel CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: laravel_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: pdo_pgsql, bcmath
+
+      - run: cd backend && composer install --no-progress --no-interaction
+
+      - run: |
+          echo "APP_ENV=testing" >> backend/.env
+          echo "APP_DEBUG=true" >> backend/.env
+          echo "DB_CONNECTION=pgsql" >> backend/.env
+          echo "DB_HOST=127.0.0.1" >> backend/.env
+          echo "DB_PORT=5432" >> backend/.env
+          echo "DB_DATABASE=laravel_test" >> backend/.env
+          echo "DB_USERNAME=postgres" >> backend/.env
+          echo "DB_PASSWORD=${{ secrets.PG_PASSWORD }}" >> backend/.env
+
+      - run: cd backend && php artisan migrate --path=app/Infrastructure/Database/Migrations --force
+
+      - run: cd backend && php artisan test
