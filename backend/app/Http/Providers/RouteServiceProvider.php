@@ -9,6 +9,7 @@ class RouteServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        
         $this->routes(function () {
             // Determine route path
             $routePath = env('APP_ROUTE_PATH') ?: app_path('Http/Routes');
