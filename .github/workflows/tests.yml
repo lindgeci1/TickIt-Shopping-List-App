@@ -1,4 +1,4 @@
-name: Run PHP Unit Tests (No Laravel Boot)
+name: Run Laravel API Tests (with DB)
 
 on:
   push:
@@ -10,6 +10,20 @@ jobs:
   php-tests:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        ports: ['5432:5432']
+        env:
+          POSTGRES_DB: ${{ secrets.DB_DATABASE }}
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      options: >-
+        --health-cmd="pg_isready -U postgres"
+        --health-interval=5s
+        --health-timeout=5s
+        --health-retries=5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,13 +32,35 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, intl, bcmath
-          coverage: none
+          extensions: mbstring, intl, bcmath, pdo_pgsql
 
       - name: Install dependencies
         working-directory: ./backend
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
-      - name: Run tests
+      - name: Prepare Laravel environment
         working-directory: ./backend
-        run: ./vendor/bin/phpunit --testsuite=Unit
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+          php artisan migrate:fresh --path=app/Infrastructure/Database/Migrations --force
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Run Tests
+        working-directory: ./backend
+        run: php artisan test
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
