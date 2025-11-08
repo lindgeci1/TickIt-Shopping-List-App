@@ -23,21 +23,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug backend folder structure
-        working-directory: ./backend
-        run: |
-          echo "Listing backend/app/Http:"
-          ls -la app/Http
-          echo "Listing backend/app/Http/Routes:"
-          ls -la app/Http/Routes
+      # - name: Debug backend folder structure
+      #   working-directory: ./backend
+      #   run: |
+      #     echo "Listing backend/app/Http:"
+      #     ls -la app/Http
+      #     echo "Listing backend/app/Http/Routes:"
+      #     ls -la app/Http/Routes
 
-      - name: Debug APP_ROUTE_PATH
-        working-directory: ./backend
-        run: |
-          echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
-          ls -la $APP_ROUTE_PATH
-        env:
-          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
+      # - name: Debug APP_ROUTE_PATH
+      #   working-directory: ./backend
+      #   run: |
+      #     echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
+      #     ls -la $APP_ROUTE_PATH
+      #   env:
+      #     APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -49,21 +49,21 @@ jobs:
         working-directory: ./backend
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
-      - name: Wait for Postgres
-        run: |
-          until pg_isready -h ${{ secrets.DB_HOST }} -p ${{ secrets.DB_PORT }} -U ${{ secrets.DB_USERNAME }}; do
-            echo "Waiting for Postgres..."
-            sleep 1
-          done
-        env:
-          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+      # - name: Wait for Postgres
+      #   run: |
+      #     until pg_isready -h ${{ secrets.DB_HOST }} -p ${{ secrets.DB_PORT }} -U ${{ secrets.DB_USERNAME }}; do
+      #       echo "Waiting for Postgres..."
+      #       sleep 1
+      #     done
+      #   env:
+      #     PGPASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Debug Laravel RouteServiceProvider
         working-directory: ./backend
         run: |
-          php -r "echo 'Route path: ' . env('APP_ROUTE_PATH', app_path('Http/Routes')) . PHP_EOL;"
+            echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
         env:
-          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
+            APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
 
       - name: Prepare Laravel environment
         working-directory: ./backend
