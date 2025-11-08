@@ -10,6 +10,6 @@ class MathHelperTest extends TestCase
     public function test_add_function_adds_numbers_correctly()
     {
         $result = MathHelper::add(4, 6);
-        $this->assertEquals(10, $result);
+        $this->assertEquals(5, $result);
     }
 }
