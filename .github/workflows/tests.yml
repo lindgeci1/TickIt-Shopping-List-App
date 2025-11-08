@@ -47,11 +47,11 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate --force
+          php artisan migrate:fresh --path=app/Infrastructure/Database/Migrations --force
           php artisan config:clear
           php artisan route:clear
           php artisan cache:clear
           composer dump-autoload
-          php artisan migrate:fresh --path=app/Infrastructure/Database/Migrations --force
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
@@ -60,6 +60,7 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
 
       - name: Run Tests
         working-directory: ./backend
@@ -72,3 +73,5 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
+

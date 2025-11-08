@@ -9,13 +9,15 @@ class RouteServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(app_path('Http/Routes/api.php'));
+       $this->routes(function () {
+        $routePath = env('APP_ROUTE_PATH', app_path('Http/Routes'));
 
-            Route::middleware('web')
-                ->group(app_path('Http/Routes/web.php'));
-        });
+        Route::middleware('api')
+            ->prefix('api')
+            ->group($routePath.'/api.php');
+
+        Route::middleware('web')
+            ->group($routePath.'/web.php');
+    });
     }
 }
