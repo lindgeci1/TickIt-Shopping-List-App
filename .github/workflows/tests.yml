@@ -23,6 +23,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug backend folder structure
+        working-directory: ./backend
+        run: |
+          echo "Listing backend/app/Http:"
+          ls -la app/Http
+          echo "Listing backend/app/Http/Routes:"
+          ls -la app/Http/Routes
+
+      - name: Debug APP_ROUTE_PATH
+        working-directory: ./backend
+        run: |
+          echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
+          ls -la $APP_ROUTE_PATH
+        env:
+          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -52,14 +68,11 @@ jobs:
           php artisan route:clear
           php artisan cache:clear
           composer dump-autoload
+      - name: Debug Laravel RouteServiceProvider
+        working-directory: ./backend
+        run: |
+          php -r "echo 'Route path: ' . env('APP_ROUTE_PATH', app_path('Http/Routes')) . PHP_EOL;"
         env:
-          APP_KEY: ${{ secrets.APP_KEY }}
-          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
 
       - name: Run Tests
@@ -74,4 +87,3 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
-
