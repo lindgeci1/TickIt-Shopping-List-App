@@ -63,7 +63,7 @@ jobs:
         run: |
           php -r "echo 'Route path: ' . env('APP_ROUTE_PATH', app_path('Http/Routes')) . PHP_EOL;"
         env:
-          APP_ROUTE_PATH: ${{ github.workspace }}/backend/App/Http/Routes
+          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
 
       - name: Prepare Laravel environment
         working-directory: ./backend
@@ -88,4 +88,4 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          APP_ROUTE_PATH: ${{ github.workspace }}/backend/App/Http/Routes
+          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
