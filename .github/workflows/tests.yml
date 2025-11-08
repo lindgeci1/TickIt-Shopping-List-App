@@ -1,0 +1,30 @@
+name: Run PHP Unit Tests (No Laravel Boot)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl, bcmath
+          coverage: none
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
+
+      - name: Run tests
+        working-directory: ./backend
+        run: ./vendor/bin/phpunit --testsuite=Unit
