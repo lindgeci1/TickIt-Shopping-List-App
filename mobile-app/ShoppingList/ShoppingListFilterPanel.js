@@ -29,7 +29,7 @@ export default function ShoppingListFilterPanel({ allLists, setFilteredLists, se
   const handleTempCustomDateSelect = (date) => { setTempCustomDate(date); setTempQuickDate(null); };
 
   return (
-    <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
+    <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#dfe3ff", borderRadius: 12 }}>
       {/* Search */}
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color="#6c63ff" style={{ marginRight: 6 }} />
