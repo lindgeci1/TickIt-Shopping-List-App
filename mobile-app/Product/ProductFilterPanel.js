@@ -47,7 +47,7 @@ export default function ProductFilterPanel({ categoriesList, search, setSearch: 
   const handleCancel = () => { setTempCategory(activeCategory); setTempMarket(activeMarket); setTempFavoritesMode(favoritesMode); setShowFilterModal(false); };
 
   return (
-    <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#f5f5ff", borderRadius: 12 }}>
+    <View style={{ marginBottom: 10, padding: 12, backgroundColor: "#dfe3ff", borderRadius: 12 }}>
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color="#6c63ff" style={{ marginRight: 6 }} />
         <TextInput style={styles.searchInput} placeholder="Search for a product..." placeholderTextColor="#777" value={search} onChangeText={handleSearchChange} />

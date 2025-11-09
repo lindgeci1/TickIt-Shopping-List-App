@@ -8,7 +8,7 @@ export default function App() {
   const navigationRef = useRef();
 
   return (
-    <SafeAreaProvider>  {/* <-- Wrap here */}
+    <SafeAreaProvider>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="white"
