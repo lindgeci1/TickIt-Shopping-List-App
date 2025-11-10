@@ -10,7 +10,8 @@ import { TextInput } from "react-native";
 import { updateShoppingList } from "../ShoppingList/updateShoppingList"; // the file we made before
 import Toast from "../utils/Toast";
 import { useMarketPhotoPrice } from "../Product/useMarketPhotoPrice";
-export default function ShoppingLists({ item, index, onDelete, onUpdateProducts }) {
+import { createProduct } from "../Product/createProduct"; // Import the function
+export default function ShoppingLists({ item, index, onDelete, onUpdateProducts, listName, onProductAdded }) {
   const [expanded, setExpanded] = useState(false), [products, setProducts] = useState([]),
     [showToBuy, setShowToBuy] = useState(false), [showBought, setShowBought] = useState(false),
     [totalBoughtPrice, setTotalBoughtPrice] = useState(0), [retrieveMode, setRetrieveMode] = useState(false),
@@ -18,6 +19,9 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts 
     [toBuyEditMode, setToBuyEditMode] = useState(false), [toBuySelectedProducts, setToBuySelectedProducts] = useState([]),
     [boughtSelectionMode, setBoughtSelectionMode] = useState(false), [boughtSelectedProducts, setBoughtSelectedProducts] = useState([]);
     const [editMode, setEditMode] = useState(false);
+    const [addProductModalVisible, setAddProductModalVisible] = useState(false);
+const [newProductName, setNewProductName] = useState("");
+const [newProductCategory, setNewProductCategory] = useState("");
     const [editedName, setEditedName] = useState(item.Name);
     const [toastMessage, setToastMessage] = useState(null);
   useEffect(() => { if (item.Products) setProducts(item.Products.map(p => ({ ...p, Status: p.Status ?? "ToBuy" }))); }, [item.Products]);
@@ -57,6 +61,22 @@ const handleRemoveSelected = async (selectedProducts, statusCheck) => {
   // Show toast message
   setToastMessage(`${selectedProducts.length} product(s) removed successfully!`);
 };
+const handleAddProduct = async () => {
+  try {
+    const newProduct = await createProduct({ name: newProductName, category: newProductCategory });
+
+    setProducts(prev => [...prev, { ...newProduct, Status: "ToBuy" }]);
+    setNewProductName("");
+    setNewProductCategory("");
+    setAddProductModalVisible(false);
+
+    // Call the parent callback with product and list name
+    if (onProductAdded) onProductAdded(newProduct.Name, item.Name);
+  } catch (err) {
+    setToastMessage(err.message || "Failed to add product.");
+  }
+};
+
 
 const handleUpdateSelectedToBuy = async () => {
   if (!toBuySelectedProducts.length) return;
@@ -136,6 +156,74 @@ const handleRetrieveSelectedBought = async () => {
         <View style={styles.deleteContainer}><View style={styles.verticalLine} /><TouchableOpacity onPress={handleDeleteList} style={styles.trashButton}><Feather name="trash-2" size={22} color="#c00" /></TouchableOpacity></View>
       </TouchableOpacity>
       <Text style={styles.count}>{products.length} Product(s)</Text>
+      <TouchableOpacity
+        onPress={() => setAddProductModalVisible(true)}
+        style={{ marginVertical: 10, backgroundColor: "#6c63ff", padding: 10, borderRadius: 8, alignItems: "center" }}
+      >
+        <Text style={{ color: "#fff", fontWeight: "600" }}>Add Product</Text>
+      </TouchableOpacity>
+<Modal
+  animationType="slide"
+  transparent
+  visible={addProductModalVisible}
+  onRequestClose={() => setAddProductModalVisible(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={[styles.modalContent, { width: "85%", padding: 20 }]}>
+      <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 20, color: "#6c63ff" }}>Add Product</Text>
+      
+      <TextInput
+        placeholder="Name"
+        placeholderTextColor="#999"
+        value={newProductName}
+        onChangeText={setNewProductName}
+        style={{
+          backgroundColor: "#f2f2f7",
+          borderRadius: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 15,
+          fontSize: 16,
+          marginBottom: 15,
+          color: "#333"
+        }}
+      />
+      
+      <TextInput
+        placeholder="Category"
+        placeholderTextColor="#999"
+        value={newProductCategory}
+        onChangeText={setNewProductCategory}
+        style={{
+          backgroundColor: "#f2f2f7",
+          borderRadius: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 15,
+          fontSize: 16,
+          marginBottom: 20,
+          color: "#333"
+        }}
+      />
+      
+      <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 10 }}>
+        <TouchableOpacity 
+          onPress={() => setAddProductModalVisible(false)} 
+          style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 8, backgroundColor: "#fff", borderWidth: 1, borderColor: "#6c63ff" }}
+        >
+          <Text style={{ color: "#6c63ff", fontWeight: "600" }}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={handleAddProduct} 
+          style={{ backgroundColor: "#6c63ff", paddingVertical: 10, paddingHorizontal: 15, borderRadius: 8 }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Toast messages */}
+      {toastMessage && <Toast message={toastMessage} onHide={() => setToastMessage(null)} />}
+    </View>
+  </View>
+</Modal>
 
       <Modal animationType="slide" transparent visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>

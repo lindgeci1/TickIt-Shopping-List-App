@@ -61,9 +61,15 @@ return (
   <View style={[styles.container, { paddingTop: topPadding + 15 }]}>
     
     {/* Header */}
-    <Text style={[styles.header, { color: "#6c63ff", marginBottom: 20 }]}>
-      Shopping Lists
-    </Text>
+    <View style={styles.headerRow}>
+      <Text style={styles.header}>Shopping Lists</Text>
+      <TouchableOpacity 
+        style={styles.addIconButton}
+        onPress={() => setIsModalVisible(true)}
+      >
+        <Text style={styles.addIconText}>＋</Text>
+      </TouchableOpacity>
+    </View>
 
     {/* Search/filter panel */}
     <ShoppingListFilterPanel
@@ -77,14 +83,14 @@ return (
       setCustomDate={setCustomDate}
     />
 
-  <View style={styles.addListContainer}>
+  {/* <View style={styles.addListContainer}>
     <TouchableOpacity 
       style={styles.addListButton}
       onPress={() => setIsModalVisible(true)}
     >
       <Text style={styles.addListButtonText}>+ Add a List</Text>
     </TouchableOpacity>
-  </View>
+  </View> */}
 
 
     {/* Error message */}
@@ -101,12 +107,15 @@ return (
           item={item}
           index={index}
           navigation={navigation}
-          onDelete={(deletedId) => {
-            setLists(prev =>
-              prev.filter(list => list.Shopping_List_ItemID !== deletedId)
-            );
-            setToastMessage(`List "${item.Name}" deleted successfully.`);
+           listName={item.Name}         // Pass list name
+          onProductAdded={(productName, listName) => {
+            setToastMessage(`Product "${productName}" was successfully added to list "${listName}"`);
           }}
+        onDelete={(deletedId) => {
+          setLists(prev => prev.filter(list => list.Shopping_List_ItemID !== deletedId));
+          setAllLists(prev => prev.filter(list => list.Shopping_List_ItemID !== deletedId));
+          setToastMessage(`List "${item.Name}" deleted successfully.`);
+        }}
           onUpdateProducts={(listId, updatedProducts) => {
             setLists(prev =>
               prev.map(list => {
@@ -145,7 +154,7 @@ return (
             onChangeText={setNewListName}
           />
           <View style={styles.modalButtons}>
-            <TouchableOpacity style={styles.modalCancel} onPress={() => setIsModalVisible(false)}>
+            <TouchableOpacity style={styles.modalCancel} onPress={() => {setIsModalVisible(false); setNewListName("");}}>
               <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalAdd} onPress={handleAddList}>
@@ -195,6 +204,35 @@ const styles = StyleSheet.create({
   alignItems: "center",
   zIndex: 9999,
   elevation: 9999,
+},
+headerRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 20,
+},
+
+header: {
+  fontSize: 22,
+  fontWeight: "700",
+  color: "#6c63ff",
+},
+
+addIconButton: {
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  backgroundColor: "#6c63ff",
+  alignItems: "center",
+  justifyContent: "center",
+  elevation: 3,
+},
+
+addIconText: {
+  color: "#fff",
+  fontSize: 22,
+  lineHeight: 24,
+  fontWeight: "700",
 },
 
 });
