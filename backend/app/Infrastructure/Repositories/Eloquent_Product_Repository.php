@@ -270,13 +270,13 @@ public function importProductsFromApi(int $perPage = 11): array
         $m->name = $product->Name;
         $m->is_favorite = $product->IsFavorite;
         $m->category = $product->Category;
-        $m->save();
+        $m->save(); // After save, $m->product_id is set by DB
 
         return new Product(
-            $m->product_id,
+            $m->product_id, // <- now this contains the generated ID
             $m->name,
             $m->is_favorite,
-            $m->category,
+            $m->category
         );
     }
 
