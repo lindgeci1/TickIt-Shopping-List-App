@@ -31,10 +31,10 @@ use App\Domain\Entities\Product;
 class Product_DTO
 {
     public ?int $ProductID = null;
-    public string $Name;
+    public ?string $Name;
     public ?float $Price = null;
     public bool $IsFavorite = false;
-    public string $Category;
+    public ?string $Category;
     public array $Photos = [];
 
     public function __construct(?Product $product = null)

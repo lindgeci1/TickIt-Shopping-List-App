@@ -28,7 +28,7 @@ class Create_Product_Use_Case implements I_Create_Product_Use_Case
         }
 
         if ($this->productRepository->existsByName($dto->Name)) {
-            throw new InvalidArgumentException("Product already exists.");
+            throw new InvalidArgumentException("Product with this name already exists.");
         }
 
         $product = new Product(
