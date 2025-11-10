@@ -118,6 +118,7 @@ class Product_Controller extends Controller
     {
         try {
             $dto = new Product_DTO();
+            $dto->ProductID = $request->input('ProductID');
             $dto->Name = $request->input('Name');
             $dto->Price = $request->input('Price');
             $dto->IsFavorite = $request->input('IsFavorite') ?? false;

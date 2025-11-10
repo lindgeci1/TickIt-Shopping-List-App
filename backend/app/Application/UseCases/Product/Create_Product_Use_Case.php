@@ -32,14 +32,16 @@ class Create_Product_Use_Case implements I_Create_Product_Use_Case
         }
 
         $product = new Product(
-            $dto->ProductID ?? null,
+            $dto->ProductID,
             $dto->Name,
             false,
             $dto->Category
         );
 
-        $this->productRepository->create($product);
+        // Capture the product returned by repository (with DB-generated ID)
+        $createdProduct = $this->productRepository->create($product);
 
-        return new Product_DTO($product);
+        // Pass that to the DTO
+        return new Product_DTO($createdProduct);
     }
 }

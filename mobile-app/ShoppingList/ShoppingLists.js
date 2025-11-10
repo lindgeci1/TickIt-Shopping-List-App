@@ -62,17 +62,40 @@ const handleRemoveSelected = async (selectedProducts, statusCheck) => {
   setToastMessage(`${selectedProducts.length} product(s) removed successfully!`);
 };
 const handleAddProduct = async () => {
-  try {
-    const newProduct = await createProduct({ name: newProductName, category: newProductCategory });
+  if (!newProductName.trim()) {
+    setToastMessage("Product name cannot be empty.");
+    console.log("Add Product aborted: name empty");
+    return;
+  }
 
+  try {
+    console.log("Creating product:", newProductName, newProductCategory);
+    // 1. Create product in DB
+    const newProduct = await createProduct({ name: newProductName, category: newProductCategory });
+    console.log("Product created:", newProduct);
+
+    // 2. Assign product to this shopping list
+    console.log("Assigning product to shopping list:", newProduct.ProductID, item.Shopping_List_ItemID);
+    await addProductsToShoppingList([newProduct.ProductID], [item.Shopping_List_ItemID]);
+    console.log("Product assigned successfully");
+
+    // 3. Update UI
     setProducts(prev => [...prev, { ...newProduct, Status: "ToBuy" }]);
+    console.log("UI updated with new product");
+
     setNewProductName("");
     setNewProductCategory("");
     setAddProductModalVisible(false);
 
-    // Call the parent callback with product and list name
-    if (onProductAdded) onProductAdded(newProduct.Name, item.Name);
+    // 4. Call parent callback
+    if (onProductAdded) {
+      console.log("Calling parent callback onProductAdded");
+      onProductAdded(newProduct.Name, item.Name);
+    }
+
+    // setToastMessage("Product added successfully!");
   } catch (err) {
+    // console.error("Error adding product:", err);
     setToastMessage(err.message || "Failed to add product.");
   }
 };

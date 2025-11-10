@@ -9,7 +9,7 @@ use App\Domain\Entities\Product;
  *     schema="Product_DTO",
  *     type="object",
  *     required={"Name","Category"},
- *     @OA\Property(property="ProductID", type="integer", nullable=true),
+ *     @OA\Property(property="ProductID", type="integer"),
  *     @OA\Property(property="Name", type="string"),
  *     @OA\Property(property="Price", type="number", format="float", nullable=true),
  *     @OA\Property(property="IsFavorite", type="boolean"),
@@ -30,7 +30,7 @@ use App\Domain\Entities\Product;
  */
 class Product_DTO
 {
-    public ?int $ProductID = null;
+    public ?int $ProductID;
     public ?string $Name;
     public ?float $Price = null;
     public bool $IsFavorite = false;
