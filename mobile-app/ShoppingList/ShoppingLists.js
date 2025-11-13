@@ -107,13 +107,17 @@ const handleUpdateSelectedToBuy = async () => {
   const productsWithoutMarket = [];
   const updatedProducts = [...products];
 
-  for (const product of toBuySelectedProducts) {
-    const marketData = await useMarketPhotoPrice(product.ProductID, item.Shopping_List_ItemID);
+for (const product of toBuySelectedProducts) {
+  let marketData = null;
 
+  // Only fetch market data if the product has photos (i.e., system product)
+  if (product.Photos?.length) {
+    marketData = await useMarketPhotoPrice(product.ProductID, item.Shopping_List_ItemID);
     if (!marketData) {
       productsWithoutMarket.push(product.Name);
       continue; // skip this product
     }
+  }
 
     // Update product in DB
     await updateProductsStatusesFromShoppingList([product.ProductID], [item.Shopping_List_ItemID]);
@@ -274,38 +278,272 @@ const handleRetrieveSelectedBought = async () => {
             <View style={styles.totalPriceContainer}><View style={styles.totalPriceLeft}><Feather name="shopping-cart" size={20} color="#6c63ff" /><Text style={styles.totalPriceLabel}>Total Cost</Text></View><Text style={styles.totalPriceValue}>€{totalBoughtPrice.toFixed(2)}</Text></View>
 
             <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowToBuy(!showToBuy)}><Text style={styles.sectionTitle}>Product(s) To Buy ({toBuyProducts.length})</Text><Text style={styles.toggleIcon}>{showToBuy ? "−" : "+"}</Text></TouchableOpacity>
-            {showToBuy && <>
-              <FlatList data={toBuyProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={true} style={styles.productList} renderItem={({ item: product }) => (
-                <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={toBuySelectionMode} selected={toBuySelectedProducts.includes(product)}
-                  onSelect={() => toggleSelection(product, toBuySelectedProducts, setToBuySelectedProducts)}
-                  onPriceChange={price => setProducts(prev => prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p))}
-                />
-              )}/>
-              {!toBuySelectionMode ? <View style={styles.actionsRow}>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: toBuyProducts.length ? "#6c63ff" : "#ccc" }]} disabled={!toBuyProducts.length} onPress={() => { setToBuySelectionMode(true); setToBuyEditMode(false); }}><Text style={styles.actionText}>Select to remove</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: toBuyProducts.length ? "#ffa500" : "#ccc" }]} disabled={!toBuyProducts.length} onPress={() => { setToBuySelectionMode(true); setToBuyEditMode(true); }}><Text style={styles.actionText}>Select To Buy</Text></TouchableOpacity>
-              </View> : <View style={styles.actionsRow}>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: toBuyEditMode ? "#6c63ff" : "#ff6b6b" }]} onPress={toBuyEditMode ? handleUpdateSelectedToBuy : () => handleRemoveSelected(toBuySelectedProducts, "ToBuy")}><Text style={styles.actionText}>Confirm</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#aaa" }]} onPress={() => { setToBuySelectionMode(false); setToBuyEditMode(false); setToBuySelectedProducts([]); }}><Text style={styles.actionText}>Cancel</Text></TouchableOpacity>
-              </View>}
-            </>}
+            {showToBuy && (
+              <>
+                {/* Items Created Section */}
+                {toBuyProducts.some(p => !p.Photos?.length) && (
+                  <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Items Created</Text>
+                    <View style={styles.sectionContent}>
+                      <FlatList
+                        data={toBuyProducts.filter(p => !p.Photos?.length)}
+                        keyExtractor={p => p.ProductID.toString()}
+                        scrollEnabled={true}
+                        style={styles.productList}
+                        renderItem={({ item: product }) => (
+                          <ProductCardSL
+                            product={product}
+                            shoppingListItemId={item.Shopping_List_ItemID}
+                            showPrice
+                            selectionMode={toBuySelectionMode}
+                            selected={toBuySelectedProducts.includes(product)}
+                            onSelect={() =>
+                              toggleSelection(product, toBuySelectedProducts, setToBuySelectedProducts)
+                            }
+                            onPriceChange={price =>
+                              setProducts(prev =>
+                                prev.map(p =>
+                                  p.ProductID === product.ProductID ? { ...p, Price: price } : p
+                                )
+                              )
+                            }
+                          />
+                        )}
+                      />
+                    </View>
+                  </View>
+                )}
+
+                {/* Items from System Section */}
+                {toBuyProducts.some(p => p.Photos?.length) && (
+                  <View style={styles.sectionContainerAlt}>
+                    <Text style={styles.sectionTitleAlt}>Items from System</Text>
+                    <View style={styles.sectionContentAlt}>
+                      <FlatList
+                        data={toBuyProducts.filter(p => p.Photos?.length)}
+                        keyExtractor={p => p.ProductID.toString()}
+                        scrollEnabled={true}
+                        style={styles.productList}
+                        renderItem={({ item: product }) => (
+                          <ProductCardSL
+                            product={product}
+                            shoppingListItemId={item.Shopping_List_ItemID}
+                            showPrice
+                            selectionMode={toBuySelectionMode}
+                            selected={toBuySelectedProducts.includes(product)}
+                            onSelect={() =>
+                              toggleSelection(product, toBuySelectedProducts, setToBuySelectedProducts)
+                            }
+                            onPriceChange={price =>
+                              setProducts(prev =>
+                                prev.map(p =>
+                                  p.ProductID === product.ProductID ? { ...p, Price: price } : p
+                                )
+                              )
+                            }
+                          />
+                        )}
+                      />
+                    </View>
+                  </View>
+                )}
+
+                {/* Action buttons */}
+                {!toBuySelectionMode ? (
+                  <View style={styles.actionsRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.actionButton,
+                        { backgroundColor: toBuyProducts.length ? "#6c63ff" : "#ccc" },
+                      ]}
+                      disabled={!toBuyProducts.length}
+                      onPress={() => {
+                        setToBuySelectionMode(true);
+                        setToBuyEditMode(false);
+                      }}
+                    >
+                      <Text style={styles.actionText}>Select to remove</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.actionButton,
+                        { backgroundColor: toBuyProducts.length ? "#ffa500" : "#ccc" },
+                      ]}
+                      disabled={!toBuyProducts.length}
+                      onPress={() => {
+                        setToBuySelectionMode(true);
+                        setToBuyEditMode(true);
+                      }}
+                    >
+                      <Text style={styles.actionText}>Select To Buy</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.actionsRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.actionButton,
+                        { backgroundColor: toBuyEditMode ? "#6c63ff" : "#ff6b6b" },
+                      ]}
+                      onPress={
+                        toBuyEditMode
+                          ? handleUpdateSelectedToBuy
+                          : () => handleRemoveSelected(toBuySelectedProducts, "ToBuy")
+                      }
+                    >
+                      <Text style={styles.actionText}>Confirm</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.actionButton, { backgroundColor: "#aaa" }]}
+                      onPress={() => {
+                        setToBuySelectionMode(false);
+                        setToBuyEditMode(false);
+                        setToBuySelectedProducts([]);
+                      }}
+                    >
+                      <Text style={styles.actionText}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </>
+            )}
 
             <TouchableOpacity style={styles.sectionHeader} onPress={() => setShowBought(!showBought)}><Text style={styles.sectionTitle}>Product(s) Bought ({boughtProducts.length})</Text><Text style={styles.toggleIcon}>{showBought ? "−" : "+"}</Text></TouchableOpacity>
-            {showBought && <>
-              <FlatList data={boughtProducts} keyExtractor={p => p.ProductID.toString()} scrollEnabled={true} style={styles.productList} renderItem={({ item: product }) => (
-                <ProductCardSL product={product} shoppingListItemId={item.Shopping_List_ItemID} showPrice selectionMode={boughtSelectionMode} selected={boughtSelectedProducts.includes(product)}
-                  onSelect={() => toggleSelection(product, boughtSelectedProducts, setBoughtSelectedProducts)}
-                  onPriceChange={price => setProducts(prev => prev.map(p => p.ProductID === product.ProductID ? { ...p, Price: price } : p))}
-                />
-              )}/>
-              {!boughtSelectionMode ? <View style={styles.actionsRow}>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: boughtProducts.length ? "#6c63ff" : "#ccc" }]} disabled={!boughtProducts.length} onPress={() => { setBoughtSelectionMode(true); setRetrieveMode(false); }}><Text style={styles.actionText}>Select to remove</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: boughtProducts.length ? "#ffa500" : "#ccc" }]} disabled={!boughtProducts.length} onPress={() => { setBoughtSelectionMode(true); setRetrieveMode(true); }}><Text style={styles.actionText}>Select to retrieve</Text></TouchableOpacity>
-              </View> : <View style={styles.actionsRow}>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: retrieveMode ? "#6c63ff" : "#ff6b6b" }]} onPress={retrieveMode ? handleRetrieveSelectedBought : () => handleRemoveSelected(boughtSelectedProducts, "Bought")}><Text style={styles.actionText}>Confirm</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, { backgroundColor: "#aaa" }]} onPress={() => { setBoughtSelectionMode(false); setBoughtSelectedProducts([]); setRetrieveMode(false); }}><Text style={styles.actionText}>Cancel</Text></TouchableOpacity>
-              </View>}
-            </>}
+{showBought && (
+  <>
+    {/* Items Created Section */}
+    {boughtProducts.some(p => !p.Photos?.length) && (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Items Created</Text>
+        <View style={styles.sectionContent}>
+          <FlatList
+            data={boughtProducts.filter(p => !p.Photos?.length)}
+            keyExtractor={p => p.ProductID.toString()}
+            scrollEnabled={true}
+            style={styles.productList}
+            renderItem={({ item: product }) => (
+              <ProductCardSL
+                product={product}
+                shoppingListItemId={item.Shopping_List_ItemID}
+                showPrice
+                selectionMode={boughtSelectionMode}
+                selected={boughtSelectedProducts.includes(product)}
+                onSelect={() =>
+                  toggleSelection(product, boughtSelectedProducts, setBoughtSelectedProducts)
+                }
+                onPriceChange={price =>
+                  setProducts(prev =>
+                    prev.map(p =>
+                      p.ProductID === product.ProductID ? { ...p, Price: price } : p
+                    )
+                  )
+                }
+              />
+            )}
+          />
+        </View>
+      </View>
+    )}
+
+    {/* Items from System Section */}
+    {boughtProducts.some(p => p.Photos?.length) && (
+      <View style={styles.sectionContainerAlt}>
+        <Text style={styles.sectionTitleAlt}>Items from System</Text>
+        <View style={styles.sectionContentAlt}>
+          <FlatList
+            data={boughtProducts.filter(p => p.Photos?.length)}
+            keyExtractor={p => p.ProductID.toString()}
+            scrollEnabled={true}
+            style={styles.productList}
+            renderItem={({ item: product }) => (
+              <ProductCardSL
+                product={product}
+                shoppingListItemId={item.Shopping_List_ItemID}
+                showPrice
+                selectionMode={boughtSelectionMode}
+                selected={boughtSelectedProducts.includes(product)}
+                onSelect={() =>
+                  toggleSelection(product, boughtSelectedProducts, setBoughtSelectedProducts)
+                }
+                onPriceChange={price =>
+                  setProducts(prev =>
+                    prev.map(p =>
+                      p.ProductID === product.ProductID ? { ...p, Price: price } : p
+                    )
+                  )
+                }
+              />
+            )}
+          />
+        </View>
+      </View>
+    )}
+
+    {/* Action Buttons */}
+    {!boughtSelectionMode ? (
+      <View style={styles.actionsRow}>
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            { backgroundColor: boughtProducts.length ? "#6c63ff" : "#ccc" },
+          ]}
+          disabled={!boughtProducts.length}
+          onPress={() => {
+            setBoughtSelectionMode(true);
+            setRetrieveMode(false);
+          }}
+        >
+          <Text style={styles.actionText}>Select to remove</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            { backgroundColor: boughtProducts.length ? "#ffa500" : "#ccc" },
+          ]}
+          disabled={!boughtProducts.length}
+          onPress={() => {
+            setBoughtSelectionMode(true);
+            setRetrieveMode(true);
+          }}
+        >
+          <Text style={styles.actionText}>Select to retrieve</Text>
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View style={styles.actionsRow}>
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            { backgroundColor: retrieveMode ? "#6c63ff" : "#ff6b6b" },
+          ]}
+          onPress={
+            retrieveMode
+              ? handleRetrieveSelectedBought
+              : () => handleRemoveSelected(boughtSelectedProducts, "Bought")
+          }
+        >
+          <Text style={styles.actionText}>Confirm</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#aaa" }]}
+          onPress={() => {
+            setBoughtSelectionMode(false);
+            setBoughtSelectedProducts([]);
+            setRetrieveMode(false);
+          }}
+        >
+          <Text style={styles.actionText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+  </>
+)}
+
+
             <TouchableOpacity style={{ backgroundColor: "#c00", paddingVertical: 10, paddingHorizontal: 25, borderRadius: 8, alignSelf: "center", marginTop: 15, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 3 }} 
               onPress={() => { setModalVisible(false); setEditMode(false); setEditedName(item.Name); setToastMessage(null); setToBuySelectionMode(false); setToBuyEditMode(false); setToBuySelectedProducts([]); setBoughtSelectionMode(false); setRetrieveMode(false); setBoughtSelectedProducts([]); setShowToBuy(false); setShowBought(false); }}>
               <Text style={{ color:"#fff", fontSize:16, fontWeight:"600" }}>Close</Text>
@@ -338,5 +576,85 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
   modalContent: { width: "90%", maxHeight: "80%", backgroundColor: "#fff", borderRadius: 12, padding: 16 },
   closeButton: { position: "absolute", top: 10, right: 10, backgroundColor: "#6c63ff", padding: 8, borderRadius: 20, zIndex: 10 },
-  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 12, color: "#6c63ff" }
+  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 12, color: "#6c63ff" },
+  sectionContainer: { 
+  backgroundColor: "#eef0ff", 
+  borderRadius: 12, 
+  padding: 10, 
+  marginVertical: 8, 
+  borderWidth: 1, 
+  borderColor: "#c6c6ff", 
+  shadowColor: "#000", 
+  shadowOpacity: 0.05, 
+  shadowOffset: { width: 0, height: 2 }, 
+  shadowRadius: 4, 
+  elevation: 2 
+},
+
+sectionContainerAlt: { 
+  backgroundColor: "#fef6e4", 
+  borderRadius: 12, 
+  padding: 10, 
+  marginVertical: 8, 
+  borderWidth: 1, 
+  borderColor: "#ffe0a0", 
+  shadowColor: "#000", 
+  shadowOpacity: 0.05, 
+  shadowOffset: { width: 0, height: 2 }, 
+  shadowRadius: 4, 
+  elevation: 2 
+},
+
+sectionTitleAlt: { 
+  fontSize: 16, 
+  fontWeight: "700", 
+  color: "#b86b00", 
+  marginBottom: 8, 
+  borderBottomWidth: 2, 
+  borderColor: "#ffa50044", 
+  paddingBottom: 4 
+},
+
+sectionContent: { 
+  backgroundColor: "#f9f9ff", 
+  borderRadius: 10, 
+  padding: 6, 
+  gap: 6 
+},
+
+sectionContentAlt: { 
+  backgroundColor: "#fff8ec", 
+  borderRadius: 10, 
+  padding: 6, 
+  gap: 6 
+},
+
+productList: { 
+  marginVertical: 4 
+},
+
+actionsRow: { 
+  flexDirection: "row", 
+  justifyContent: "space-between", 
+  marginTop: 12, 
+  gap: 12 
+},
+
+actionButton: { 
+  flex: 1, 
+  paddingVertical: 12, 
+  borderRadius: 10, 
+  alignItems: "center", 
+  shadowColor: "#000", 
+  shadowOpacity: 0.08, 
+  shadowOffset: { width: 0, height: 2 }, 
+  shadowRadius: 4, 
+  elevation: 2 
+},
+
+actionText: { 
+  color: "#fff", 
+  fontWeight: "600" 
+},
+
 });

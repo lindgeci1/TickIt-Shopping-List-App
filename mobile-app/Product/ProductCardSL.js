@@ -101,10 +101,15 @@ return (
       </TouchableOpacity>
     )}
 
-    {/* Product photo */}
+   {product.Photos?.[0] ? (
     <View style={styles.photoBox}>
-      <Image source={{ uri: product.Photos?.[0] || "https://via.placeholder.com/50" }} style={styles.photo} resizeMode="cover" />
+      <Image
+        source={{ uri: product.Photos[0] }}
+        style={styles.photo}
+        resizeMode="cover"
+      />
     </View>
+  ) : null}
 
     {/* Product info */}
     <View style={styles.infoBox}>
@@ -112,20 +117,20 @@ return (
       <Text style={styles.category}>{product.Category || "No category"}</Text>
     </View>
 
-    {/* Vertical line if market exists */}
+
+{/* Only show market/price section if product has a photo */}
+{product.Photos?.[0] && (
+  <>
     <View style={styles.verticalLine} />
 
-    {/* Linked market */}
     <View style={styles.rightSection}>
       {linkedMarket ? (
         <View style={{ position: "relative", marginLeft: 4 }}>
-          {/* Market info box */}
           <View style={[styles.marketBox, product.Status === "Bought" && { opacity: 0.6 }]}>
             <Image source={{ uri: linkedMarket.photoURL }} style={styles.marketLogo} resizeMode="cover" />
             <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
           </View>
 
-          {/* X button */}
           {product.Status !== "Bought" && (
             <TouchableOpacity
               style={styles.removeButton}
@@ -149,6 +154,9 @@ return (
         </TouchableOpacity>
       )}
     </View>
+  </>
+)}
+
 
     {/* Modal */}
     <Modal visible={modalVisible} transparent animationType="slide">
