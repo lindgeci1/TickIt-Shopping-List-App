@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./backend
-        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
+        run: composer install --no-interaction --no-progress --prefer-dist
 
       - name: Run tests
         working-directory: ./backend
