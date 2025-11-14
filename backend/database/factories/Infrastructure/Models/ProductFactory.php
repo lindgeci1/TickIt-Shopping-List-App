@@ -15,7 +15,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->word(),
             'category' => 'TestCategory',
             'is_favorite' => false,
-            'status' => 'active',  // assuming you need something in 'status'
+            'status' => 'active',  // assuming you need something in 'status '
             'product_id' => $this->faker->unique()->numberBetween(1, 999),
         ];
     }
