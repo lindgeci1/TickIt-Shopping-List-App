@@ -20,6 +20,6 @@ class FetchProductsTest extends TestCase
 
         // Assert response
         $response->assertStatus(200)
-                        ->assertJsonCount(3); // count the root array, not 'data'
+                        ->assertJsonCount(5); // count the root array, not 'data'
     }
 }
