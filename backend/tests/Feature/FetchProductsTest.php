@@ -16,7 +16,7 @@ class FetchProductsTest extends TestCase
         Product::factory()->count(3)->create();
 
         // Call the API route internally
-        $response = $this->getJson('/api/product/all');
+        $response = $this->getJson('/api/product/allh');
 
         // Assert response
         $response->assertStatus(200)
