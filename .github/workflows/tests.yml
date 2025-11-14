@@ -23,47 +23,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Debug backend folder structure
-      #   working-directory: ./backend
-      #   run: |
-      #     echo "Listing backend/app/Http:"
-      #     ls -la app/Http
-      #     echo "Listing backend/app/Http/Routes:"
-      #     ls -la app/Http/Routes
-
-      # - name: Debug APP_ROUTE_PATH
-      #   working-directory: ./backend
-      #   run: |
-      #     echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
-      #     ls -la $APP_ROUTE_PATH
-      #   env:
-      #     APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, pdo_pgsql
 
-      - name: Install dependencies
+      - name: Install Composer dependencies (no scripts)
         working-directory: ./backend
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
-      # - name: Wait for Postgres
-      #   run: |
-      #     until pg_isready -h ${{ secrets.DB_HOST }} -p ${{ secrets.DB_PORT }} -U ${{ secrets.DB_USERNAME }}; do
-      #       echo "Waiting for Postgres..."
-      #       sleep 1
-      #     done
-      #   env:
-      #     PGPASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      - name: Debug Laravel RouteServiceProvider
+      - name: Prepare Laravel environment
         working-directory: ./backend
         run: |
-            echo "APP_ROUTE_PATH=$APP_ROUTE_PATH"
-        env:
-            APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
+          cp .env.example .env
+          php artisan key:generate --force
+          php artisan migrate:fresh --path=app/Infrastructure/Database/Migrations --force
+          composer dump-autoload
 
       - name: Run Tests
         working-directory: ./backend
@@ -76,4 +52,3 @@ jobs:
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          APP_ROUTE_PATH: ${{ github.workspace }}/backend/app/Http/Routes
