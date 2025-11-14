@@ -1,4 +1,4 @@
-name: Run PHP Unit Tests (No Laravel Boot)
+name: Run Laravel Feature Tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  php-tests:
+  laravel-tests:
     runs-on: ubuntu-latest
 
     services:
@@ -28,16 +28,24 @@ jobs:
         with:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, pdo_pgsql
-          coverage: none
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         working-directory: ./backend
-        run: composer install --no-interaction --no-progress --prefer-dist
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
-      - name: Run tests
+      - name: Prepare Laravel environment
         working-directory: ./backend
-        run: ./vendor/bin/phpunit --testsuite=Unit
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+          php artisan migrate:fresh --force
+          composer dump-autoload
+
+      - name: Run Feature Tests
+        working-directory: ./backend
+        run: php artisan test
         env:
+          APP_KEY: ${{ secrets.APP_KEY }}
           DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
