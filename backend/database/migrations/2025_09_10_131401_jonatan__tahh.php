@@ -33,12 +33,12 @@ return new class extends Migration
             $table->unique(['shopping_list_item_id', 'product_id']);
         });
 
-        // Optional: remove old product_id from shopping_list_items if exists
-        if (Schema::hasColumn('shopping_list_items', 'product_id')) {
-            Schema::table('shopping_list_items', function (Blueprint $table) {
-                $table->dropColumn('product_id');
-            });
-        }
+        // // Optional: remove old product_id from shopping_list_items if exists
+        // if (Schema::hasColumn('shopping_list_items', 'product_id')) {
+        //     Schema::table('shopping_list_items', function (Blueprint $table) {
+        //         $table->dropColumn('product_id');
+        //     });
+        // }
     }
 
     /**
