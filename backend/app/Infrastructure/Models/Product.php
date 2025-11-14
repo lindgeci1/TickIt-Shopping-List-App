@@ -2,15 +2,19 @@
 
 namespace App\Infrastructure\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Infrastructure\Models\Market;
 use App\Infrastructure\Models\Shopping_List_Item;
+use App\Infrastructure\Models\Product_Photo;
 
 class Product extends Model
 {
+    use HasFactory; // <--- Needed for factories
+
     protected $table = 'products';
     protected $primaryKey = 'product_id';
-    protected $fillable = ['name', 'is_favorite', 'category', 'status']; // price removed
+    protected $fillable = ['name', 'is_favorite', 'category', 'status'];
 
     public $timestamps = false;
 
