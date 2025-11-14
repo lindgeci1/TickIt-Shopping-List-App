@@ -38,8 +38,16 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate --force
-          php artisan migrate:fresh --force
+          php artisan migrate:fresh --path=app/Infrastructure/Database/Migrations --force
           composer dump-autoload
+        env:
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          APP_KEY: ${{ secrets.APP_KEY }}
 
       - name: Run Feature Tests
         working-directory: ./backend
