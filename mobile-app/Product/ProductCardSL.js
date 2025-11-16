@@ -94,103 +94,108 @@ useEffect(() => {
   };
 
 return (
-  <View style={styles.card}>
-    {selectionMode && (
-      <TouchableOpacity style={[styles.checkbox, selected && styles.checked]} onPress={onSelect}>
-        {selected && <Text style={styles.checkMark}>✓</Text>}
-      </TouchableOpacity>
-    )}
-
-   {product.Photos?.[0] ? (
-    <View style={styles.photoBox}>
-      <Image
-        source={{ uri: product.Photos[0] }}
-        style={styles.photo}
-        resizeMode="cover"
-      />
-    </View>
-  ) : null}
-
-    {/* Product info */}
-    <View style={styles.infoBox}>
-      <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
-      <Text style={styles.category}>{product.Category || "No category"}</Text>
-    </View>
-
-
-{/* Only show market/price section if product has a photo */}
-{product.Photos?.[0] && (
-  <>
-    <View style={styles.verticalLine} />
-
-    <View style={styles.rightSection}>
-      {linkedMarket ? (
-        <View style={{ position: "relative", marginLeft: 4 }}>
-          <View style={[styles.marketBox, product.Status === "Bought" && { opacity: 0.6 }]}>
-            <Image source={{ uri: linkedMarket.photoURL }} style={styles.marketLogo} resizeMode="cover" />
-            <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
-          </View>
-
-          {product.Status !== "Bought" && (
-            <TouchableOpacity
-              style={styles.removeButton}
-              onPress={async () => {
-                try {
-                  await removeProductFromMarketShoppingList(product.ProductID, shoppingListItemId);
-                  const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
-                  setLinkedMarket(data);
-                } catch (err) {
-                  console.error("Failed to remove linked market:", err);
-                }
-              }}
-            >
-              <Text style={styles.removeText}>✕</Text>
-            </TouchableOpacity>
-          )}
+  <TouchableOpacity 
+    activeOpacity={0.8}
+    onPress={selectionMode ? onSelect : undefined}
+    disabled={!selectionMode}
+    style={{ flex: 1 }}
+  >
+    <View style={styles.card}>
+      {selectionMode && (
+        <View style={[styles.checkbox, selected && styles.checked]}>
+          {selected && <Text style={styles.checkMark}>✓</Text>}
         </View>
-      ) : (
-        <TouchableOpacity style={styles.tapPriceBox} onPress={product.Status !== "Bought" ? handleTap : undefined}>
-          <Text style={styles.tapPriceText}>Price</Text>
-        </TouchableOpacity>
       )}
-    </View>
-  </>
-)}
 
-
-    {/* Modal */}
-    <Modal visible={modalVisible} transparent animationType="slide">
-      <View style={styles.modalOverlay}>
-        <View style={styles.modal}>
-          <Text style={styles.modalTitle}>{product.Name} Prices</Text>
-
-          {loadingMarkets ? (
-            <ActivityIndicator size="small" color="#6c63ff" />
-          ) : marketList.length > 0 ? (
-            <FlatList
-              data={marketList}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity style={styles.row} onPress={() => handleSelectMarket(item)}>
-                  <Image source={{ uri: item.logo }} style={styles.logo} />
-                  <Text style={styles.marketName}>{item.name}</Text>
-                  <Text style={styles.marketPrice}>€{item.price.toFixed(2)}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          ) : (
-            <Text style={{ textAlign: "center", marginTop: 10 }}>{marketMessage}</Text>
-          )}
-
-          {apiError && <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>{apiError}</Text>}
-
-          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
+      {product.Photos?.[0] ? (
+        <View style={styles.photoBox}>
+          <Image
+            source={{ uri: product.Photos[0] }}
+            style={styles.photo}
+            resizeMode="cover"
+          />
         </View>
+      ) : null}
+
+      {/* Product info */}
+      <View style={styles.infoBox}>
+        <Text style={styles.name}>{product.Name || "Unnamed Product"}</Text>
+        <Text style={styles.category}>{product.Category || "No category"}</Text>
       </View>
-    </Modal>
-  </View>
+
+      {/* Only show market/price section if product has a photo */}
+      {product.Photos?.[0] && (
+        <>
+          <View style={styles.verticalLine} />
+
+          <View style={styles.rightSection}>
+            {linkedMarket ? (
+              <View style={{ position: "relative", marginLeft: 4 }}>
+                <View style={[styles.marketBox, product.Status === "Bought" && { opacity: 0.6 }]}>
+                  <Image source={{ uri: linkedMarket.photoURL }} style={styles.marketLogo} resizeMode="cover" />
+                  <Text style={styles.marketPrice}>€{linkedMarket.price.toFixed(2)}</Text>
+                </View>
+
+                {product.Status !== "Bought" && (
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={async () => {
+                      try {
+                        await removeProductFromMarketShoppingList(product.ProductID, shoppingListItemId);
+                        const data = await useMarketPhotoPrice(product.ProductID, shoppingListItemId);
+                        setLinkedMarket(data);
+                      } catch (err) {
+                        console.error("Failed to remove linked market:", err);
+                      }
+                    }}
+                  >
+                    <Text style={styles.removeText}>Cross</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <TouchableOpacity style={styles.tapPriceBox} onPress={product.Status !== "Bought" ? handleTap : undefined}>
+                <Text style={styles.tapPriceText}>Price</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </>
+      )}
+
+      {/* Modal */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>{product.Name} Prices</Text>
+
+            {loadingMarkets ? (
+              <ActivityIndicator size="small" color="#6c63ff" />
+            ) : marketList.length > 0 ? (
+              <FlatList
+                data={marketList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={styles.row} onPress={() => handleSelectMarket(item)}>
+                    <Image source={{ uri: item.logo }} style={styles.logo} />
+                    <Text style={styles.marketName}>{item.name}</Text>
+                    <Text style={styles.marketPrice}>€{item.price.toFixed(2)}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            ) : (
+              <Text style={{ textAlign: "center", marginTop: 10 }}>{marketMessage}</Text>
+            )}
+
+            {apiError && <Text style={{ color: "red", textAlign: "center", marginVertical: 8 }}>{apiError}</Text>}
+
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  </TouchableOpacity>
 );
 }
 const styles = StyleSheet.create({
