@@ -149,7 +149,7 @@ return (
                       }
                     }}
                   >
-                    <Text style={styles.removeText}>Cross</Text>
+                    <Text style={styles.removeText}>X</Text>
                   </TouchableOpacity>
                 )}
               </View>

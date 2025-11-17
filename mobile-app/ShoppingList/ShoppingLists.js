@@ -169,16 +169,18 @@ export default function ShoppingLists({ item, index, onDelete, onUpdateProducts,
           <View style={styles.modalContent}>
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               {editMode ? 
-                <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                  <TextInput value={editedName} onChangeText={setEditedName} style={{ flex: 1, borderBottomWidth: 1, borderColor: "#ccc", fontSize: 18, color: "#333", paddingVertical: 4 }} placeholder="List Name" placeholderTextColor="#999" />
-                  {editedName.length > 0 && (<TouchableOpacity onPress={() => setEditedName("")} style={{ marginLeft: 6 }}><Feather name="x-circle" size={18} color="#6c63ff" /></TouchableOpacity>)}
-                  <TouchableOpacity onPress={() => { setEditedName(item.Name); setEditMode(false); }} style={{ marginLeft: 10, backgroundColor: "#ff4d4d", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}>
-                    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={async () => { try { const message = await updateShoppingList({ shopping_list_id: item.Shopping_List_ItemID, name: editedName }); item.Name = editedName; setEditMode(false); setToastMessage(message); } catch (err) { setToastMessage(err.message || "Failed to update list name."); } }} style={{ marginLeft: 10, backgroundColor: "#6c63ff", paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 2 }}>
-                    <Text style={{ color: "#fff", fontWeight: "600", fontSize: 14 }}>Save</Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                <TextInput value={editedName} onChangeText={setEditedName} style={{ flex: 1, minWidth: 0, borderBottomWidth: 1,borderColor: "#ccc", fontSize: 18, color: "#333", paddingVertical: 4 }} placeholder="List Name" placeholderTextColor="#999" />
+                {editedName.length > 0 && (<TouchableOpacity onPress={() => setEditedName("")} style={{ marginLeft: 6 }}><Feather name="x-circle" size={18} color="#6c63ff" /></TouchableOpacity>)}
+                
+                <TouchableOpacity onPress={() => { setEditedName(item.Name); setEditMode(false); }} style={{ marginLeft: 12, width: 35, height: 35, borderRadius: 22, backgroundColor: "#ff4d4d", justifyContent: "center", alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 6 }}>
+                  <Feather name="x" size={20} color="#fff" />
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={async () => { try { const message = await updateShoppingList({ shopping_list_id: item.Shopping_List_ItemID, name: editedName }); item.Name = editedName; setEditMode(false); setToastMessage(message); } catch (err) { setToastMessage(err.message || "Failed to update list name."); } }} style={{ marginLeft: 10, width: 35, height: 35, borderRadius: 22, backgroundColor: "#6c63ff", justifyContent: "center", alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 6 }}>
+                  <Feather name="check" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
                 : 
                 <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
                   <Text style={styles.modalTitle}>{item.Name}</Text>
