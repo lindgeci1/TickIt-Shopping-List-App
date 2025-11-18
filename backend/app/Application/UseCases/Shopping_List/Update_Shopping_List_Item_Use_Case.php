@@ -33,6 +33,11 @@ class Update_Shopping_List_Item_Use_Case implements I_Update_Shopping_List_Item_
         // Determine name: use DTO name if provided, else keep existing
         $name = $dto->Name ?? $existing->Name;
 
+        // Validate max length (20 characters)
+        if (mb_strlen($name) > 20) {
+            throw new InvalidArgumentException("Name must not exceed 20 characters.");
+        }
+
         // Check for duplicate name (exclude current item)
         if ($this->shoppingListRepository->existsByName($name, $dto->Shopping_List_ItemID)) {
             throw new InvalidArgumentException("A shopping list item with name '$name' already exists.");
