@@ -25,6 +25,11 @@ class Create_Shopping_List_Item_Use_Case implements I_Create_Shopping_List_Item_
             throw new InvalidArgumentException("Name is required.");
         }
 
+        // Validate max length (20 characters)
+        if (mb_strlen($name) > 20) {
+            throw new InvalidArgumentException("Name must not exceed 20 characters.");
+        }
+
         // Check if name already exists
         if ($this->repository->existsByName($name)) {
             throw new InvalidArgumentException("A shopping list with name '{$name}' already exists.");
