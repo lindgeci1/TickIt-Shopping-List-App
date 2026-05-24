@@ -35,15 +35,14 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/mobile-app
-          _dockerfilePathKey_: _dockerfilePath_
-          _targetLabelKey_: _targetLabel_
+          dockerfilePath: ${{ github.workspace }}/mobile-app/Dockerfile
           registryUrl: tickitacr.azurecr.io
           registryUsername: ${{ secrets.TICKITFRONTEND_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.TICKITFRONTEND_REGISTRY_PASSWORD }}
           containerAppName: tickit-frontend
           resourceGroup: Tick-It
           imageToBuild: tickitacr.azurecr.io/tickit-frontend:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
+          buildArguments: |
+            VITE_BASE_API_URL=${{ secrets.TICKITFRONTEND_VITE_BASE_API_URL }}
 
 
