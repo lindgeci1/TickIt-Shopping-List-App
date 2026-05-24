@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+vendor
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+.env
+.env.*
+!.env.example
+
+# Prevent stale local Laravel caches from breaking production images
+bootstrap/cache/*.php

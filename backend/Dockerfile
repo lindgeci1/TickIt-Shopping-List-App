@@ -25,6 +25,8 @@ COPY --chown=www-data:www-data . .
 COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
 COPY --from=assets --chown=www-data:www-data /app/public/build ./public/build
 
+RUN rm -f bootstrap/cache/*.php
+
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
