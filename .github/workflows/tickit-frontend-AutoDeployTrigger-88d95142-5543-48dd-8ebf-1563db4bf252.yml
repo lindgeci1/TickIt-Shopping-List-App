@@ -34,8 +34,8 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}/mobile-app
-          dockerfilePath: ${{ github.workspace }}/mobile-app/Dockerfile
+          appSourcePath: mobile-app
+          dockerfilePath: Dockerfile
           registryUrl: tickitacr.azurecr.io
           registryUsername: ${{ secrets.TICKITFRONTEND_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.TICKITFRONTEND_REGISTRY_PASSWORD }}
