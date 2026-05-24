@@ -33,4 +33,4 @@ RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions sto
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan storage:link --force && exec supervisord -c /etc/supervisord.conf"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan l5-swagger:generate && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan storage:link --force && exec supervisord -c /etc/supervisord.conf"]
